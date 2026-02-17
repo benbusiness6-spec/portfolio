@@ -360,8 +360,6 @@ export default function App() {
         </div>
         <div style={{ fontSize: "11px", color: "rgba(245,240,235,0.25)", letterSpacing: "0.5px" }}>© 2026 Ben Lewis Studios</div>
       </footer>
-    </div>
-  );
-}
+     </div>
   );
 }
