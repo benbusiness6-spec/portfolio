@@ -127,13 +127,18 @@ function ArrowBtn({ direction, onClick, visible }) {
   );
 }
 
-function Carousel({ items, cardWidth = 220, gap = 16, renderCard }) {
+function Carousel({ items, cardWidth = 220, mobileCardWidth, gap = 16, renderCard }) {
   const trackRef = useRef(null);
   const [canLeft, setCanLeft] = useState(false);
   const [canRight, setCanRight] = useState(true);
   const [drag, setDrag] = useState(false);
   const [startX, setStartX] = useState(0);
   const [sl, setSl] = useState(0);
+  const [activeWidth, setActiveWidth] = useState(cardWidth);
+
+  const getWidth = useCallback(() => {
+    return (mobileCardWidth && window.innerWidth <= 768) ? mobileCardWidth : cardWidth;
+  }, [cardWidth, mobileCardWidth]);
 
   const checkScroll = useCallback(() => {
     const el = trackRef.current; if (!el) return;
@@ -142,18 +147,22 @@ function Carousel({ items, cardWidth = 220, gap = 16, renderCard }) {
   }, []);
 
   useEffect(() => {
+    const w = getWidth();
+    setActiveWidth(w);
     const el = trackRef.current; if (!el) return;
-    const totalW = items.length * cardWidth + (items.length - 1) * gap;
+    const totalW = items.length * w + (items.length - 1) * gap;
     if (totalW > el.clientWidth) el.scrollLeft = (totalW - el.clientWidth) / 2;
     checkScroll();
-    el.addEventListener("scroll", checkScroll, { passive: true });
-    window.addEventListener("resize", checkScroll);
-    return () => { el.removeEventListener("scroll", checkScroll); window.removeEventListener("resize", checkScroll); };
-  }, [items.length, cardWidth, gap, checkScroll]);
+    const onScroll = () => checkScroll();
+    const onResize = () => { const nw = getWidth(); setActiveWidth(nw); checkScroll(); };
+    el.addEventListener("scroll", onScroll, { passive: true });
+    window.addEventListener("resize", onResize);
+    return () => { el.removeEventListener("scroll", onScroll); window.removeEventListener("resize", onResize); };
+  }, [items.length, cardWidth, mobileCardWidth, gap, checkScroll, getWidth]);
 
   const scroll = (dir) => {
     const el = trackRef.current; if (!el) return;
-    el.scrollBy({ left: dir === "left" ? -(cardWidth + gap) : (cardWidth + gap), behavior: "smooth" });
+    el.scrollBy({ left: dir === "left" ? -(activeWidth + gap) : (activeWidth + gap), behavior: "smooth" });
   };
 
   return (
@@ -166,9 +175,9 @@ function Carousel({ items, cardWidth = 220, gap = 16, renderCard }) {
         onMouseUp={() => setDrag(false)} onMouseLeave={() => setDrag(false)}
         onTouchStart={e => { setStartX(e.touches[0].pageX); setSl(trackRef.current.scrollLeft); }}
         onTouchMove={e => { trackRef.current.scrollLeft = sl - (e.touches[0].pageX - startX); }}
-        style={{ display: "flex", gap: `${gap}px`, overflowX: "auto", cursor: drag ? "grabbing" : "grab", padding: "0 40px 20px", scrollbarWidth: "none", WebkitOverflowScrolling: "touch", scrollSnapType: "x proximity" }}>
+        style={{ display: "flex", gap: `${gap}px`, overflowX: "auto", cursor: drag ? "grabbing" : "grab", padding: "0 40px 20px", scrollbarWidth: "none", WebkitOverflowScrolling: "touch", scrollSnapType: "x mandatory" }}>
         {items.map((item, i) => (
-          <div key={item.id || i} style={{ scrollSnapAlign: "center", flex: `0 0 ${cardWidth}px` }}>
+          <div key={item.id || i} style={{ scrollSnapAlign: "center", flex: `0 0 ${activeWidth}px` }}>
             {renderCard(item, i)}
           </div>
         ))}
@@ -336,7 +345,7 @@ export default function App() {
           </p>
         </div>
         <div style={{ marginTop: "52px", animation: "fadeUp 0.9s ease 0.7s both" }}>
-          <Carousel items={HERO_ITEMS} cardWidth={440} renderCard={(item) => <CarouselCard item={item} priority={true} />} />
+          <Carousel items={HERO_ITEMS} cardWidth={440} mobileCardWidth={320} renderCard={(item) => <CarouselCard item={item} priority={true} />} />
         </div>
         <div style={{ padding: "0 32px", marginTop: "40px", animation: "fadeUp 0.9s ease 0.85s both", textAlign: "center" }}>
           <a href={CALENDLY_URL} className="bp">Book a Discovery Call</a>
@@ -352,7 +361,7 @@ export default function App() {
         <div style={{ padding: "0 32px", maxWidth: "1100px", margin: "0 auto", textAlign: "center" }}>
           <Reveal><div className="sl">The Work</div><h2 className="sh">Luxury <span style={{ fontWeight: 400, color: "rgba(245,240,235,0.45)" }}>editorial</span></h2></Reveal>
         </div>
-        <Reveal><Carousel items={EDIT_ITEMS} cardWidth={340} renderCard={(item) => <CarouselCard item={item} />} /></Reveal>
+        <Reveal><Carousel items={EDIT_ITEMS} cardWidth={340} mobileCardWidth={280} renderCard={(item) => <CarouselCard item={item} />} /></Reveal>
         <Reveal><div style={{ textAlign: "center", marginTop: "40px" }}><a href={CALENDLY_URL} className="bg">Like what you see? Let's talk</a></div></Reveal>
       </section>
 
@@ -361,7 +370,7 @@ export default function App() {
         <div style={{ padding: "0 32px", maxWidth: "1100px", margin: "0 auto", textAlign: "center" }}>
           <Reveal><div className="sl">UGC</div><h2 className="sh">Scroll-stopping <span style={{ fontWeight: 400, color: "rgba(245,240,235,0.45)" }}>UGC</span></h2></Reveal>
         </div>
-        <Reveal><Carousel items={UGC_ITEMS} cardWidth={340} renderCard={(item) => <CarouselCard item={item} />} /></Reveal>
+        <Reveal><Carousel items={UGC_ITEMS} cardWidth={340} mobileCardWidth={280} renderCard={(item) => <CarouselCard item={item} />} /></Reveal>
         <Reveal><div style={{ textAlign: "center", marginTop: "40px" }}><a href={CALENDLY_URL} className="bg">Get this for your brand</a></div></Reveal>
       </section>
 
