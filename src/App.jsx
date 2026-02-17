@@ -329,11 +329,14 @@ export default function App() {
         @media(max-width:768px){.sr{flex-direction:column}}
         .ctrack::-webkit-scrollbar{display:none}
         .hero-row::-webkit-scrollbar{display:none}
+        .ugc-row::-webkit-scrollbar{display:none}
         .hero-card{width:440px}
+        .ugc-card{width:340px}
         .sl{font-size:10px;letter-spacing:4px;text-transform:uppercase;color:rgba(245,240,235,0.45);margin-bottom:16px;font-weight:500;text-align:center}
         .sh{font-family:var(--fh);font-size:clamp(28px,4vw,44px);font-weight:600;line-height:1.15;margin-bottom:48px;text-align:center}
         @media(max-width:768px){
           .hero-card{width:280px}
+          .ugc-card{width:280px}
           .sp{padding:70px 20px!important}
           .mob-sec{padding-top:56px!important;padding-bottom:70px!important}
           .mob-cta{padding-top:80px!important;padding-bottom:80px!important}
@@ -376,6 +379,9 @@ export default function App() {
           </p>
         </div>
         <div style={{ marginTop: "52px", animation: "fadeUp 0.9s ease 0.7s both" }}>
+          <div className="mb" style={{ justifyContent: "center", marginBottom: "12px" }}>
+            <span style={{ fontSize: "9px", letterSpacing: "3px", textTransform: "uppercase", color: "rgba(245,240,235,0.2)", fontWeight: 400 }}>Swipe to explore</span>
+          </div>
           <div className="hero-row" style={{ display: "flex", gap: "16px", justifyContent: "center", padding: "0 24px 20px", overflowX: "auto", scrollbarWidth: "none", WebkitOverflowScrolling: "touch" }}>
             {HERO_ITEMS.map((item) => (
               <div key={item.id} className="hero-card" style={{ flex: "0 0 auto" }}>
@@ -407,7 +413,18 @@ export default function App() {
         <div style={{ padding: "0 32px", maxWidth: "1100px", margin: "0 auto", textAlign: "center" }}>
           <Reveal><div className="sl">UGC</div><h2 className="sh">Scroll-stopping <span style={{ fontWeight: 400, color: "rgba(245,240,235,0.45)" }}>UGC</span></h2></Reveal>
         </div>
-        <Reveal><Carousel items={UGC_ITEMS} cardWidth={340} mobileCardWidth={280} renderCard={(item) => <CarouselCard item={item} />} /></Reveal>
+        <Reveal>
+          <div className="mb" style={{ justifyContent: "center", marginBottom: "12px" }}>
+            <span style={{ fontSize: "9px", letterSpacing: "3px", textTransform: "uppercase", color: "rgba(245,240,235,0.2)", fontWeight: 400 }}>Swipe to explore</span>
+          </div>
+          <div className="ugc-row" style={{ display: "flex", gap: "16px", justifyContent: "center", padding: "0 24px 20px", overflowX: "auto", scrollbarWidth: "none", WebkitOverflowScrolling: "touch" }}>
+            {UGC_ITEMS.map((item) => (
+              <div key={item.id} className="ugc-card" style={{ flex: "0 0 auto" }}>
+                <CarouselCard item={item} />
+              </div>
+            ))}
+          </div>
+        </Reveal>
         <Reveal><div style={{ textAlign: "center", marginTop: "40px" }}><a href={CALENDLY_URL} className="bg">Get this for your brand</a></div></Reveal>
       </section>
 
@@ -506,7 +523,5 @@ export default function App() {
         <div style={{ fontSize: "11px", color: "rgba(245,240,235,0.25)", letterSpacing: "0.5px" }}>© 2026 Ben Lewis Studios</div>
       </footer>
     </div>
-  );
-}
   );
 }
