@@ -138,6 +138,7 @@ function Carousel({ items, cardWidth = 220, mobileCardWidth, gap = 16, renderCar
   const [startX, setStartX] = useState(0);
   const [sl, setSl] = useState(0);
   const [activeWidth, setActiveWidth] = useState(cardWidth);
+  const [isMobile, setIsMobile] = useState(false);
 
   const getWidth = useCallback(() => {
     return (mobileCardWidth && window.innerWidth <= 768) ? mobileCardWidth : cardWidth;
@@ -159,12 +160,20 @@ function Carousel({ items, cardWidth = 220, mobileCardWidth, gap = 16, renderCar
   }, [items.length, gap]);
 
   useEffect(() => {
+    const mobile = window.innerWidth <= 768;
+    setIsMobile(mobile);
     const w = getWidth();
     setActiveWidth(w);
     centreOnMiddle(w);
     checkScroll();
     const onScroll = () => checkScroll();
-    const onResize = () => { const nw = getWidth(); setActiveWidth(nw); centreOnMiddle(nw); checkScroll(); };
+    const onResize = () => {
+      setIsMobile(window.innerWidth <= 768);
+      const nw = getWidth();
+      setActiveWidth(nw);
+      centreOnMiddle(nw);
+      checkScroll();
+    };
     const el = trackRef.current;
     if (el) el.addEventListener("scroll", onScroll, { passive: true });
     window.addEventListener("resize", onResize);
@@ -186,9 +195,9 @@ function Carousel({ items, cardWidth = 220, mobileCardWidth, gap = 16, renderCar
         onMouseUp={() => setDrag(false)} onMouseLeave={() => setDrag(false)}
         onTouchStart={e => { setStartX(e.touches[0].pageX); setSl(trackRef.current.scrollLeft); }}
         onTouchMove={e => { trackRef.current.scrollLeft = sl - (e.touches[0].pageX - startX); }}
-        style={{ display: "flex", gap: `${gap}px`, overflowX: "auto", cursor: drag ? "grabbing" : "grab", padding: "0 40px 20px", scrollbarWidth: "none", WebkitOverflowScrolling: "touch", scrollSnapType: "x mandatory" }}>
+        style={{ display: "flex", gap: `${gap}px`, overflowX: "auto", cursor: drag ? "grabbing" : "grab", padding: "0 40px 20px", scrollbarWidth: "none", WebkitOverflowScrolling: "touch", scrollSnapType: isMobile ? "none" : "x mandatory" }}>
         {items.map((item, i) => (
-          <div key={item.id || i} style={{ scrollSnapAlign: "center", flex: `0 0 ${activeWidth}px` }}>
+          <div key={item.id || i} style={{ scrollSnapAlign: isMobile ? "none" : "center", flex: `0 0 ${activeWidth}px` }}>
             {renderCard(item, i)}
           </div>
         ))}
@@ -319,9 +328,12 @@ export default function App() {
         .sr{display:flex;gap:20px;flex-wrap:wrap}
         @media(max-width:768px){.sr{flex-direction:column}}
         .ctrack::-webkit-scrollbar{display:none}
+        .hero-row::-webkit-scrollbar{display:none}
+        .hero-card{width:440px}
         .sl{font-size:10px;letter-spacing:4px;text-transform:uppercase;color:rgba(245,240,235,0.45);margin-bottom:16px;font-weight:500;text-align:center}
         .sh{font-family:var(--fh);font-size:clamp(28px,4vw,44px);font-weight:600;line-height:1.15;margin-bottom:48px;text-align:center}
         @media(max-width:768px){
+          .hero-card{width:280px}
           .sp{padding:70px 20px!important}
           .mob-sec{padding-top:56px!important;padding-bottom:70px!important}
           .mob-cta{padding-top:80px!important;padding-bottom:80px!important}
@@ -364,7 +376,13 @@ export default function App() {
           </p>
         </div>
         <div style={{ marginTop: "52px", animation: "fadeUp 0.9s ease 0.7s both" }}>
-          <Carousel items={HERO_ITEMS} cardWidth={440} mobileCardWidth={320} renderCard={(item) => <CarouselCard item={item} priority={true} />} />
+          <div className="hero-row" style={{ display: "flex", gap: "16px", justifyContent: "center", padding: "0 24px 20px", overflowX: "auto", scrollbarWidth: "none", WebkitOverflowScrolling: "touch" }}>
+            {HERO_ITEMS.map((item) => (
+              <div key={item.id} className="hero-card" style={{ flex: "0 0 auto" }}>
+                <CarouselCard item={item} priority={true} />
+              </div>
+            ))}
+          </div>
         </div>
         <div style={{ padding: "0 32px", marginTop: "40px", animation: "fadeUp 0.9s ease 0.85s both", textAlign: "center" }}>
           <a href={CALENDLY_URL} className="bp">Book a Discovery Call</a>
