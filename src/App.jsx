@@ -243,7 +243,7 @@ export default function App() {
           </p>
         </div>
         <div style={{ marginTop: "52px", animation: "fadeUp 0.9s ease 0.7s both" }}>
-          <Carousel items={HERO_ITEMS} cardWidth={220} renderCard={(item) => <CarouselCard item={item} />} />
+          <Carousel items={HERO_ITEMS} cardWidth={320} renderCard={(item) => <CarouselCard item={item} />} />
         </div>
         <div style={{ padding: "0 32px", marginTop: "40px", animation: "fadeUp 0.9s ease 0.85s both", textAlign: "center" }}>
           <a href={CALENDLY_URL} className="bp">Book a Discovery Call</a>
@@ -258,7 +258,7 @@ export default function App() {
         <div style={{ padding: "0 32px", maxWidth: "1100px", margin: "0 auto", textAlign: "center" }}>
           <Reveal><div className="sl">The Work</div><h2 className="sh">Selected <span style={{ fontWeight: 400, color: "rgba(245,240,235,0.45)" }}>pieces</span></h2></Reveal>
         </div>
-        <Reveal><Carousel items={WORK_ITEMS} cardWidth={280} renderCard={(item) => <CarouselCard item={item} />} /></Reveal>
+        <Reveal><Carousel items={WORK_ITEMS} cardWidth={380} renderCard={(item) => <CarouselCard item={item} />} /></Reveal>
         <Reveal><div style={{ textAlign: "center", marginTop: "40px" }}><a href={CALENDLY_URL} className="bg">Like what you see? Let's talk</a></div></Reveal>
       </section>
 
@@ -266,7 +266,7 @@ export default function App() {
         <div style={{ padding: "0 32px", maxWidth: "1100px", margin: "0 auto", textAlign: "center" }}>
           <Reveal><div className="sl">UGC</div><h2 className="sh">Scroll-stopping <span style={{ fontWeight: 400, color: "rgba(245,240,235,0.45)" }}>UGC</span></h2></Reveal>
         </div>
-        <Reveal><Carousel items={UGC_ITEMS} cardWidth={260} renderCard={(item) => <CarouselCard item={item} />} /></Reveal>
+        <Reveal><Carousel items={UGC_ITEMS} cardWidth={340} renderCard={(item) => <CarouselCard item={item} />} /></Reveal>
         <Reveal><div style={{ textAlign: "center", marginTop: "40px" }}><a href={CALENDLY_URL} className="bg">Get this for your brand</a></div></Reveal>
       </section>
 
