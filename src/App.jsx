@@ -1,33 +1,33 @@
 import { useState, useEffect, useRef, useCallback } from "react";
 
-const CALENDLY_URL = "#"; // Replace with your Calendly link when ready
+const CALENDLY_URL = "#";
 const LINKEDIN_URL = "https://www.linkedin.com/in/ben-lewis-466a3a310/";
 const INSTAGRAM_URL = "https://www.instagram.com/benlewisstudios/";
 const YOUTUBE_URL = "https://www.youtube.com/@benlewis7548";
 const EMAIL = "ben@benlewisltd.com";
 
-/* ── HERO: 3 videos + 2 images ── */
+/* ── HERO: 3 cinematic reels only ── */
 const HERO_ITEMS = [
-  { id: 1, label: "Editorial Beauty", type: "image", src: "/assets/hero-1.jpg" },
-  { id: 2, label: "Cinematic Reel", type: "video", src: "/assets/hero-2.mp4" },
-  { id: 3, label: "Brand Film", type: "video", src: "/assets/hero-3.mp4" },
-  { id: 4, label: "Campaign Film", type: "video", src: "/assets/hero-4.mp4" },
-  { id: 5, label: "Beauty Portrait", type: "image", src: "/assets/hero-5.jpg" },
+  { id: 1, label: "Cinematic Reel", type: "video", src: "/assets/hero-2.mp4" },
+  { id: 2, label: "Brand Film", type: "video", src: "/assets/hero-3.mp4" },
+  { id: 3, label: "Campaign Film", type: "video", src: "/assets/hero-4.mp4" },
 ];
 
-/* ── EDITORIAL: 4 luxury images ── */
+/* ── EDITORIAL: 6 luxury images (hero images added as 1st and last) ── */
 const EDIT_ITEMS = [
-  { id: 1, label: "Luxury Skincare", sublabel: "Premium product photography with cinematic lighting", type: "image", src: "/assets/edit-1.jpg" },
-  { id: 2, label: "Beauty Editorial", sublabel: "High-end editorial series for skincare campaigns", type: "image", src: "/assets/edit-2.jpg" },
-  { id: 3, label: "Product Campaign", sublabel: "Hero shots for e-commerce and brand retail", type: "image", src: "/assets/edit-3.jpg" },
-  { id: 4, label: "Fashion Editorial", sublabel: "Editorial beauty with dramatic composition", type: "image", src: "/assets/edit-4.jpg" },
+  { id: 1, label: "Editorial Beauty", sublabel: "Cinematic portrait with dramatic lighting", type: "image", src: "/assets/hero-1.jpg" },
+  { id: 2, label: "Luxury Skincare", sublabel: "Premium product photography with cinematic lighting", type: "image", src: "/assets/edit-1.jpg" },
+  { id: 3, label: "Beauty Editorial", sublabel: "High-end editorial series for skincare campaigns", type: "image", src: "/assets/edit-2.jpg" },
+  { id: 4, label: "Product Campaign", sublabel: "Hero shots for e-commerce and brand retail", type: "image", src: "/assets/edit-3.jpg" },
+  { id: 5, label: "Fashion Editorial", sublabel: "Editorial beauty with dramatic composition", type: "image", src: "/assets/edit-4.jpg" },
+  { id: 6, label: "Beauty Portrait", sublabel: "Premium editorial with natural beauty aesthetic", type: "image", src: "/assets/hero-5.jpg" },
 ];
 
-/* ── UGC: 5 videos ── */
+/* ── UGC: 5 videos (reordered: old 3→1, old 1→2, old 2→3, 4 stays, 5 stays) ── */
 const UGC_ITEMS = [
-  { id: 1, label: "Get Ready With Me", sublabel: "Direct-to-camera testimonial with product B-roll", type: "video", src: "/assets/ugc-1.mp4" },
-  { id: 2, label: "Product Review", sublabel: "Authentic product showcase with natural lighting", type: "video", src: "/assets/ugc-2.mp4" },
-  { id: 3, label: "Morning Routine", sublabel: "GRWM routine with product integration", type: "video", src: "/assets/ugc-3.mp4" },
+  { id: 1, label: "Morning Routine", sublabel: "GRWM routine with product integration", type: "video", src: "/assets/ugc-3.mp4" },
+  { id: 2, label: "Get Ready With Me", sublabel: "Direct-to-camera testimonial with product B-roll", type: "video", src: "/assets/ugc-1.mp4" },
+  { id: 3, label: "Product Review", sublabel: "Authentic product showcase with natural lighting", type: "video", src: "/assets/ugc-2.mp4" },
   { id: 4, label: "First Impressions", sublabel: "Unboxing with texture shots and before-after", type: "video", src: "/assets/ugc-4.mp4" },
   { id: 5, label: "Brand Spotlight", sublabel: "Full product showcase with lifestyle integration", type: "video", src: "/assets/ugc-5.mp4" },
 ];
@@ -63,7 +63,6 @@ function Reveal({ children, delay = 0, style = {} }) {
   return (<div ref={ref} style={{ opacity: vis ? 1 : 0, transform: vis ? "translateY(0)" : "translateY(32px)", transition: `all 0.7s cubic-bezier(0.16,1,0.3,1) ${delay}s`, ...style }}>{children}</div>);
 }
 
-/* Lazy video — only loads src when scrolled into view, shows poster instantly */
 function LazyVideo({ src, aspectRatio = "9/16", borderRadius = "10px", priority = false }) {
   const ref = useRef(null);
   const [inView, setInView] = useState(priority);
@@ -215,6 +214,52 @@ function StepCard({ number, title, description }) {
   );
 }
 
+/* ── Lead Capture Form ── */
+function LeadForm() {
+  const [form, setForm] = useState({ brand: "", url: "", email: "" });
+  const [sent, setSent] = useState(false);
+  const update = (k, v) => setForm(p => ({ ...p, [k]: v }));
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    const subject = encodeURIComponent(`Free UGC Video Request — ${form.brand}`);
+    const body = encodeURIComponent(`Brand: ${form.brand}\nProduct URL: ${form.url}\nEmail: ${form.email}`);
+    window.open(`mailto:${EMAIL}?subject=${subject}&body=${body}`, "_blank");
+    setSent(true);
+  };
+
+  const inputStyle = {
+    width: "100%", padding: "16px 20px", background: "rgba(255,255,255,0.04)",
+    border: "1px solid rgba(255,255,255,0.08)", borderRadius: "6px", color: "#F5F0EB",
+    fontFamily: "var(--fb)", fontSize: "14px", fontWeight: 300, outline: "none",
+    transition: "border-color 0.3s",
+  };
+
+  if (sent) {
+    return (
+      <div style={{ textAlign: "center", padding: "40px 0" }}>
+        <div style={{ fontSize: "28px", marginBottom: "16px" }}>✓</div>
+        <p style={{ fontFamily: "var(--fh)", fontSize: "20px", fontWeight: 500, color: "#F5F0EB", marginBottom: "8px" }}>We'll be in touch.</p>
+        <p style={{ fontSize: "14px", color: "rgba(245,240,235,0.45)", fontWeight: 300 }}>Check your inbox — we'll send your free video within 48 hours.</p>
+      </div>
+    );
+  }
+
+  return (
+    <div onSubmit={handleSubmit} style={{ display: "flex", flexDirection: "column", gap: "16px", maxWidth: "420px", margin: "0 auto" }}>
+      <input type="text" placeholder="Brand name" value={form.brand} onChange={e => update("brand", e.target.value)} required
+        style={inputStyle} onFocus={e => e.target.style.borderColor = "rgba(255,255,255,0.25)"} onBlur={e => e.target.style.borderColor = "rgba(255,255,255,0.08)"} />
+      <input type="url" placeholder="Product URL" value={form.url} onChange={e => update("url", e.target.value)} required
+        style={inputStyle} onFocus={e => e.target.style.borderColor = "rgba(255,255,255,0.25)"} onBlur={e => e.target.style.borderColor = "rgba(255,255,255,0.08)"} />
+      <input type="email" placeholder="Email address" value={form.email} onChange={e => update("email", e.target.value)} required
+        style={inputStyle} onFocus={e => e.target.style.borderColor = "rgba(255,255,255,0.25)"} onBlur={e => e.target.style.borderColor = "rgba(255,255,255,0.08)"} />
+      <button type="submit" onClick={handleSubmit} className="bp" style={{ width: "100%", justifyContent: "center", marginTop: "8px", padding: "18px 36px" }}>
+        Get Your Free Video
+      </button>
+    </div>
+  );
+}
+
 /* ═══════════ MAIN APP ═══════════ */
 
 export default function App() {
@@ -270,7 +315,7 @@ export default function App() {
         <a href={CALENDLY_URL} className="bp" style={{ marginTop: "12px" }}>Book a Call</a>
       </div>}
 
-      {/* HERO */}
+      {/* HERO — 3 cinematic reels, larger cards */}
       <section id="hero" style={{ minHeight: "100vh", display: "flex", flexDirection: "column", justifyContent: "center", padding: "120px 0 60px", position: "relative" }}>
         <div style={{ position: "absolute", width: "600px", height: "600px", borderRadius: "50%", background: "radial-gradient(circle,rgba(245,240,235,0.02) 0%,transparent 70%)", top: "30%", left: "50%", transform: `translate(-50%,-50%) translateY(${scrollY * -0.06}px)`, pointerEvents: "none" }} />
         <div style={{ padding: "0 32px", maxWidth: "1100px", margin: "0 auto", width: "100%", textAlign: "center" }}>
@@ -286,7 +331,7 @@ export default function App() {
           </p>
         </div>
         <div style={{ marginTop: "52px", animation: "fadeUp 0.9s ease 0.7s both" }}>
-          <Carousel items={HERO_ITEMS} cardWidth={320} renderCard={(item) => <CarouselCard item={item} priority={true} />} />
+          <Carousel items={HERO_ITEMS} cardWidth={380} renderCard={(item) => <CarouselCard item={item} priority={true} />} />
         </div>
         <div style={{ padding: "0 32px", marginTop: "40px", animation: "fadeUp 0.9s ease 0.85s both", textAlign: "center" }}>
           <a href={CALENDLY_URL} className="bp">Book a Discovery Call</a>
@@ -297,22 +342,37 @@ export default function App() {
         </div>
       </section>
 
-      {/* EDITORIAL */}
+      {/* EDITORIAL — 6 luxury images */}
       <section id="work" style={{ padding: "80px 0 100px" }}>
         <div style={{ padding: "0 32px", maxWidth: "1100px", margin: "0 auto", textAlign: "center" }}>
           <Reveal><div className="sl">The Work</div><h2 className="sh">Luxury <span style={{ fontWeight: 400, color: "rgba(245,240,235,0.45)" }}>editorial</span></h2></Reveal>
         </div>
-        <Reveal><Carousel items={EDIT_ITEMS} cardWidth={380} renderCard={(item) => <CarouselCard item={item} />} /></Reveal>
+        <Reveal><Carousel items={EDIT_ITEMS} cardWidth={340} renderCard={(item) => <CarouselCard item={item} />} /></Reveal>
         <Reveal><div style={{ textAlign: "center", marginTop: "40px" }}><a href={CALENDLY_URL} className="bg">Like what you see? Let's talk</a></div></Reveal>
       </section>
 
-      {/* UGC */}
+      {/* UGC — 5 videos */}
       <section id="ugc" style={{ padding: "80px 0 100px" }}>
         <div style={{ padding: "0 32px", maxWidth: "1100px", margin: "0 auto", textAlign: "center" }}>
           <Reveal><div className="sl">UGC</div><h2 className="sh">Scroll-stopping <span style={{ fontWeight: 400, color: "rgba(245,240,235,0.45)" }}>UGC</span></h2></Reveal>
         </div>
         <Reveal><Carousel items={UGC_ITEMS} cardWidth={340} renderCard={(item) => <CarouselCard item={item} />} /></Reveal>
         <Reveal><div style={{ textAlign: "center", marginTop: "40px" }}><a href={CALENDLY_URL} className="bg">Get this for your brand</a></div></Reveal>
+      </section>
+
+      {/* LEAD CAPTURE — right after UGC */}
+      <section style={{ padding: "100px 24px", background: "linear-gradient(180deg,#0A0A0A 0%,#0d0d0d 50%,#0A0A0A 100%)" }}>
+        <Reveal>
+          <div style={{ maxWidth: "520px", margin: "0 auto", textAlign: "center" }}>
+            <h2 style={{ fontFamily: "var(--fh)", fontSize: "clamp(26px,4vw,40px)", fontWeight: 600, lineHeight: 1.15, marginBottom: "16px" }}>
+              See what this looks like<span style={{ display: "block", fontWeight: 400, color: "rgba(245,240,235,0.45)" }}>for your brand.</span>
+            </h2>
+            <p style={{ fontSize: "15px", lineHeight: 1.7, color: "rgba(245,240,235,0.45)", fontWeight: 300, maxWidth: "420px", margin: "0 auto 40px" }}>
+              We'll produce a custom UGC video featuring your product — yours to keep and use, no strings attached.
+            </p>
+            <LeadForm />
+          </div>
+        </Reveal>
       </section>
 
       {/* GRID */}
@@ -349,28 +409,12 @@ export default function App() {
         <Reveal><div style={{ marginTop: "48px" }}><a href={CALENDLY_URL} className="bg">Book a Discovery Call</a></div></Reveal>
       </section>
 
-      {/* SOCIAL PROOF */}
-      <section className="sp" style={{ paddingTop: "60px" }}>
-        <Reveal>
-          <div style={{ maxWidth: "700px", margin: "0 auto", background: "rgba(255,255,255,0.015)", border: "1px solid rgba(255,255,255,0.04)", borderRadius: "14px", padding: "52px 40px", textAlign: "center" }}>
-            <div className="sl" style={{ marginBottom: "28px" }}>What Clients Say</div>
-            <div style={{ aspectRatio: "16/9", maxWidth: "480px", margin: "0 auto 28px", background: "rgba(255,255,255,0.03)", borderRadius: "8px", display: "flex", alignItems: "center", justifyContent: "center", border: "1px solid rgba(255,255,255,0.04)" }}>
-              <div style={{ width: "48px", height: "48px", borderRadius: "50%", border: "1.5px solid rgba(255,255,255,0.12)", display: "flex", alignItems: "center", justifyContent: "center" }}>
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.25)" strokeWidth="2"><polygon points="5 3 19 12 5 21 5 3"/></svg>
-              </div>
-            </div>
-            <p style={{ fontFamily: "var(--fh)", fontSize: "18px", fontStyle: "italic", lineHeight: 1.65, color: "rgba(245,240,235,0.45)", maxWidth: "440px", margin: "0 auto 16px", fontWeight: 400 }}>"Video testimonial coming soon."</p>
-            <div style={{ fontSize: "11px", letterSpacing: "2px", textTransform: "uppercase", color: "rgba(245,240,235,0.25)" }}>— Client Name, Founder of Brand</div>
-          </div>
-        </Reveal>
-      </section>
-
       {/* ABOUT */}
       <section id="about" className="sp" style={{ textAlign: "center" }}>
         <Reveal>
           <div style={{ maxWidth: "600px", margin: "0 auto" }}>
-            <div style={{ width: "200px", height: "250px", borderRadius: "10px", margin: "0 auto 36px", background: "linear-gradient(160deg,#1a1520,#0a0a0a)", display: "flex", alignItems: "center", justifyContent: "center", border: "1px solid rgba(255,255,255,0.04)" }}>
-              <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.12)" strokeWidth="1.5"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+            <div style={{ width: "200px", height: "250px", borderRadius: "10px", margin: "0 auto 36px", overflow: "hidden", border: "1px solid rgba(255,255,255,0.04)" }}>
+              <img src="/assets/about.png" alt="Ben Lewis" style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }} />
             </div>
             <div className="sl">About</div>
             <h2 style={{ fontFamily: "var(--fh)", fontSize: "clamp(24px,3.5vw,36px)", fontWeight: 600, lineHeight: 1.2, marginBottom: "20px" }}>Ben Lewis</h2>
