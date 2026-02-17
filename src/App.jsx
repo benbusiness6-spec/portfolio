@@ -6,37 +6,46 @@ const INSTAGRAM_URL = "https://www.instagram.com/benlewisstudios/";
 const YOUTUBE_URL = "https://www.youtube.com/@benlewis7548";
 const EMAIL = "ben@benlewisltd.com";
 
+/* ── HERO: 3 videos + 2 images ── */
 const HERO_ITEMS = [
-  { id: 1, label: "Editorial Beauty", color: "#1a1225", type: "image", src: "/assets/1.jpg" },
-  { id: 2, label: "Cinematic Reel", color: "#1f1a2d", type: "video", src: "/assets/2.mp4" },
-  { id: 3, label: "Texture & Light", color: "#251a1f", type: "video", src: "/assets/3.mp4" },
-  { id: 4, label: "Brand Campaign", color: "#1a251f", type: "image", src: "/assets/4.png" },
-  { id: 5, label: "Brand Film", color: "#25201a", type: "video", src: "/assets/5.mp4" },
+  { id: 1, label: "Editorial Beauty", type: "image", src: "/assets/hero-1.jpg" },
+  { id: 2, label: "Cinematic Reel", type: "video", src: "/assets/hero-2.mp4" },
+  { id: 3, label: "Brand Film", type: "video", src: "/assets/hero-3.mp4" },
+  { id: 4, label: "Campaign Film", type: "video", src: "/assets/hero-4.mp4" },
+  { id: 5, label: "Beauty Portrait", type: "image", src: "/assets/hero-5.jpg" },
 ];
-const WORK_ITEMS = [
-  { id: 1, label: "Cinematic Brand Film", sublabel: "Dramatic lighting with macro texture sequence", color: "#1e1428", type: "video", src: "/assets/6.mp4" },
-  { id: 2, label: "Editorial Fashion", sublabel: "Cinematic brand film with product integration", color: "#1a1020", type: "video", src: "/assets/7.mp4" },
-  { id: 3, label: "Product Campaign", sublabel: "Hero shots for e-commerce and retail", color: "#201418", type: "image", src: "/assets/8.png" },
-  { id: 4, label: "Beauty Editorial", sublabel: "Full editorial series for skincare launch", color: "#14201a", type: "image", src: "/assets/9.jpg" },
+
+/* ── EDITORIAL: 4 luxury images ── */
+const EDIT_ITEMS = [
+  { id: 1, label: "Luxury Skincare", sublabel: "Premium product photography with cinematic lighting", type: "image", src: "/assets/edit-1.jpg" },
+  { id: 2, label: "Beauty Editorial", sublabel: "High-end editorial series for skincare campaigns", type: "image", src: "/assets/edit-2.jpg" },
+  { id: 3, label: "Product Campaign", sublabel: "Hero shots for e-commerce and brand retail", type: "image", src: "/assets/edit-3.jpg" },
+  { id: 4, label: "Fashion Editorial", sublabel: "Editorial beauty with dramatic composition", type: "image", src: "/assets/edit-4.jpg" },
 ];
+
+/* ── UGC: 5 videos ── */
 const UGC_ITEMS = [
-  { id: 1, label: "Get Ready With Me", sublabel: "Direct-to-camera testimonial with product B-roll", color: "#1a1528", type: "video", src: "/assets/10.mp4" },
-  { id: 2, label: "Morning Routine", sublabel: "GRWM routine with product integration and natural lighting", color: "#151a28", type: "video", src: "/assets/11.mp4" },
-  { id: 3, label: "First Impressions", sublabel: "Unboxing with texture shots and before-after routine", color: "#281a15", type: "video", src: "/assets/12.mp4" },
-  { id: 4, label: "Product Application", sublabel: "Close-up application with skin texture detail shots", color: "#1f1528", type: "video", src: "/assets/13.mp4" },
-  { id: 5, label: "Brand Spotlight", sublabel: "Full product showcase with lifestyle integration", color: "#15281a", type: "video", src: "/assets/14.mp4" },
+  { id: 1, label: "Get Ready With Me", sublabel: "Direct-to-camera testimonial with product B-roll", type: "video", src: "/assets/ugc-1.mp4" },
+  { id: 2, label: "Product Review", sublabel: "Authentic product showcase with natural lighting", type: "video", src: "/assets/ugc-2.mp4" },
+  { id: 3, label: "Morning Routine", sublabel: "GRWM routine with product integration", type: "video", src: "/assets/ugc-3.mp4" },
+  { id: 4, label: "First Impressions", sublabel: "Unboxing with texture shots and before-after", type: "video", src: "/assets/ugc-4.mp4" },
+  { id: 5, label: "Brand Spotlight", sublabel: "Full product showcase with lifestyle integration", type: "video", src: "/assets/ugc-5.mp4" },
 ];
-const EDITORIAL_ITEMS = [
-  { color: "#1e1428", type: "image", src: "/assets/15.png" },
-  { color: "#201a14", type: "image", src: "/assets/16.png" },
-  { color: "#14201a", type: "image", src: "/assets/17.png" },
-  { color: "#1a1428", type: "image", src: "/assets/18.jpg" },
-  { color: "#28141e", type: "image", src: "/assets/19.jpg" },
-  { color: "#142028", type: "image", src: "/assets/20.jpg" },
-  { color: "#201e14", type: "image", src: "/assets/21.png" },
-  { color: "#1a2014", type: "image", src: "/assets/22.png" },
-  { color: "#281420", type: "image", src: "/assets/23.png" },
+
+/* ── GRID: 9 images (unchanged) ── */
+const GRID_ITEMS = [
+  { type: "image", src: "/assets/15.png" },
+  { type: "image", src: "/assets/16.png" },
+  { type: "image", src: "/assets/17.png" },
+  { type: "image", src: "/assets/18.jpg" },
+  { type: "image", src: "/assets/19.jpg" },
+  { type: "image", src: "/assets/20.jpg" },
+  { type: "image", src: "/assets/21.png" },
+  { type: "image", src: "/assets/22.png" },
+  { type: "image", src: "/assets/23.png" },
 ];
+
+/* ═══════════ COMPONENTS ═══════════ */
 
 function useInView(threshold = 0.1) {
   const ref = useRef(null);
@@ -54,21 +63,49 @@ function Reveal({ children, delay = 0, style = {} }) {
   return (<div ref={ref} style={{ opacity: vis ? 1 : 0, transform: vis ? "translateY(0)" : "translateY(32px)", transition: `all 0.7s cubic-bezier(0.16,1,0.3,1) ${delay}s`, ...style }}>{children}</div>);
 }
 
-function MediaSlot({ type, src, color, aspectRatio = "9/16", borderRadius = "10px", placeholderIcon = "play" }) {
-  if (src) {
-    if (type === "video") return <video src={src} autoPlay muted loop playsInline style={{ width: "100%", aspectRatio, objectFit: "cover", borderRadius, display: "block" }} />;
-    return <img src={src} alt="" loading="lazy" style={{ width: "100%", aspectRatio, objectFit: "cover", borderRadius, display: "block" }} />;
-  }
+/* Lazy video — only loads src when scrolled into view, shows poster instantly */
+function LazyVideo({ src, aspectRatio = "9/16", borderRadius = "10px", priority = false }) {
+  const ref = useRef(null);
+  const [inView, setInView] = useState(priority);
+  useEffect(() => {
+    if (priority) return;
+    const el = ref.current; if (!el) return;
+    const obs = new IntersectionObserver(([e]) => {
+      if (e.isIntersecting) { setInView(true); obs.unobserve(el); }
+    }, { rootMargin: "200px" });
+    obs.observe(el);
+    return () => obs.disconnect();
+  }, [priority]);
   return (
-    <div style={{ aspectRatio, borderRadius, background: `linear-gradient(160deg,${color || "#1a1a2e"},#080808)`, position: "relative", overflow: "hidden" }}>
-      <div style={{ position: "absolute", inset: 0, display: "flex", alignItems: "center", justifyContent: "center" }}>
-        <div style={{ width: "44px", height: "44px", borderRadius: "50%", border: "1.5px solid rgba(255,255,255,0.15)", display: "flex", alignItems: "center", justifyContent: "center" }}>
-          {placeholderIcon === "play" ? <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.4)" strokeWidth="2"><polygon points="5 3 19 12 5 21 5 3"/></svg>
-            : <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.4)" strokeWidth="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>}
+    <div ref={ref} style={{ aspectRatio, borderRadius, overflow: "hidden", background: "#111" }}>
+      {inView ? (
+        <video src={src} autoPlay muted loop playsInline
+          style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }} />
+      ) : (
+        <div style={{ width: "100%", height: "100%", background: "linear-gradient(160deg,#1a1a2e,#080808)", display: "flex", alignItems: "center", justifyContent: "center" }}>
+          <div style={{ width: "44px", height: "44px", borderRadius: "50%", border: "1.5px solid rgba(255,255,255,0.15)", display: "flex", alignItems: "center", justifyContent: "center" }}>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.4)" strokeWidth="2"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+          </div>
         </div>
-      </div>
+      )}
     </div>
   );
+}
+
+function MediaSlot({ type, src, aspectRatio = "9/16", borderRadius = "10px", priority = false }) {
+  if (!src) {
+    return (
+      <div style={{ aspectRatio, borderRadius, background: "linear-gradient(160deg,#1a1a2e,#080808)", position: "relative", overflow: "hidden" }}>
+        <div style={{ position: "absolute", inset: 0, display: "flex", alignItems: "center", justifyContent: "center" }}>
+          <div style={{ width: "44px", height: "44px", borderRadius: "50%", border: "1.5px solid rgba(255,255,255,0.15)", display: "flex", alignItems: "center", justifyContent: "center" }}>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.4)" strokeWidth="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+          </div>
+        </div>
+      </div>
+    );
+  }
+  if (type === "video") return <LazyVideo src={src} aspectRatio={aspectRatio} borderRadius={borderRadius} priority={priority} />;
+  return <img src={src} alt="" loading="lazy" style={{ width: "100%", aspectRatio, objectFit: "cover", borderRadius, display: "block" }} />;
 }
 
 function ArrowBtn({ direction, onClick, visible }) {
@@ -141,10 +178,10 @@ function Carousel({ items, cardWidth = 220, gap = 16, renderCard }) {
   );
 }
 
-function CarouselCard({ item }) {
+function CarouselCard({ item, priority = false }) {
   return (
     <div style={{ userSelect: "none" }}>
-      <MediaSlot type={item.type} src={item.src} color={item.color} placeholderIcon={item.type === "video" ? "play" : "image"} />
+      <MediaSlot type={item.type} src={item.src} priority={priority} />
       {(item.label || item.sublabel) && (
         <div style={{ marginTop: "12px", padding: "0 4px", textAlign: "center" }}>
           {item.label && <div style={{ fontSize: "12px", color: "#F5F0EB", fontWeight: 400 }}>{item.label}</div>}
@@ -163,7 +200,7 @@ function GridImage({ item }) {
       transform: h ? "scale(1.03)" : "scale(1)", boxShadow: h ? "0 16px 48px rgba(0,0,0,0.4)" : "none",
       cursor: "pointer", overflow: "hidden", borderRadius: "8px",
     }}>
-      <MediaSlot type={item.type} src={item.src} color={item.color} aspectRatio="4/5" borderRadius="0px" placeholderIcon="image" />
+      <MediaSlot type={item.type} src={item.src} aspectRatio="4/5" borderRadius="0px" />
     </div>
   );
 }
@@ -177,6 +214,8 @@ function StepCard({ number, title, description }) {
     </div>
   );
 }
+
+/* ═══════════ MAIN APP ═══════════ */
 
 export default function App() {
   const [scrollY, setScrollY] = useState(0);
@@ -211,6 +250,7 @@ export default function App() {
         .sh{font-family:var(--fh);font-size:clamp(28px,4vw,44px);font-weight:600;line-height:1.15;margin-bottom:48px;text-align:center}
       `}</style>
 
+      {/* NAV */}
       <nav style={{ position: "fixed", top: 0, left: 0, right: 0, zIndex: 100, padding: "18px 32px", display: "flex", justifyContent: "space-between", alignItems: "center", background: scrollY > 60 ? "rgba(10,10,10,0.92)" : "transparent", backdropFilter: scrollY > 60 ? "blur(20px)" : "none", borderBottom: scrollY > 60 ? "1px solid rgba(255,255,255,0.04)" : "none", transition: "all 0.4s ease" }}>
         <div onClick={() => go("hero")} style={{ fontFamily: "var(--fh)", fontSize: "14px", fontWeight: 600, letterSpacing: "3px", textTransform: "uppercase", color: "#F5F0EB", cursor: "pointer" }}>Ben Lewis Studios</div>
         <div className="dk" style={{ display: "flex", gap: "28px", alignItems: "center" }}>
@@ -230,6 +270,7 @@ export default function App() {
         <a href={CALENDLY_URL} className="bp" style={{ marginTop: "12px" }}>Book a Call</a>
       </div>}
 
+      {/* HERO */}
       <section id="hero" style={{ minHeight: "100vh", display: "flex", flexDirection: "column", justifyContent: "center", padding: "120px 0 60px", position: "relative" }}>
         <div style={{ position: "absolute", width: "600px", height: "600px", borderRadius: "50%", background: "radial-gradient(circle,rgba(245,240,235,0.02) 0%,transparent 70%)", top: "30%", left: "50%", transform: `translate(-50%,-50%) translateY(${scrollY * -0.06}px)`, pointerEvents: "none" }} />
         <div style={{ padding: "0 32px", maxWidth: "1100px", margin: "0 auto", width: "100%", textAlign: "center" }}>
@@ -245,7 +286,7 @@ export default function App() {
           </p>
         </div>
         <div style={{ marginTop: "52px", animation: "fadeUp 0.9s ease 0.7s both" }}>
-          <Carousel items={HERO_ITEMS} cardWidth={320} renderCard={(item) => <CarouselCard item={item} />} />
+          <Carousel items={HERO_ITEMS} cardWidth={320} renderCard={(item) => <CarouselCard item={item} priority={true} />} />
         </div>
         <div style={{ padding: "0 32px", marginTop: "40px", animation: "fadeUp 0.9s ease 0.85s both", textAlign: "center" }}>
           <a href={CALENDLY_URL} className="bp">Book a Discovery Call</a>
@@ -256,14 +297,16 @@ export default function App() {
         </div>
       </section>
 
+      {/* EDITORIAL */}
       <section id="work" style={{ padding: "80px 0 100px" }}>
         <div style={{ padding: "0 32px", maxWidth: "1100px", margin: "0 auto", textAlign: "center" }}>
-          <Reveal><div className="sl">The Work</div><h2 className="sh">Selected <span style={{ fontWeight: 400, color: "rgba(245,240,235,0.45)" }}>pieces</span></h2></Reveal>
+          <Reveal><div className="sl">The Work</div><h2 className="sh">Luxury <span style={{ fontWeight: 400, color: "rgba(245,240,235,0.45)" }}>editorial</span></h2></Reveal>
         </div>
-        <Reveal><Carousel items={WORK_ITEMS} cardWidth={380} renderCard={(item) => <CarouselCard item={item} />} /></Reveal>
+        <Reveal><Carousel items={EDIT_ITEMS} cardWidth={380} renderCard={(item) => <CarouselCard item={item} />} /></Reveal>
         <Reveal><div style={{ textAlign: "center", marginTop: "40px" }}><a href={CALENDLY_URL} className="bg">Like what you see? Let's talk</a></div></Reveal>
       </section>
 
+      {/* UGC */}
       <section id="ugc" style={{ padding: "80px 0 100px" }}>
         <div style={{ padding: "0 32px", maxWidth: "1100px", margin: "0 auto", textAlign: "center" }}>
           <Reveal><div className="sl">UGC</div><h2 className="sh">Scroll-stopping <span style={{ fontWeight: 400, color: "rgba(245,240,235,0.45)" }}>UGC</span></h2></Reveal>
@@ -272,12 +315,14 @@ export default function App() {
         <Reveal><div style={{ textAlign: "center", marginTop: "40px" }}><a href={CALENDLY_URL} className="bg">Get this for your brand</a></div></Reveal>
       </section>
 
+      {/* GRID */}
       <section className="sp" style={{ textAlign: "center" }}>
         <Reveal><div className="sl">Editorial & Product</div><h2 className="sh">The full <span style={{ fontWeight: 400, color: "rgba(245,240,235,0.45)" }}>content ecosystem</span></h2></Reveal>
-        <div className="eg">{EDITORIAL_ITEMS.map((item, i) => <Reveal key={i} delay={i * 0.05}><GridImage item={item} /></Reveal>)}</div>
+        <div className="eg">{GRID_ITEMS.map((item, i) => <Reveal key={i} delay={i * 0.05}><GridImage item={item} /></Reveal>)}</div>
         <Reveal><div style={{ marginTop: "48px" }}><a href={CALENDLY_URL} className="bp">Book a Discovery Call</a></div></Reveal>
       </section>
 
+      {/* WHAT THIS REPLACES */}
       <section style={{ padding: "120px 24px", textAlign: "center", background: "linear-gradient(180deg,#0A0A0A 0%,#0e0e0e 50%,#0A0A0A 100%)" }}>
         <Reveal>
           <div style={{ maxWidth: "700px", margin: "0 auto" }}>
@@ -291,6 +336,7 @@ export default function App() {
         </Reveal>
       </section>
 
+      {/* HOW IT WORKS */}
       <section className="sp" style={{ textAlign: "center" }}>
         <Reveal><div className="sl">Process</div><h2 className="sh">How it <span style={{ fontWeight: 400, color: "rgba(245,240,235,0.45)" }}>works</span></h2></Reveal>
         <Reveal delay={0.1}>
@@ -303,6 +349,7 @@ export default function App() {
         <Reveal><div style={{ marginTop: "48px" }}><a href={CALENDLY_URL} className="bg">Book a Discovery Call</a></div></Reveal>
       </section>
 
+      {/* SOCIAL PROOF */}
       <section className="sp" style={{ paddingTop: "60px" }}>
         <Reveal>
           <div style={{ maxWidth: "700px", margin: "0 auto", background: "rgba(255,255,255,0.015)", border: "1px solid rgba(255,255,255,0.04)", borderRadius: "14px", padding: "52px 40px", textAlign: "center" }}>
@@ -318,6 +365,7 @@ export default function App() {
         </Reveal>
       </section>
 
+      {/* ABOUT */}
       <section id="about" className="sp" style={{ textAlign: "center" }}>
         <Reveal>
           <div style={{ maxWidth: "600px", margin: "0 auto" }}>
@@ -333,6 +381,7 @@ export default function App() {
         </Reveal>
       </section>
 
+      {/* FINAL CTA */}
       <section style={{ padding: "120px 24px", textAlign: "center", background: "linear-gradient(180deg,#0A0A0A 0%,#0d0d0d 100%)" }}>
         <Reveal>
           <h2 style={{ fontFamily: "var(--fh)", fontSize: "clamp(28px,5vw,52px)", fontWeight: 700, lineHeight: 1.1, maxWidth: "700px", margin: "0 auto 28px" }}>Ready to replace your entire content production<span style={{ display: "block", fontWeight: 400, color: "rgba(245,240,235,0.45)", marginTop: "4px" }}>with one partner?</span></h2>
@@ -344,6 +393,7 @@ export default function App() {
         </Reveal>
       </section>
 
+      {/* FOOTER */}
       <footer style={{ padding: "28px 32px", borderTop: "1px solid rgba(255,255,255,0.04)", display: "flex", flexDirection: "column", alignItems: "center", gap: "16px", textAlign: "center" }}>
         <div style={{ fontFamily: "var(--fh)", fontSize: "12px", fontWeight: 500, letterSpacing: "2px", textTransform: "uppercase", color: "rgba(245,240,235,0.45)" }}>Ben Lewis Studios</div>
         <div style={{ display: "flex", gap: "24px", alignItems: "center" }}>
@@ -360,6 +410,6 @@ export default function App() {
         </div>
         <div style={{ fontSize: "11px", color: "rgba(245,240,235,0.25)", letterSpacing: "0.5px" }}>© 2026 Ben Lewis Studios</div>
       </footer>
-     </div>
+    </div>
   );
 }
