@@ -138,7 +138,7 @@ function Carousel({ items, cardWidth = 220, mobileCardWidth, gap = 16, renderCar
   const [startX, setStartX] = useState(0);
   const [sl, setSl] = useState(0);
   const [activeWidth, setActiveWidth] = useState(cardWidth);
-  const [isMobile, setIsMobile] = useState(false);
+  const [isMobile, setIsMobile] = useState(typeof window !== "undefined" && window.innerWidth <= 768);
 
   const getWidth = useCallback(() => {
     return (mobileCardWidth && window.innerWidth <= 768) ? mobileCardWidth : cardWidth;
@@ -506,5 +506,7 @@ export default function App() {
         <div style={{ fontSize: "11px", color: "rgba(245,240,235,0.25)", letterSpacing: "0.5px" }}>© 2026 Ben Lewis Studios</div>
       </footer>
     </div>
+  );
+}
   );
 }
