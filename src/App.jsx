@@ -166,7 +166,7 @@ function Carousel({ items, cardWidth = 220, gap = 16, renderCard }) {
         onMouseUp={() => setDrag(false)} onMouseLeave={() => setDrag(false)}
         onTouchStart={e => { setStartX(e.touches[0].pageX); setSl(trackRef.current.scrollLeft); }}
         onTouchMove={e => { trackRef.current.scrollLeft = sl - (e.touches[0].pageX - startX); }}
-        style={{ display: "flex", gap: `${gap}px`, overflowX: "auto", cursor: drag ? "grabbing" : "grab", padding: "0 40px 20px", scrollbarWidth: "none", WebkitOverflowScrolling: "touch", scrollSnapType: "x mandatory" }}>
+        style={{ display: "flex", gap: `${gap}px`, overflowX: "auto", cursor: drag ? "grabbing" : "grab", padding: "0 40px 20px", scrollbarWidth: "none", WebkitOverflowScrolling: "touch", scrollSnapType: "x proximity" }}>
         {items.map((item, i) => (
           <div key={item.id || i} style={{ scrollSnapAlign: "center", flex: `0 0 ${cardWidth}px` }}>
             {renderCard(item, i)}
@@ -280,8 +280,8 @@ export default function App() {
         .nl:hover{color:#F5F0EB}
         .bp{display:inline-flex;align-items:center;gap:10px;padding:16px 36px;background:#F5F0EB;border:none;color:#0A0A0A;font-family:var(--fb);font-size:11px;letter-spacing:2px;text-transform:uppercase;text-decoration:none;cursor:pointer;font-weight:500;transition:all 0.35s cubic-bezier(0.16,1,0.3,1);border-radius:2px}
         .bp:hover{background:#fff;transform:translateY(-2px);box-shadow:0 8px 32px rgba(245,240,235,0.15)}
-        .bg{display:inline-flex;align-items:center;gap:10px;padding:16px 36px;background:transparent;border:1px solid rgba(245,240,235,0.2);color:#F5F0EB;font-family:var(--fb);font-size:11px;letter-spacing:2px;text-transform:uppercase;text-decoration:none;cursor:pointer;font-weight:400;transition:all 0.35s;border-radius:2px}
-        .bg:hover{border-color:rgba(245,240,235,0.5);background:rgba(245,240,235,0.04)}
+        .bg{display:inline-flex;align-items:center;gap:10px;padding:16px 36px;background:#F5F0EB;border:1px solid #F5F0EB;color:#0A0A0A;font-family:var(--fb);font-size:11px;letter-spacing:2px;text-transform:uppercase;text-decoration:none;cursor:pointer;font-weight:500;transition:all 0.35s;border-radius:2px}
+        .bg:hover{background:#fff;border-color:#fff;transform:translateY(-2px);box-shadow:0 8px 32px rgba(245,240,235,0.15)}
         .sp{padding:100px 24px;max-width:1100px;margin:0 auto}
         .mm{position:fixed;inset:0;background:rgba(10,10,10,0.98);backdrop-filter:blur(24px);z-index:999;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:28px;animation:fadeIn 0.3s ease}
         @media(max-width:768px){.dk{display:none!important}.mb{display:flex!important}}
@@ -293,6 +293,11 @@ export default function App() {
         .ctrack::-webkit-scrollbar{display:none}
         .sl{font-size:10px;letter-spacing:4px;text-transform:uppercase;color:rgba(245,240,235,0.45);margin-bottom:16px;font-weight:500;text-align:center}
         .sh{font-family:var(--fh);font-size:clamp(28px,4vw,44px);font-weight:600;line-height:1.15;margin-bottom:48px;text-align:center}
+        @media(max-width:768px){
+          .sp{padding:70px 20px!important}
+          .mob-sec{padding-top:56px!important;padding-bottom:70px!important}
+          .mob-cta{padding-top:80px!important;padding-bottom:80px!important}
+        }
       `}</style>
 
       {/* NAV */}
@@ -331,7 +336,7 @@ export default function App() {
           </p>
         </div>
         <div style={{ marginTop: "52px", animation: "fadeUp 0.9s ease 0.7s both" }}>
-          <Carousel items={HERO_ITEMS} cardWidth={380} renderCard={(item) => <CarouselCard item={item} priority={true} />} />
+          <Carousel items={HERO_ITEMS} cardWidth={440} renderCard={(item) => <CarouselCard item={item} priority={true} />} />
         </div>
         <div style={{ padding: "0 32px", marginTop: "40px", animation: "fadeUp 0.9s ease 0.85s both", textAlign: "center" }}>
           <a href={CALENDLY_URL} className="bp">Book a Discovery Call</a>
@@ -343,7 +348,7 @@ export default function App() {
       </section>
 
       {/* EDITORIAL — 6 luxury images */}
-      <section id="work" style={{ padding: "80px 0 100px" }}>
+      <section id="work" className="mob-sec" style={{ padding: "80px 0 100px" }}>
         <div style={{ padding: "0 32px", maxWidth: "1100px", margin: "0 auto", textAlign: "center" }}>
           <Reveal><div className="sl">The Work</div><h2 className="sh">Luxury <span style={{ fontWeight: 400, color: "rgba(245,240,235,0.45)" }}>editorial</span></h2></Reveal>
         </div>
@@ -352,7 +357,7 @@ export default function App() {
       </section>
 
       {/* UGC — 5 videos */}
-      <section id="ugc" style={{ padding: "80px 0 100px" }}>
+      <section id="ugc" className="mob-sec" style={{ padding: "80px 0 100px" }}>
         <div style={{ padding: "0 32px", maxWidth: "1100px", margin: "0 auto", textAlign: "center" }}>
           <Reveal><div className="sl">UGC</div><h2 className="sh">Scroll-stopping <span style={{ fontWeight: 400, color: "rgba(245,240,235,0.45)" }}>UGC</span></h2></Reveal>
         </div>
@@ -361,7 +366,7 @@ export default function App() {
       </section>
 
       {/* LEAD CAPTURE — right after UGC */}
-      <section style={{ padding: "100px 24px", background: "linear-gradient(180deg,#0A0A0A 0%,#0d0d0d 50%,#0A0A0A 100%)" }}>
+      <section className="mob-cta" style={{ padding: "100px 24px", background: "linear-gradient(180deg,#0A0A0A 0%,#0d0d0d 50%,#0A0A0A 100%)" }}>
         <Reveal>
           <div style={{ maxWidth: "520px", margin: "0 auto", textAlign: "center" }}>
             <h2 style={{ fontFamily: "var(--fh)", fontSize: "clamp(26px,4vw,40px)", fontWeight: 600, lineHeight: 1.15, marginBottom: "16px" }}>
@@ -383,7 +388,7 @@ export default function App() {
       </section>
 
       {/* WHAT THIS REPLACES */}
-      <section style={{ padding: "120px 24px", textAlign: "center", background: "linear-gradient(180deg,#0A0A0A 0%,#0e0e0e 50%,#0A0A0A 100%)" }}>
+      <section className="mob-cta" style={{ padding: "120px 24px", textAlign: "center", background: "linear-gradient(180deg,#0A0A0A 0%,#0e0e0e 50%,#0A0A0A 100%)" }}>
         <Reveal>
           <div style={{ maxWidth: "700px", margin: "0 auto" }}>
             <div className="sl" style={{ marginBottom: "32px" }}>What This Replaces</div>
@@ -426,7 +431,7 @@ export default function App() {
       </section>
 
       {/* FINAL CTA */}
-      <section style={{ padding: "120px 24px", textAlign: "center", background: "linear-gradient(180deg,#0A0A0A 0%,#0d0d0d 100%)" }}>
+      <section className="mob-cta" style={{ padding: "120px 24px", textAlign: "center", background: "linear-gradient(180deg,#0A0A0A 0%,#0d0d0d 100%)" }}>
         <Reveal>
           <h2 style={{ fontFamily: "var(--fh)", fontSize: "clamp(28px,5vw,52px)", fontWeight: 700, lineHeight: 1.1, maxWidth: "700px", margin: "0 auto 28px" }}>Ready to replace your entire content production<span style={{ display: "block", fontWeight: 400, color: "rgba(245,240,235,0.45)", marginTop: "4px" }}>with one partner?</span></h2>
           <p style={{ fontSize: "15px", color: "rgba(245,240,235,0.45)", fontWeight: 300, maxWidth: "420px", margin: "0 auto 44px", lineHeight: 1.7 }}>15-minute discovery call. No pitch deck. Just a conversation about your content and how to fix it.</p>
