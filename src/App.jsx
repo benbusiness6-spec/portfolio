@@ -149,37 +149,32 @@ function Carousel({ items, cardWidth = 220, mobileCardWidth, gap = 16, renderCar
     setCanRight(el.scrollLeft < el.scrollWidth - el.clientWidth - 4);
   }, []);
 
+  const centreOnMiddle = useCallback((w) => {
+    const el = trackRef.current; if (!el) return;
+    const pad = 40;
+    const middleIndex = Math.floor(items.length / 2);
+    const middleOffset = pad + middleIndex * (w + gap);
+    const centreScroll = middleOffset - (el.clientWidth / 2) + (w / 2);
+    el.scrollLeft = Math.max(0, centreScroll);
+  }, [items.length, gap]);
+
   useEffect(() => {
     const w = getWidth();
     setActiveWidth(w);
-    const el = trackRef.current; if (!el) return;
-    /* Centre on the middle item */
-    const middleIndex = Math.floor(items.length / 2);
-    const middleOffset = middleIndex * (w + gap);
-    const centreScroll = middleOffset - (el.clientWidth / 2) + (w / 2);
-    el.scrollLeft = Math.max(0, centreScroll);
+    centreOnMiddle(w);
     checkScroll();
     const onScroll = () => checkScroll();
-    const onResize = () => {
-      const nw = getWidth();
-      setActiveWidth(nw);
-      const mi = Math.floor(items.length / 2);
-      const mo = mi * (nw + gap);
-      el.scrollLeft = Math.max(0, mo - (el.clientWidth / 2) + (nw / 2));
-      checkScroll();
-    };
-    el.addEventListener("scroll", onScroll, { passive: true });
+    const onResize = () => { const nw = getWidth(); setActiveWidth(nw); centreOnMiddle(nw); checkScroll(); };
+    const el = trackRef.current;
+    if (el) el.addEventListener("scroll", onScroll, { passive: true });
     window.addEventListener("resize", onResize);
-    return () => { el.removeEventListener("scroll", onScroll); window.removeEventListener("resize", onResize); };
-  }, [items.length, cardWidth, mobileCardWidth, gap, checkScroll, getWidth]);
+    return () => { if (el) el.removeEventListener("scroll", onScroll); window.removeEventListener("resize", onResize); };
+  }, [items.length, cardWidth, mobileCardWidth, gap, checkScroll, getWidth, centreOnMiddle]);
 
   const scroll = (dir) => {
     const el = trackRef.current; if (!el) return;
     el.scrollBy({ left: dir === "left" ? -(activeWidth + gap) : (activeWidth + gap), behavior: "smooth" });
   };
-
-  /* Calculate side padding to ensure content always overflows for centering */
-  const sidePad = `max(40px, calc((100vw - ${activeWidth}px) / 2))`;
 
   return (
     <div style={{ position: "relative", width: "100%" }}>
@@ -191,7 +186,7 @@ function Carousel({ items, cardWidth = 220, mobileCardWidth, gap = 16, renderCar
         onMouseUp={() => setDrag(false)} onMouseLeave={() => setDrag(false)}
         onTouchStart={e => { setStartX(e.touches[0].pageX); setSl(trackRef.current.scrollLeft); }}
         onTouchMove={e => { trackRef.current.scrollLeft = sl - (e.touches[0].pageX - startX); }}
-        style={{ display: "flex", gap: `${gap}px`, overflowX: "auto", cursor: drag ? "grabbing" : "grab", paddingLeft: sidePad, paddingRight: sidePad, paddingBottom: "20px", scrollbarWidth: "none", WebkitOverflowScrolling: "touch", scrollSnapType: "x mandatory" }}>
+        style={{ display: "flex", gap: `${gap}px`, overflowX: "auto", cursor: drag ? "grabbing" : "grab", padding: "0 40px 20px", scrollbarWidth: "none", WebkitOverflowScrolling: "touch", scrollSnapType: "x mandatory" }}>
         {items.map((item, i) => (
           <div key={item.id || i} style={{ scrollSnapAlign: "center", flex: `0 0 ${activeWidth}px` }}>
             {renderCard(item, i)}
