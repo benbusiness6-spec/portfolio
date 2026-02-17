@@ -1,39 +1,41 @@
 import { useState, useEffect, useRef, useCallback } from "react";
 
-const CALENDLY_URL = "#";
-const LINKEDIN_URL = "#";
+const CALENDLY_URL = "#"; // Replace with your Calendly link when ready
+const LINKEDIN_URL = "https://www.linkedin.com/in/ben-lewis-466a3a310/";
+const INSTAGRAM_URL = "https://www.instagram.com/benlewisstudios/";
+const YOUTUBE_URL = "https://www.youtube.com/@benlewis7548";
 const EMAIL = "ben@benlewisltd.com";
 
 const HERO_ITEMS = [
-  { id: 1, label: "Cinematic Reel", color: "#1a1225", type: "video", src: null },
-  { id: 2, label: "Editorial Beauty", color: "#1f1a2d", type: "image", src: null },
-  { id: 3, label: "Product Hero", color: "#251a1f", type: "image", src: null },
-  { id: 4, label: "UGC Content", color: "#1a251f", type: "video", src: null },
-  { id: 5, label: "Brand Film", color: "#25201a", type: "video", src: null },
+  { id: 1, label: "Editorial Beauty", color: "#1a1225", type: "image", src: "/assets/1.jpg" },
+  { id: 2, label: "Cinematic Reel", color: "#1f1a2d", type: "video", src: "/assets/2.mp4" },
+  { id: 3, label: "Texture & Light", color: "#251a1f", type: "video", src: "/assets/3.mp4" },
+  { id: 4, label: "Brand Campaign", color: "#1a251f", type: "image", src: "/assets/4.png" },
+  { id: 5, label: "Brand Film", color: "#25201a", type: "video", src: "/assets/5.mp4" },
 ];
 const WORK_ITEMS = [
-  { id: 1, label: "Creative Concept — Fashion Editorial", sublabel: "Cinematic brand film with product integration", color: "#1e1428", type: "video", src: null },
-  { id: 2, label: "Cinematic Brand Film", sublabel: "Macro texture sequence with dramatic lighting", color: "#1a1020", type: "video", src: null },
-  { id: 3, label: "Editorial Beauty Campaign", sublabel: "Full editorial series for skincare launch", color: "#201418", type: "image", src: null },
-  { id: 4, label: "Product Hero — Serum Collection", sublabel: "Hero shots for e-commerce and retail", color: "#14201a", type: "image", src: null },
+  { id: 1, label: "Cinematic Brand Film", sublabel: "Dramatic lighting with macro texture sequence", color: "#1e1428", type: "video", src: "/assets/6.mp4" },
+  { id: 2, label: "Editorial Fashion", sublabel: "Cinematic brand film with product integration", color: "#1a1020", type: "video", src: "/assets/7.mp4" },
+  { id: 3, label: "Product Campaign", sublabel: "Hero shots for e-commerce and retail", color: "#201418", type: "image", src: "/assets/8.png" },
+  { id: 4, label: "Beauty Editorial", sublabel: "Full editorial series for skincare launch", color: "#14201a", type: "image", src: "/assets/9.jpg" },
 ];
 const UGC_ITEMS = [
-  { id: 1, label: "Get Ready With Me", sublabel: "Lumière Skincare — Vitamin C Serum · 15s direct-to-camera testimonial with product B-roll", color: "#1a1528", type: "video", src: null },
-  { id: 2, label: "Morning Routine", sublabel: "Bare Ritual — Hydrating Cleanser · GRWM routine with product integration and natural lighting", color: "#151a28", type: "video", src: null },
-  { id: 3, label: "First Impressions", sublabel: "Glow Theory — Retinol Night Cream · Unboxing with texture shots and before-after routine", color: "#281a15", type: "video", src: null },
-  { id: 4, label: "Product Application", sublabel: "Velvet Skin Co — Hyaluronic Serum · Close-up application with skin texture detail shots", color: "#1f1528", type: "video", src: null },
-  { id: 5, label: "Night Routine", sublabel: "Dew Drop Beauty — Overnight Mask · Full evening skincare routine with ambient lighting", color: "#15281a", type: "video", src: null },
+  { id: 1, label: "Get Ready With Me", sublabel: "Direct-to-camera testimonial with product B-roll", color: "#1a1528", type: "video", src: "/assets/10.mp4" },
+  { id: 2, label: "Morning Routine", sublabel: "GRWM routine with product integration and natural lighting", color: "#151a28", type: "video", src: "/assets/11.mp4" },
+  { id: 3, label: "First Impressions", sublabel: "Unboxing with texture shots and before-after routine", color: "#281a15", type: "video", src: "/assets/12.mp4" },
+  { id: 4, label: "Product Application", sublabel: "Close-up application with skin texture detail shots", color: "#1f1528", type: "video", src: "/assets/13.mp4" },
+  { id: 5, label: "Brand Spotlight", sublabel: "Full product showcase with lifestyle integration", color: "#15281a", type: "video", src: "/assets/14.mp4" },
 ];
 const EDITORIAL_ITEMS = [
-  { color: "#1e1428", type: "image", src: null },
-  { color: "#201a14", type: "image", src: null },
-  { color: "#14201a", type: "image", src: null },
-  { color: "#1a1428", type: "image", src: null },
-  { color: "#28141e", type: "image", src: null },
-  { color: "#142028", type: "image", src: null },
-  { color: "#201e14", type: "image", src: null },
-  { color: "#1a2014", type: "image", src: null },
-  { color: "#281420", type: "image", src: null },
+  { color: "#1e1428", type: "image", src: "/assets/15.png" },
+  { color: "#201a14", type: "image", src: "/assets/16.png" },
+  { color: "#14201a", type: "image", src: "/assets/17.png" },
+  { color: "#1a1428", type: "image", src: "/assets/18.jpg" },
+  { color: "#28141e", type: "image", src: "/assets/19.jpg" },
+  { color: "#142028", type: "image", src: "/assets/20.jpg" },
+  { color: "#201e14", type: "image", src: "/assets/21.png" },
+  { color: "#1a2014", type: "image", src: "/assets/22.png" },
+  { color: "#281420", type: "image", src: "/assets/23.png" },
 ];
 
 function useInView(threshold = 0.1) {
@@ -337,7 +339,7 @@ export default function App() {
           <p style={{ fontSize: "15px", color: "rgba(245,240,235,0.45)", fontWeight: 300, maxWidth: "420px", margin: "0 auto 44px", lineHeight: 1.7 }}>15-minute discovery call. No pitch deck. Just a conversation about your content and how to fix it.</p>
           <div style={{ display: "flex", gap: "16px", justifyContent: "center", flexWrap: "wrap" }}>
             <a href={CALENDLY_URL} className="bp">Book a Discovery Call</a>
-            <a href={LINKEDIN_URL} className="bg">Connect on LinkedIn</a>
+            <a href={LINKEDIN_URL} target="_blank" rel="noopener noreferrer" className="bg">Connect on LinkedIn</a>
           </div>
         </Reveal>
       </section>
@@ -345,13 +347,21 @@ export default function App() {
       <footer style={{ padding: "28px 32px", borderTop: "1px solid rgba(255,255,255,0.04)", display: "flex", flexDirection: "column", alignItems: "center", gap: "16px", textAlign: "center" }}>
         <div style={{ fontFamily: "var(--fh)", fontSize: "12px", fontWeight: 500, letterSpacing: "2px", textTransform: "uppercase", color: "rgba(245,240,235,0.45)" }}>Ben Lewis Studios</div>
         <div style={{ display: "flex", gap: "24px", alignItems: "center" }}>
-          <a href={LINKEDIN_URL} style={{ color: "rgba(245,240,235,0.25)", transition: "color 0.3s", display: "flex" }}>
+          <a href={LINKEDIN_URL} target="_blank" rel="noopener noreferrer" style={{ color: "rgba(245,240,235,0.25)", transition: "color 0.3s", display: "flex" }}>
             <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 01-2.063-2.065 2.064 2.064 0 112.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>
+          </a>
+          <a href={INSTAGRAM_URL} target="_blank" rel="noopener noreferrer" style={{ color: "rgba(245,240,235,0.25)", transition: "color 0.3s", display: "flex" }}>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98C8.333 23.986 8.741 24 12 24c3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.881 1.44 1.44 0 000-2.881z"/></svg>
+          </a>
+          <a href={YOUTUBE_URL} target="_blank" rel="noopener noreferrer" style={{ color: "rgba(245,240,235,0.25)", transition: "color 0.3s", display: "flex" }}>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M23.498 6.186a3.016 3.016 0 00-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 00.502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 002.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 002.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/></svg>
           </a>
           <a href={`mailto:${EMAIL}`} style={{ color: "rgba(245,240,235,0.25)", fontSize: "11px", letterSpacing: "1px", textDecoration: "none", transition: "color 0.3s" }}>{EMAIL}</a>
         </div>
         <div style={{ fontSize: "11px", color: "rgba(245,240,235,0.25)", letterSpacing: "0.5px" }}>© 2026 Ben Lewis Studios</div>
       </footer>
     </div>
+  );
+}
   );
 }
