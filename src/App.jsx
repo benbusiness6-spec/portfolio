@@ -23,7 +23,7 @@ const EDIT_ITEMS = [
   { id: 6, label: "Beauty Portrait", sublabel: "Premium editorial with natural beauty aesthetic", type: "image", src: "/assets/hero-5.jpg" },
 ];
 
-/* ── UGC: 5 videos (reordered: old 3→1, old 1→2, old 2→3, 4 stays, 5 stays) ── */
+/* ── UGC: 5 videos (ugc-2 is best, centred at position 3) ── */
 const UGC_ITEMS = [
   { id: 1, label: "Morning Routine", sublabel: "GRWM routine with product integration", type: "video", src: "/assets/ugc-3.mp4" },
   { id: 2, label: "Get Ready With Me", sublabel: "Direct-to-camera testimonial with product B-roll", type: "video", src: "/assets/ugc-1.mp4" },
@@ -59,29 +59,32 @@ function useInView(threshold = 0.1) {
 }
 
 function Reveal({ children, delay = 0, style = {} }) {
-  const [ref, vis] = useInView();
-  return (<div ref={ref} style={{ opacity: vis ? 1 : 0, transform: vis ? "translateY(0)" : "translateY(32px)", transition: `all 0.7s cubic-bezier(0.16,1,0.3,1) ${delay}s`, ...style }}>{children}</div>);
+  const [ref, vis] = useInView(0.05);
+  return (<div ref={ref} style={{ opacity: vis ? 1 : 0, transform: vis ? "translateY(0)" : "translateY(20px)", transition: `opacity 0.6s ease ${delay}s, transform 0.6s cubic-bezier(0.25,0.46,0.45,0.94) ${delay}s`, willChange: "opacity, transform", ...style }}>{children}</div>);
 }
 
 function LazyVideo({ src, aspectRatio = "9/16", borderRadius = "10px", priority = false }) {
   const ref = useRef(null);
   const [inView, setInView] = useState(priority);
+  const [loaded, setLoaded] = useState(false);
   useEffect(() => {
     if (priority) return;
     const el = ref.current; if (!el) return;
     const obs = new IntersectionObserver(([e]) => {
       if (e.isIntersecting) { setInView(true); obs.unobserve(el); }
-    }, { rootMargin: "200px" });
+    }, { rootMargin: "400px" });
     obs.observe(el);
     return () => obs.disconnect();
   }, [priority]);
   return (
-    <div ref={ref} style={{ aspectRatio, borderRadius, overflow: "hidden", background: "#111" }}>
+    <div ref={ref} style={{ aspectRatio, borderRadius, overflow: "hidden", background: "#111", position: "relative" }}>
       {inView ? (
         <video src={src} autoPlay muted loop playsInline
-          style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }} />
-      ) : (
-        <div style={{ width: "100%", height: "100%", background: "linear-gradient(160deg,#1a1a2e,#080808)", display: "flex", alignItems: "center", justifyContent: "center" }}>
+          onLoadedData={() => setLoaded(true)}
+          style={{ width: "100%", height: "100%", objectFit: "cover", display: "block", opacity: loaded || priority ? 1 : 0, transition: "opacity 0.5s ease" }} />
+      ) : null}
+      {(!inView || (!loaded && !priority)) && (
+        <div style={{ position: "absolute", inset: 0, background: "linear-gradient(160deg,#1a1a2e,#080808)", display: "flex", alignItems: "center", justifyContent: "center", transition: "opacity 0.5s ease", opacity: loaded ? 0 : 1, pointerEvents: loaded ? "none" : "auto" }}>
           <div style={{ width: "44px", height: "44px", borderRadius: "50%", border: "1.5px solid rgba(255,255,255,0.15)", display: "flex", alignItems: "center", justifyContent: "center" }}>
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.4)" strokeWidth="2"><polygon points="5 3 19 12 5 21 5 3"/></svg>
           </div>
@@ -150,11 +153,21 @@ function Carousel({ items, cardWidth = 220, mobileCardWidth, gap = 16, renderCar
     const w = getWidth();
     setActiveWidth(w);
     const el = trackRef.current; if (!el) return;
-    const totalW = items.length * w + (items.length - 1) * gap;
-    if (totalW > el.clientWidth) el.scrollLeft = (totalW - el.clientWidth) / 2;
+    /* Centre on the middle item */
+    const middleIndex = Math.floor(items.length / 2);
+    const middleOffset = middleIndex * (w + gap);
+    const centreScroll = middleOffset - (el.clientWidth / 2) + (w / 2);
+    el.scrollLeft = Math.max(0, centreScroll);
     checkScroll();
     const onScroll = () => checkScroll();
-    const onResize = () => { const nw = getWidth(); setActiveWidth(nw); checkScroll(); };
+    const onResize = () => {
+      const nw = getWidth();
+      setActiveWidth(nw);
+      const mi = Math.floor(items.length / 2);
+      const mo = mi * (nw + gap);
+      el.scrollLeft = Math.max(0, mo - (el.clientWidth / 2) + (nw / 2));
+      checkScroll();
+    };
     el.addEventListener("scroll", onScroll, { passive: true });
     window.addEventListener("resize", onResize);
     return () => { el.removeEventListener("scroll", onScroll); window.removeEventListener("resize", onResize); };
@@ -164,6 +177,9 @@ function Carousel({ items, cardWidth = 220, mobileCardWidth, gap = 16, renderCar
     const el = trackRef.current; if (!el) return;
     el.scrollBy({ left: dir === "left" ? -(activeWidth + gap) : (activeWidth + gap), behavior: "smooth" });
   };
+
+  /* Calculate side padding to ensure content always overflows for centering */
+  const sidePad = `max(40px, calc((100vw - ${activeWidth}px) / 2))`;
 
   return (
     <div style={{ position: "relative", width: "100%" }}>
@@ -175,7 +191,7 @@ function Carousel({ items, cardWidth = 220, mobileCardWidth, gap = 16, renderCar
         onMouseUp={() => setDrag(false)} onMouseLeave={() => setDrag(false)}
         onTouchStart={e => { setStartX(e.touches[0].pageX); setSl(trackRef.current.scrollLeft); }}
         onTouchMove={e => { trackRef.current.scrollLeft = sl - (e.touches[0].pageX - startX); }}
-        style={{ display: "flex", gap: `${gap}px`, overflowX: "auto", cursor: drag ? "grabbing" : "grab", padding: "0 40px 20px", scrollbarWidth: "none", WebkitOverflowScrolling: "touch", scrollSnapType: "x mandatory" }}>
+        style={{ display: "flex", gap: `${gap}px`, overflowX: "auto", cursor: drag ? "grabbing" : "grab", paddingLeft: sidePad, paddingRight: sidePad, paddingBottom: "20px", scrollbarWidth: "none", WebkitOverflowScrolling: "touch", scrollSnapType: "x mandatory" }}>
         {items.map((item, i) => (
           <div key={item.id || i} style={{ scrollSnapAlign: "center", flex: `0 0 ${activeWidth}px` }}>
             {renderCard(item, i)}
@@ -274,14 +290,22 @@ function LeadForm() {
 export default function App() {
   const [scrollY, setScrollY] = useState(0);
   const [menuOpen, setMenuOpen] = useState(false);
-  useEffect(() => { const fn = () => setScrollY(window.scrollY); window.addEventListener("scroll", fn, { passive: true }); return () => window.removeEventListener("scroll", fn); }, []);
+  useEffect(() => {
+    let ticking = false;
+    const fn = () => {
+      if (!ticking) { ticking = true; requestAnimationFrame(() => { setScrollY(window.scrollY); ticking = false; }); }
+    };
+    window.addEventListener("scroll", fn, { passive: true });
+    return () => window.removeEventListener("scroll", fn);
+  }, []);
   const go = id => { document.getElementById(id)?.scrollIntoView({ behavior: "smooth" }); setMenuOpen(false); };
 
   return (
     <div style={{ "--fh": "'Syne','Helvetica Neue',sans-serif", "--fb": "'Inter',-apple-system,sans-serif", minHeight: "100vh", background: "#0A0A0A", color: "#F5F0EB", fontFamily: "var(--fb)", overflowX: "hidden" }}>
       <style>{`
         @import url('https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=Inter:wght@300;400;500;600&display=swap');
-        *{margin:0;padding:0;box-sizing:border-box}html{scroll-behavior:smooth}
+        *{margin:0;padding:0;box-sizing:border-box}html{scroll-behavior:smooth;-webkit-font-smoothing:antialiased}
+        body{-webkit-overflow-scrolling:touch}
         ::selection{background:rgba(245,240,235,0.2);color:#fff}
         @keyframes fadeUp{from{opacity:0;transform:translateY(40px)}to{opacity:1;transform:translateY(0)}}
         @keyframes fadeIn{from{opacity:0}to{opacity:1}}
