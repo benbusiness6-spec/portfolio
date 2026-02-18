@@ -265,6 +265,11 @@ function StepCard({ number, title, description }) {
  * Desktop: click-and-drag with grab cursor (both directions).
  * Mobile: native touch scroll.
  * No arrows. No snap. No scroll hijacking.
+ *
+ * IMPORTANT: No justifyContent:"center" — that causes flex overflow
+ * to distribute equally left+right, making left side unreachable via scroll.
+ * Instead we use an inner wrapper with margin:auto for visual centering
+ * when content doesn't overflow, and natural scroll when it does.
  */
 function SwipeRow({ children, className = "" }) {
   const trackRef = useRef(null);
@@ -298,12 +303,14 @@ function SwipeRow({ children, className = "" }) {
       onMouseUp={onMouseUp}
       onMouseLeave={onMouseUp}
       style={{
-        display: "flex", gap: "16px", justifyContent: "center",
+        display: "flex", gap: "16px",
         padding: "0 24px 20px", overflowX: "auto",
         scrollbarWidth: "none", WebkitOverflowScrolling: "touch",
         cursor: "grab",
       }}>
-      {children}
+      <div style={{ display: "flex", gap: "16px", margin: "0 auto" }}>
+        {children}
+      </div>
     </div>
   );
 }
