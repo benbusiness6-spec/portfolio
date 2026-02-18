@@ -107,7 +107,7 @@ function UgcVideo({ src, aspectRatio = "9/16", borderRadius = "10px" }) {
     const el = ref.current; if (!el) return;
     const obs = new IntersectionObserver(([e]) => {
       if (e.isIntersecting) { setInView(true); obs.unobserve(el); }
-    }, { rootMargin: "200px" });
+    }, { rootMargin: "600px" });
     obs.observe(el);
     return () => obs.disconnect();
   }, []);
@@ -299,15 +299,34 @@ function StepCard({ number, title, description }) {
 function LeadForm() {
   const [form, setForm] = useState({ firstName: "", brand: "", email: "" });
   const [sent, setSent] = useState(false);
+  const [sending, setSending] = useState(false);
   const update = (k, v) => setForm(p => ({ ...p, [k]: v }));
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!form.firstName || !form.brand || !form.email) return;
-    const subject = encodeURIComponent(`Free UGC Video Request — ${form.brand}`);
-    const body = encodeURIComponent(`First Name: ${form.firstName}\nBrand: ${form.brand}\nEmail: ${form.email}`);
-    window.location.href = `mailto:${EMAIL}?subject=${subject}&body=${body}`;
-    setSent(true);
+    if (!form.firstName || !form.brand || !form.email || sending) return;
+    setSending(true);
+    try {
+      await fetch("https://formsubmit.co/ajax/ben@benlewisltd.com", {
+        method: "POST",
+        headers: { "Content-Type": "application/json", "Accept": "application/json" },
+        body: JSON.stringify({
+          "First Name": form.firstName,
+          "Brand": form.brand,
+          "Email": form.email,
+          "_subject": `Free UGC Video Request — ${form.brand}`,
+          "_template": "table",
+        }),
+      });
+      setSent(true);
+    } catch {
+      /* Fallback to mailto if fetch fails */
+      const subject = encodeURIComponent(`Free UGC Video Request — ${form.brand}`);
+      const body = encodeURIComponent(`First Name: ${form.firstName}\nBrand: ${form.brand}\nEmail: ${form.email}`);
+      window.location.href = `mailto:${EMAIL}?subject=${subject}&body=${body}`;
+      setSent(true);
+    }
+    setSending(false);
   };
 
   const inputStyle = {
@@ -335,8 +354,8 @@ function LeadForm() {
         style={inputStyle} onFocus={e => e.target.style.borderColor = "rgba(255,255,255,0.25)"} onBlur={e => e.target.style.borderColor = "rgba(255,255,255,0.08)"} />
       <input type="email" placeholder="Email address" value={form.email} onChange={e => update("email", e.target.value)} required
         style={inputStyle} onFocus={e => e.target.style.borderColor = "rgba(255,255,255,0.25)"} onBlur={e => e.target.style.borderColor = "rgba(255,255,255,0.08)"} />
-      <button type="submit" className="bp" style={{ width: "100%", justifyContent: "center", marginTop: "8px", padding: "18px 36px" }}>
-        Get Your Free Video
+      <button type="submit" className="bp" style={{ width: "100%", justifyContent: "center", marginTop: "8px", padding: "18px 36px", opacity: sending ? 0.6 : 1 }}>
+        {sending ? "Sending..." : "Get Your Free Video"}
       </button>
     </form>
   );
@@ -438,7 +457,7 @@ export default function App() {
           <div className="hero-row" style={{ display: "flex", gap: "16px", justifyContent: "center", padding: "0 24px 20px", overflowX: "auto", scrollbarWidth: "none", WebkitOverflowScrolling: "touch" }}>
             {HERO_ITEMS.map((item, i) => (
               <div key={item.id} className="hero-card" style={{ flex: "0 0 auto" }}>
-                <CarouselCard item={item} priority={i === 1} />
+                <CarouselCard item={item} priority={true} />
               </div>
             ))}
           </div>
