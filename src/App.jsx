@@ -457,7 +457,7 @@ export default function App() {
           <div className="hero-row" style={{ display: "flex", gap: "16px", justifyContent: "center", padding: "0 24px 20px", overflowX: "auto", scrollbarWidth: "none", WebkitOverflowScrolling: "touch" }}>
             {HERO_ITEMS.map((item, i) => (
               <div key={item.id} className="hero-card" style={{ flex: "0 0 auto" }}>
-                <CarouselCard item={item} priority={true} />
+                <CarouselCard item={item} priority={window.innerWidth > 768 || i === 1} />
               </div>
             ))}
           </div>
