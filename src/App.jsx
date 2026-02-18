@@ -77,8 +77,8 @@ function LazyVideo({ src, aspectRatio = "9/16", borderRadius = "10px", priority 
 
   useEffect(() => {
     if (priority) {
-      /* Stagger hero videos: first loads after 200ms idle, others wait longer */
-      const delay = priorityIndex * 1500; // 0ms, 1500ms, 3000ms stagger
+      /* Centre reel (index 1) loads first, others load 1500ms after */
+      const delay = priorityIndex === 1 ? 0 : 1500;
       if ('requestIdleCallback' in window) {
         const timeout = setTimeout(() => {
           requestIdleCallback(() => setShouldLoad(true), { timeout: 500 });
@@ -473,14 +473,17 @@ export default function App() {
         .sr{display:flex;gap:20px;flex-wrap:wrap}
         @media(max-width:768px){.sr{flex-direction:column}}
         .ctrack::-webkit-scrollbar{display:none}
+        .edit-row::-webkit-scrollbar{display:none}
         .hero-row::-webkit-scrollbar{display:none}
         .ugc-row::-webkit-scrollbar{display:none}
         .hero-card{width:440px}
+        .edit-card{width:340px}
         .ugc-card{width:340px}
         .sl{font-size:10px;letter-spacing:4px;text-transform:uppercase;color:rgba(245,240,235,0.45);margin-bottom:16px;font-weight:500;text-align:center}
         .sh{font-family:var(--fh);font-size:clamp(28px,4vw,44px);font-weight:600;line-height:1.15;margin-bottom:48px;text-align:center}
         @media(max-width:768px){
           .hero-card{width:280px}
+          .edit-card{width:280px}
           .ugc-card{width:280px}
           .sp{padding:70px 20px!important}
           .mob-sec{padding-top:56px!important;padding-bottom:70px!important}
@@ -545,12 +548,23 @@ export default function App() {
         </div>
       </section>
 
-      {/* EDITORIAL — 6 luxury images */}
+      {/* EDITORIAL — 6 luxury images, swipeable row */}
       <section id="work" className="mob-sec" style={{ padding: "80px 0 100px" }}>
         <div style={{ padding: "0 32px", maxWidth: "1100px", margin: "0 auto", textAlign: "center" }}>
           <Reveal><div className="sl">The Work</div><h2 className="sh">Luxury <span style={{ fontWeight: 400, color: "rgba(245,240,235,0.45)" }}>editorial</span></h2></Reveal>
         </div>
-        <Reveal><Carousel items={EDIT_ITEMS} cardWidth={340} mobileCardWidth={280} renderCard={(item) => <CarouselCard item={item} />} /></Reveal>
+        <Reveal>
+          <div className="mb" style={{ justifyContent: "center", marginBottom: "12px" }}>
+            <span style={{ fontSize: "9px", letterSpacing: "3px", textTransform: "uppercase", color: "rgba(245,240,235,0.2)", fontWeight: 400 }}>Swipe to explore</span>
+          </div>
+          <div className="edit-row" style={{ display: "flex", gap: "16px", justifyContent: "center", padding: "0 24px 20px", overflowX: "auto", scrollbarWidth: "none", WebkitOverflowScrolling: "touch" }}>
+            {EDIT_ITEMS.map((item) => (
+              <div key={item.id} className="edit-card" style={{ flex: "0 0 auto" }}>
+                <CarouselCard item={item} />
+              </div>
+            ))}
+          </div>
+        </Reveal>
         <Reveal><div style={{ textAlign: "center", marginTop: "40px" }}><a href={CALENDLY_URL} target="_blank" rel="noopener noreferrer" className="bg">Like what you see? Let's talk</a></div></Reveal>
       </section>
 
