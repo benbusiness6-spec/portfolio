@@ -303,12 +303,12 @@ function SwipeRow({ children, className = "" }) {
       onMouseUp={onMouseUp}
       onMouseLeave={onMouseUp}
       style={{
-        display: "flex", gap: "16px",
+        display: "flex",
         padding: "0 24px 20px", overflowX: "auto",
         scrollbarWidth: "none", WebkitOverflowScrolling: "touch",
         cursor: "grab",
       }}>
-      <div style={{ display: "flex", gap: "16px", margin: "0 auto" }}>
+      <div style={{ display: "flex", gap: "16px", margin: "0 auto", flexShrink: 0 }}>
         {children}
       </div>
     </div>
