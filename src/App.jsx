@@ -129,15 +129,7 @@ function UgcVideo({ src, aspectRatio = "9/16", borderRadius = "10px", ugcPriorit
   useEffect(() => {
     const el = ref.current; if (!el) return;
     const obs = new IntersectionObserver(([e]) => {
-      if (e.isIntersecting) {
-        obs.unobserve(el);
-        const delay = ugcPriorityIndex === 2 ? 0 : 800;
-        if (delay === 0) {
-          setShouldLoad(true);
-        } else {
-          setTimeout(() => setShouldLoad(true), delay);
-        }
-      }
+      if (e.isIntersecting) { setShouldLoad(true); obs.unobserve(el); }
     }, { rootMargin: "100px" });
     obs.observe(el);
     return () => obs.disconnect();
@@ -271,9 +263,32 @@ function StepCard({ number, title, description }) {
  * Instead we use an inner wrapper with margin:auto for visual centering
  * when content doesn't overflow, and natural scroll when it does.
  */
-function SwipeRow({ children, className = "" }) {
+/*
+ * ─── SwipeRow ───
+ * Unified horizontal scroll for Hero, Editorial, UGC.
+ * Desktop: click-and-drag with grab cursor (both directions).
+ * Mobile: native touch scroll.
+ * No arrows. No snap. No scroll hijacking.
+ *
+ * centreIndex: if provided, scrolls to centre that child on mount.
+ */
+function SwipeRow({ children, className = "", centreIndex = -1 }) {
   const trackRef = useRef(null);
+  const innerRef = useRef(null);
   const dragState = useRef({ active: false, startX: 0, scrollStart: 0 });
+
+  useEffect(() => {
+    if (centreIndex < 0) return;
+    const outer = trackRef.current;
+    const inner = innerRef.current;
+    if (!outer || !inner) return;
+    const cards = inner.children;
+    if (!cards[centreIndex]) return;
+    const card = cards[centreIndex];
+    const cardCentre = card.offsetLeft + card.offsetWidth / 2;
+    const scrollTarget = cardCentre - outer.clientWidth / 2;
+    outer.scrollLeft = Math.max(0, scrollTarget);
+  }, [centreIndex]);
 
   const onMouseDown = useCallback((e) => {
     const el = trackRef.current; if (!el) return;
@@ -308,7 +323,7 @@ function SwipeRow({ children, className = "" }) {
         scrollbarWidth: "none", WebkitOverflowScrolling: "touch",
         cursor: "grab",
       }}>
-      <div style={{ display: "flex", gap: "16px", margin: "0 auto", flexShrink: 0 }}>
+      <div ref={innerRef} style={{ display: "flex", gap: "16px", margin: "0 auto", flexShrink: 0 }}>
         {children}
       </div>
     </div>
@@ -475,7 +490,7 @@ export default function App() {
           <div className="mb" style={{ justifyContent: "center", marginBottom: "12px" }}>
             <span style={{ fontSize: "9px", letterSpacing: "3px", textTransform: "uppercase", color: "rgba(245,240,235,0.2)", fontWeight: 400 }}>Swipe to explore</span>
           </div>
-          <SwipeRow className="swipe-row">
+          <SwipeRow className="swipe-row" centreIndex={1}>
             {HERO_ITEMS.map((item, i) => (
               <div key={item.id} className="hero-card" style={{ flex: "0 0 auto" }}>
                 <CarouselCard item={item} priority={true} priorityIndex={i} />
@@ -521,7 +536,7 @@ export default function App() {
           <div className="mb" style={{ justifyContent: "center", marginBottom: "12px" }}>
             <span style={{ fontSize: "9px", letterSpacing: "3px", textTransform: "uppercase", color: "rgba(245,240,235,0.2)", fontWeight: 400 }}>Swipe to explore</span>
           </div>
-          <SwipeRow className="swipe-row">
+          <SwipeRow className="swipe-row" centreIndex={2}>
             {UGC_ITEMS.map((item, i) => (
               <div key={item.id} className="ugc-card" style={{ flex: "0 0 auto" }}>
                 <CarouselCard item={item} ugc={true} ugcPriorityIndex={i} />
