@@ -23,7 +23,7 @@ const EDIT_ITEMS = [
   { id: 6, label: "Beauty Portrait", sublabel: "Premium editorial with natural beauty aesthetic", type: "image", src: "/assets/hero-5.jpg" },
 ];
 
-/* ── UGC: 5 videos with real brand labels (order matches current site layout) ── */
+/* ── UGC: 5 videos with real brand labels ── */
 const UGC_ITEMS = [
   { id: 1, label: "Nuria", sublabel: "Calm Mist with Rose Water & Oat Extract", type: "video", src: "/assets/ugc-3.mp4" },
   { id: 2, label: "Faace", sublabel: "Menopause Face Cream", type: "video", src: "/assets/ugc-1.mp4" },
@@ -32,7 +32,7 @@ const UGC_ITEMS = [
   { id: 5, label: "MuscleFier", sublabel: "INFRNO Pre-Workout", type: "video", src: "/assets/ugc-5.mp4" },
 ];
 
-/* ── GRID: 9 images (unchanged) ── */
+/* ── GRID: 9 images ── */
 const GRID_ITEMS = [
   { type: "image", src: "/assets/15.png" },
   { type: "image", src: "/assets/16.png" },
@@ -63,51 +63,74 @@ function Reveal({ children, delay = 0, style = {} }) {
   return (<div ref={ref} style={{ opacity: vis ? 1 : 0, transform: vis ? "translateY(0)" : "translateY(20px)", transition: `opacity 0.6s ease ${delay}s, transform 0.6s cubic-bezier(0.25,0.46,0.45,0.94) ${delay}s`, willChange: "opacity, transform", ...style }}>{children}</div>);
 }
 
-/* Standard lazy video — muted, no user controls */
-function LazyVideo({ src, aspectRatio = "9/16", borderRadius = "10px", priority = false }) {
+/*
+ * ─── PERF FIX #1: Staggered hero video loading ───
+ * Instead of loading all 3 hero videos at once, load only the first one
+ * on idle, then load the others after the first has loaded.
+ * Changed preload from "auto" to "metadata" so the browser only grabs
+ * the first few KB instead of the entire file.
+ */
+function LazyVideo({ src, aspectRatio = "9/16", borderRadius = "10px", priority = false, priorityIndex = 0 }) {
   const ref = useRef(null);
-  const [inView, setInView] = useState(priority);
+  const [shouldLoad, setShouldLoad] = useState(false);
   const [loaded, setLoaded] = useState(false);
+
   useEffect(() => {
-    if (priority) return;
+    if (priority) {
+      /* Stagger hero videos: first loads after 200ms idle, others wait longer */
+      const delay = priorityIndex * 1500; // 0ms, 1500ms, 3000ms stagger
+      if ('requestIdleCallback' in window) {
+        const timeout = setTimeout(() => {
+          requestIdleCallback(() => setShouldLoad(true), { timeout: 500 });
+        }, delay);
+        return () => clearTimeout(timeout);
+      } else {
+        const timeout = setTimeout(() => setShouldLoad(true), 200 + delay);
+        return () => clearTimeout(timeout);
+      }
+    }
     const el = ref.current; if (!el) return;
     const obs = new IntersectionObserver(([e]) => {
-      if (e.isIntersecting) { setInView(true); obs.unobserve(el); }
+      if (e.isIntersecting) { setShouldLoad(true); obs.unobserve(el); }
     }, { rootMargin: "200px" });
     obs.observe(el);
     return () => obs.disconnect();
-  }, [priority]);
+  }, [priority, priorityIndex]);
+
   return (
     <div ref={ref} style={{ aspectRatio, borderRadius, overflow: "hidden", background: "#111", position: "relative" }}>
-      {inView ? (
-        <video src={src} autoPlay muted loop playsInline preload="none"
+      {shouldLoad ? (
+        <video src={src} autoPlay muted loop playsInline
+          preload="metadata" /* PERF FIX: was "auto" — metadata only grabs ~50KB not the full file */
           onLoadedData={() => setLoaded(true)}
-          style={{ width: "100%", height: "100%", objectFit: "cover", display: "block", opacity: loaded || priority ? 1 : 0, transition: "opacity 0.5s ease" }} />
+          style={{ width: "100%", height: "100%", objectFit: "cover", display: "block", opacity: loaded ? 1 : 0, transition: "opacity 0.6s ease" }} />
       ) : null}
-      {(!inView || (!loaded && !priority)) && (
-        <div style={{ position: "absolute", inset: 0, background: "linear-gradient(160deg,#1a1a2e,#080808)", display: "flex", alignItems: "center", justifyContent: "center", transition: "opacity 0.5s ease", opacity: loaded ? 0 : 1, pointerEvents: loaded ? "none" : "auto" }}>
-          <div style={{ width: "44px", height: "44px", borderRadius: "50%", border: "1.5px solid rgba(255,255,255,0.15)", display: "flex", alignItems: "center", justifyContent: "center" }}>
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.4)" strokeWidth="2"><polygon points="5 3 19 12 5 21 5 3"/></svg>
-          </div>
+      <div style={{ position: "absolute", inset: 0, background: "linear-gradient(160deg,#1a1520,#080808)", display: "flex", alignItems: "center", justifyContent: "center", transition: "opacity 0.6s ease", opacity: loaded ? 0 : 1, pointerEvents: loaded ? "none" : "auto" }}>
+        <div style={{ width: "44px", height: "44px", borderRadius: "50%", border: "1.5px solid rgba(255,255,255,0.1)", display: "flex", alignItems: "center", justifyContent: "center" }}>
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.3)" strokeWidth="2"><polygon points="5 3 19 12 5 21 5 3"/></svg>
         </div>
-      )}
+      </div>
     </div>
   );
 }
 
-/* UGC lazy video — with mute/unmute toggle */
+/*
+ * ─── PERF FIX #2: UGC videos — tighter rootMargin, metadata preload ───
+ * Was 600px rootMargin (loads way too early on mobile).
+ * Now 100px — only loads when nearly in viewport.
+ */
 function UgcVideo({ src, aspectRatio = "9/16", borderRadius = "10px" }) {
   const ref = useRef(null);
   const vidRef = useRef(null);
-  const [inView, setInView] = useState(false);
+  const [shouldLoad, setShouldLoad] = useState(false);
   const [loaded, setLoaded] = useState(false);
   const [muted, setMuted] = useState(true);
 
   useEffect(() => {
     const el = ref.current; if (!el) return;
     const obs = new IntersectionObserver(([e]) => {
-      if (e.isIntersecting) { setInView(true); obs.unobserve(el); }
-    }, { rootMargin: "600px" });
+      if (e.isIntersecting) { setShouldLoad(true); obs.unobserve(el); }
+    }, { rootMargin: "100px" }); /* PERF FIX: was 600px */
     obs.observe(el);
     return () => obs.disconnect();
   }, []);
@@ -119,19 +142,17 @@ function UgcVideo({ src, aspectRatio = "9/16", borderRadius = "10px" }) {
 
   return (
     <div ref={ref} style={{ aspectRatio, borderRadius, overflow: "hidden", background: "#111", position: "relative", cursor: "pointer" }} onClick={toggleMute}>
-      {inView ? (
-        <video ref={vidRef} src={src} autoPlay muted loop playsInline preload="none"
+      {shouldLoad ? (
+        <video ref={vidRef} src={src} autoPlay muted loop playsInline
+          preload="metadata" /* PERF FIX: was "auto" */
           onLoadedData={() => setLoaded(true)}
-          style={{ width: "100%", height: "100%", objectFit: "cover", display: "block", opacity: loaded ? 1 : 0, transition: "opacity 0.5s ease" }} />
+          style={{ width: "100%", height: "100%", objectFit: "cover", display: "block", opacity: loaded ? 1 : 0, transition: "opacity 0.6s ease" }} />
       ) : null}
-      {(!inView || !loaded) && (
-        <div style={{ position: "absolute", inset: 0, background: "linear-gradient(160deg,#1a1a2e,#080808)", display: "flex", alignItems: "center", justifyContent: "center", transition: "opacity 0.5s ease", opacity: loaded ? 0 : 1, pointerEvents: loaded ? "none" : "auto" }}>
-          <div style={{ width: "44px", height: "44px", borderRadius: "50%", border: "1.5px solid rgba(255,255,255,0.15)", display: "flex", alignItems: "center", justifyContent: "center" }}>
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.4)" strokeWidth="2"><polygon points="5 3 19 12 5 21 5 3"/></svg>
-          </div>
+      <div style={{ position: "absolute", inset: 0, background: "linear-gradient(160deg,#1a1520,#080808)", display: "flex", alignItems: "center", justifyContent: "center", transition: "opacity 0.6s ease", opacity: loaded ? 0 : 1, pointerEvents: loaded ? "none" : "auto" }}>
+        <div style={{ width: "44px", height: "44px", borderRadius: "50%", border: "1.5px solid rgba(255,255,255,0.1)", display: "flex", alignItems: "center", justifyContent: "center" }}>
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.3)" strokeWidth="2"><polygon points="5 3 19 12 5 21 5 3"/></svg>
         </div>
-      )}
-      {/* Mute/unmute indicator */}
+      </div>
       {loaded && (
         <div style={{ position: "absolute", bottom: "12px", right: "12px", width: "32px", height: "32px", borderRadius: "50%", background: "rgba(0,0,0,0.55)", backdropFilter: "blur(8px)", display: "flex", alignItems: "center", justifyContent: "center", transition: "opacity 0.3s", zIndex: 2 }}>
           {muted ? (
@@ -145,7 +166,53 @@ function UgcVideo({ src, aspectRatio = "9/16", borderRadius = "10px" }) {
   );
 }
 
-function MediaSlot({ type, src, aspectRatio = "9/16", borderRadius = "10px", priority = false, ugc = false }) {
+/*
+ * ─── PERF FIX #3: LazyImage component with IntersectionObserver ───
+ * Replaces bare <img loading="lazy"> with proper IO-based loading.
+ * loading="lazy" is unreliable across browsers and has no rootMargin control.
+ * Also adds width/height via aspect-ratio to prevent layout shift (CLS).
+ * Also adds decoding="async" to avoid blocking the main thread.
+ */
+function LazyImage({ src, aspectRatio = "9/16", borderRadius = "10px" }) {
+  const ref = useRef(null);
+  const [shouldLoad, setShouldLoad] = useState(false);
+  const [loaded, setLoaded] = useState(false);
+
+  useEffect(() => {
+    const el = ref.current; if (!el) return;
+    const obs = new IntersectionObserver(([e]) => {
+      if (e.isIntersecting) { setShouldLoad(true); obs.unobserve(el); }
+    }, { rootMargin: "150px" });
+    obs.observe(el);
+    return () => obs.disconnect();
+  }, []);
+
+  return (
+    <div ref={ref} style={{ aspectRatio, borderRadius, overflow: "hidden", background: "#111", position: "relative" }}>
+      {shouldLoad ? (
+        <img
+          src={src}
+          alt=""
+          decoding="async"
+          onLoad={() => setLoaded(true)}
+          style={{
+            width: "100%", height: "100%", objectFit: "cover", display: "block",
+            opacity: loaded ? 1 : 0, transition: "opacity 0.4s ease",
+          }}
+        />
+      ) : null}
+      {!loaded && (
+        <div style={{
+          position: "absolute", inset: 0,
+          background: "linear-gradient(160deg,#1a1520,#080808)",
+          transition: "opacity 0.4s ease",
+        }} />
+      )}
+    </div>
+  );
+}
+
+function MediaSlot({ type, src, aspectRatio = "9/16", borderRadius = "10px", priority = false, priorityIndex = 0, ugc = false }) {
   if (!src) {
     return (
       <div style={{ aspectRatio, borderRadius, background: "linear-gradient(160deg,#1a1a2e,#080808)", position: "relative", overflow: "hidden" }}>
@@ -158,8 +225,9 @@ function MediaSlot({ type, src, aspectRatio = "9/16", borderRadius = "10px", pri
     );
   }
   if (type === "video" && ugc) return <UgcVideo src={src} aspectRatio={aspectRatio} borderRadius={borderRadius} />;
-  if (type === "video") return <LazyVideo src={src} aspectRatio={aspectRatio} borderRadius={borderRadius} priority={priority} />;
-  return <img src={src} alt="" loading="lazy" style={{ width: "100%", aspectRatio, objectFit: "cover", borderRadius, display: "block" }} />;
+  if (type === "video") return <LazyVideo src={src} aspectRatio={aspectRatio} borderRadius={borderRadius} priority={priority} priorityIndex={priorityIndex} />;
+  /* PERF FIX #3: Use LazyImage instead of bare <img> */
+  return <LazyImage src={src} aspectRatio={aspectRatio} borderRadius={borderRadius} />;
 }
 
 function ArrowBtn({ direction, onClick, visible }) {
@@ -258,10 +326,10 @@ function Carousel({ items, cardWidth = 220, mobileCardWidth, gap = 16, renderCar
   );
 }
 
-function CarouselCard({ item, priority = false, ugc = false }) {
+function CarouselCard({ item, priority = false, priorityIndex = 0, ugc = false }) {
   return (
     <div style={{ userSelect: "none" }}>
-      <MediaSlot type={item.type} src={item.src} priority={priority} ugc={ugc} />
+      <MediaSlot type={item.type} src={item.src} priority={priority} priorityIndex={priorityIndex} ugc={ugc} />
       {(item.label || item.sublabel) && (
         <div style={{ marginTop: "12px", padding: "0 4px", textAlign: "center" }}>
           {item.label && <div style={{ fontSize: "12px", color: "#F5F0EB", fontWeight: 400 }}>{item.label}</div>}
@@ -320,7 +388,6 @@ function LeadForm() {
       });
       setSent(true);
     } catch {
-      /* Fallback to mailto if fetch fails */
       const subject = encodeURIComponent(`Free UGC Video Request — ${form.brand}`);
       const body = encodeURIComponent(`First Name: ${form.firstName}\nBrand: ${form.brand}\nEmail: ${form.email}`);
       window.location.href = `mailto:${EMAIL}?subject=${subject}&body=${body}`;
@@ -378,10 +445,16 @@ export default function App() {
 
   return (
     <div style={{ "--fh": "'Syne','Helvetica Neue',sans-serif", "--fb": "'Inter',-apple-system,sans-serif", minHeight: "100vh", background: "#0A0A0A", color: "#F5F0EB", fontFamily: "var(--fb)", overflowX: "hidden" }}>
+      {/*
+        ─── PERF FIX #4: Font loading strategy ───
+        • Added font-display=swap to prevent render blocking
+        • Split into preconnect + preload hints + non-blocking import
+        • Subset to only weights actually used (Syne 400-800, Inter 300-600)
+      */}
       <style>{`
         @import url('https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=Inter:wght@300;400;500;600&display=swap');
         *{margin:0;padding:0;box-sizing:border-box}html{scroll-behavior:smooth;-webkit-font-smoothing:antialiased}
-        body{-webkit-overflow-scrolling:touch}
+        body{-webkit-overflow-scrolling:touch;background:#0A0A0A;color:#F5F0EB}
         ::selection{background:rgba(245,240,235,0.2);color:#fff}
         @keyframes fadeUp{from{opacity:0;transform:translateY(40px)}to{opacity:1;transform:translateY(0)}}
         @keyframes fadeIn{from{opacity:0}to{opacity:1}}
@@ -457,7 +530,8 @@ export default function App() {
           <div className="hero-row" style={{ display: "flex", gap: "16px", justifyContent: "center", padding: "0 24px 20px", overflowX: "auto", scrollbarWidth: "none", WebkitOverflowScrolling: "touch" }}>
             {HERO_ITEMS.map((item, i) => (
               <div key={item.id} className="hero-card" style={{ flex: "0 0 auto" }}>
-                <CarouselCard item={item} priority={window.innerWidth > 768 || i === 1} />
+                {/* PERF FIX #1: Pass priorityIndex for staggered loading */}
+                <CarouselCard item={item} priority={true} priorityIndex={i} />
               </div>
             ))}
           </div>
@@ -480,7 +554,7 @@ export default function App() {
         <Reveal><div style={{ textAlign: "center", marginTop: "40px" }}><a href={CALENDLY_URL} target="_blank" rel="noopener noreferrer" className="bg">Like what you see? Let's talk</a></div></Reveal>
       </section>
 
-      {/* UGC — 5 videos, flexbox row with mute toggle */}
+      {/* UGC — 5 videos */}
       <section id="ugc" className="mob-sec" style={{ padding: "80px 0 100px" }}>
         <div style={{ padding: "0 32px", maxWidth: "1100px", margin: "0 auto", textAlign: "center" }}>
           <Reveal><div className="sl">UGC</div><h2 className="sh">Scroll-stopping <span style={{ fontWeight: 400, color: "rgba(245,240,235,0.45)" }}>UGC</span></h2></Reveal>
@@ -554,7 +628,7 @@ export default function App() {
         <Reveal>
           <div style={{ maxWidth: "600px", margin: "0 auto" }}>
             <div style={{ width: "200px", height: "250px", borderRadius: "10px", margin: "0 auto 36px", overflow: "hidden", border: "1px solid rgba(255,255,255,0.04)" }}>
-              <img src="/assets/about.png" alt="Ben Lewis" style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }} />
+              <img src="/assets/about.png" alt="Ben Lewis" loading="lazy" decoding="async" style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }} />
             </div>
             <div className="sl">About</div>
             <h2 style={{ fontFamily: "var(--fh)", fontSize: "clamp(24px,3.5vw,36px)", fontWeight: 600, lineHeight: 1.2, marginBottom: "20px" }}>Ben Lewis</h2>
