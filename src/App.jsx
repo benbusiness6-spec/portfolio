@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef, useCallback } from "react";
+import { useState, useEffect, useRef, useCallback, memo } from "react";
 
 const CALENDLY_URL = "https://calendly.com/benlewisltd/30min";
 const LINKEDIN_URL = "https://www.linkedin.com/in/ben-lewis-466a3a310/";
@@ -6,7 +6,7 @@ const INSTAGRAM_URL = "https://www.instagram.com/benlewisstudios/";
 const YOUTUBE_URL = "https://www.youtube.com/@benlewis7548";
 const EMAIL = "ben@benlewisltd.com";
 
-/* ── HERO: 3 cinematic reels only ── */
+/* ── HERO: 3 cinematic reels ── */
 const HERO_ITEMS = [
   { id: 1, label: "Cinematic Reel", type: "video", src: "/assets/hero-2.mp4" },
   { id: 2, label: "Brand Film", type: "video", src: "/assets/hero-3.mp4" },
@@ -23,7 +23,7 @@ const EDIT_ITEMS = [
   { id: 6, label: "Beauty Portrait", sublabel: "Premium editorial with natural beauty aesthetic", type: "image", src: "/assets/hero-5-c.webp" },
 ];
 
-/* ── UGC: 5 videos with real brand labels ── */
+/* ── UGC: 5 videos — 3rd in carousel (index 2, Codage Paris) loads first ── */
 const UGC_ITEMS = [
   { id: 1, label: "Nuria", sublabel: "Calm Mist with Rose Water & Oat Extract", type: "video", src: "/assets/ugc-3.mp4" },
   { id: 2, label: "Faace", sublabel: "Menopause Face Cream", type: "video", src: "/assets/ugc-1.mp4" },
@@ -45,7 +45,7 @@ const GRID_ITEMS = [
   { type: "image", src: "/assets/23-c.webp" },
 ];
 
-/* ═══════════ COMPONENTS ═══════════ */
+/* ═══════════ HOOKS ═══════════ */
 
 function useInView(threshold = 0.1) {
   const ref = useRef(null);
@@ -58,17 +58,18 @@ function useInView(threshold = 0.1) {
   return [ref, visible];
 }
 
+/* ═══════════ COMPONENTS ═══════════ */
+
 function Reveal({ children, delay = 0, style = {} }) {
   const [ref, vis] = useInView(0.05);
   return (<div ref={ref} style={{ opacity: vis ? 1 : 0, transform: vis ? "translateY(0)" : "translateY(20px)", transition: `opacity 0.6s ease ${delay}s, transform 0.6s cubic-bezier(0.25,0.46,0.45,0.94) ${delay}s`, willChange: "opacity, transform", ...style }}>{children}</div>);
 }
 
 /*
- * ─── PERF FIX #1: Staggered hero video loading ───
- * Instead of loading all 3 hero videos at once, load only the first one
- * on idle, then load the others after the first has loaded.
- * Changed preload from "auto" to "metadata" so the browser only grabs
- * the first few KB instead of the entire file.
+ * ─── LazyVideo ───
+ * Hero: centre reel (priorityIndex 1) loads first, others 1500ms after.
+ * Non-priority: IO-based, 200px rootMargin.
+ * All use preload="metadata" (~50KB not entire file).
  */
 function LazyVideo({ src, aspectRatio = "9/16", borderRadius = "10px", priority = false, priorityIndex = 0 }) {
   const ref = useRef(null);
@@ -77,7 +78,6 @@ function LazyVideo({ src, aspectRatio = "9/16", borderRadius = "10px", priority 
 
   useEffect(() => {
     if (priority) {
-      /* Centre reel (index 1) loads first, others load 1500ms after */
       const delay = priorityIndex === 1 ? 0 : 1500;
       if ('requestIdleCallback' in window) {
         const timeout = setTimeout(() => {
@@ -99,12 +99,11 @@ function LazyVideo({ src, aspectRatio = "9/16", borderRadius = "10px", priority 
 
   return (
     <div ref={ref} style={{ aspectRatio, borderRadius, overflow: "hidden", background: "#111", position: "relative" }}>
-      {shouldLoad ? (
-        <video src={src} autoPlay muted loop playsInline
-          preload="metadata" /* PERF FIX: was "auto" — metadata only grabs ~50KB not the full file */
+      {shouldLoad && (
+        <video src={src} autoPlay muted loop playsInline preload="metadata"
           onLoadedData={() => setLoaded(true)}
           style={{ width: "100%", height: "100%", objectFit: "cover", display: "block", opacity: loaded ? 1 : 0, transition: "opacity 0.6s ease" }} />
-      ) : null}
+      )}
       <div style={{ position: "absolute", inset: 0, background: "linear-gradient(160deg,#1a1520,#080808)", display: "flex", alignItems: "center", justifyContent: "center", transition: "opacity 0.6s ease", opacity: loaded ? 0 : 1, pointerEvents: loaded ? "none" : "auto" }}>
         <div style={{ width: "44px", height: "44px", borderRadius: "50%", border: "1.5px solid rgba(255,255,255,0.1)", display: "flex", alignItems: "center", justifyContent: "center" }}>
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.3)" strokeWidth="2"><polygon points="5 3 19 12 5 21 5 3"/></svg>
@@ -115,11 +114,12 @@ function LazyVideo({ src, aspectRatio = "9/16", borderRadius = "10px", priority 
 }
 
 /*
- * ─── PERF FIX #2: UGC videos — tighter rootMargin, metadata preload ───
- * Was 600px rootMargin (loads way too early on mobile).
- * Now 100px — only loads when nearly in viewport.
+ * ─── UgcVideo ───
+ * IO-based, 100px rootMargin.
+ * ugcPriorityIndex 2 (3rd in carousel = Codage Paris) loads immediately on intersect.
+ * Others get 800ms delay to avoid bandwidth contention.
  */
-function UgcVideo({ src, aspectRatio = "9/16", borderRadius = "10px" }) {
+function UgcVideo({ src, aspectRatio = "9/16", borderRadius = "10px", ugcPriorityIndex = -1 }) {
   const ref = useRef(null);
   const vidRef = useRef(null);
   const [shouldLoad, setShouldLoad] = useState(false);
@@ -129,11 +129,19 @@ function UgcVideo({ src, aspectRatio = "9/16", borderRadius = "10px" }) {
   useEffect(() => {
     const el = ref.current; if (!el) return;
     const obs = new IntersectionObserver(([e]) => {
-      if (e.isIntersecting) { setShouldLoad(true); obs.unobserve(el); }
-    }, { rootMargin: "100px" }); /* PERF FIX: was 600px */
+      if (e.isIntersecting) {
+        obs.unobserve(el);
+        const delay = ugcPriorityIndex === 2 ? 0 : 800;
+        if (delay === 0) {
+          setShouldLoad(true);
+        } else {
+          setTimeout(() => setShouldLoad(true), delay);
+        }
+      }
+    }, { rootMargin: "100px" });
     obs.observe(el);
     return () => obs.disconnect();
-  }, []);
+  }, [ugcPriorityIndex]);
 
   const toggleMute = (e) => {
     e.stopPropagation();
@@ -142,12 +150,11 @@ function UgcVideo({ src, aspectRatio = "9/16", borderRadius = "10px" }) {
 
   return (
     <div ref={ref} style={{ aspectRatio, borderRadius, overflow: "hidden", background: "#111", position: "relative", cursor: "pointer" }} onClick={toggleMute}>
-      {shouldLoad ? (
-        <video ref={vidRef} src={src} autoPlay muted loop playsInline
-          preload="metadata" /* PERF FIX: was "auto" */
+      {shouldLoad && (
+        <video ref={vidRef} src={src} autoPlay muted loop playsInline preload="metadata"
           onLoadedData={() => setLoaded(true)}
           style={{ width: "100%", height: "100%", objectFit: "cover", display: "block", opacity: loaded ? 1 : 0, transition: "opacity 0.6s ease" }} />
-      ) : null}
+      )}
       <div style={{ position: "absolute", inset: 0, background: "linear-gradient(160deg,#1a1520,#080808)", display: "flex", alignItems: "center", justifyContent: "center", transition: "opacity 0.6s ease", opacity: loaded ? 0 : 1, pointerEvents: loaded ? "none" : "auto" }}>
         <div style={{ width: "44px", height: "44px", borderRadius: "50%", border: "1.5px solid rgba(255,255,255,0.1)", display: "flex", alignItems: "center", justifyContent: "center" }}>
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.3)" strokeWidth="2"><polygon points="5 3 19 12 5 21 5 3"/></svg>
@@ -167,11 +174,8 @@ function UgcVideo({ src, aspectRatio = "9/16", borderRadius = "10px" }) {
 }
 
 /*
- * ─── PERF FIX #3: LazyImage component with IntersectionObserver ───
- * Replaces bare <img loading="lazy"> with proper IO-based loading.
- * loading="lazy" is unreliable across browsers and has no rootMargin control.
- * Also adds width/height via aspect-ratio to prevent layout shift (CLS).
- * Also adds decoding="async" to avoid blocking the main thread.
+ * ─── LazyImage ───
+ * IO-based, 150px rootMargin. decoding="async". Placeholder shimmer.
  */
 function LazyImage({ src, aspectRatio = "9/16", borderRadius = "10px" }) {
   const ref = useRef(null);
@@ -189,30 +193,19 @@ function LazyImage({ src, aspectRatio = "9/16", borderRadius = "10px" }) {
 
   return (
     <div ref={ref} style={{ aspectRatio, borderRadius, overflow: "hidden", background: "#111", position: "relative" }}>
-      {shouldLoad ? (
-        <img
-          src={src}
-          alt=""
-          decoding="async"
+      {shouldLoad && (
+        <img src={src} alt="" decoding="async"
           onLoad={() => setLoaded(true)}
-          style={{
-            width: "100%", height: "100%", objectFit: "cover", display: "block",
-            opacity: loaded ? 1 : 0, transition: "opacity 0.4s ease",
-          }}
-        />
-      ) : null}
+          style={{ width: "100%", height: "100%", objectFit: "cover", display: "block", opacity: loaded ? 1 : 0, transition: "opacity 0.4s ease" }} />
+      )}
       {!loaded && (
-        <div style={{
-          position: "absolute", inset: 0,
-          background: "linear-gradient(160deg,#1a1520,#080808)",
-          transition: "opacity 0.4s ease",
-        }} />
+        <div style={{ position: "absolute", inset: 0, background: "linear-gradient(160deg,#1a1520,#080808)", transition: "opacity 0.4s ease" }} />
       )}
     </div>
   );
 }
 
-function MediaSlot({ type, src, aspectRatio = "9/16", borderRadius = "10px", priority = false, priorityIndex = 0, ugc = false }) {
+function MediaSlot({ type, src, aspectRatio = "9/16", borderRadius = "10px", priority = false, priorityIndex = 0, ugc = false, ugcPriorityIndex = -1 }) {
   if (!src) {
     return (
       <div style={{ aspectRatio, borderRadius, background: "linear-gradient(160deg,#1a1a2e,#080808)", position: "relative", overflow: "hidden" }}>
@@ -224,112 +217,15 @@ function MediaSlot({ type, src, aspectRatio = "9/16", borderRadius = "10px", pri
       </div>
     );
   }
-  if (type === "video" && ugc) return <UgcVideo src={src} aspectRatio={aspectRatio} borderRadius={borderRadius} />;
+  if (type === "video" && ugc) return <UgcVideo src={src} aspectRatio={aspectRatio} borderRadius={borderRadius} ugcPriorityIndex={ugcPriorityIndex} />;
   if (type === "video") return <LazyVideo src={src} aspectRatio={aspectRatio} borderRadius={borderRadius} priority={priority} priorityIndex={priorityIndex} />;
-  /* PERF FIX #3: Use LazyImage instead of bare <img> */
   return <LazyImage src={src} aspectRatio={aspectRatio} borderRadius={borderRadius} />;
 }
 
-function ArrowBtn({ direction, onClick, visible }) {
-  return (
-    <button onClick={onClick} aria-label={direction === "left" ? "Previous" : "Next"} style={{
-      position: "absolute", top: "50%", transform: "translateY(-60%)",
-      [direction === "left" ? "left" : "right"]: "8px",
-      width: "44px", height: "44px", borderRadius: "50%",
-      background: "rgba(10,10,10,0.7)", backdropFilter: "blur(12px)",
-      border: "1px solid rgba(255,255,255,0.1)", display: "flex", alignItems: "center", justifyContent: "center",
-      cursor: "pointer", zIndex: 10, opacity: visible ? 1 : 0, pointerEvents: visible ? "auto" : "none",
-      transition: "opacity 0.3s, background 0.3s",
-    }}
-      onMouseEnter={e => e.currentTarget.style.background = "rgba(30,30,30,0.9)"}
-      onMouseLeave={e => e.currentTarget.style.background = "rgba(10,10,10,0.7)"}>
-      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#F5F0EB" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-        {direction === "left" ? <polyline points="15 18 9 12 15 6"/> : <polyline points="9 6 15 12 9 18"/>}
-      </svg>
-    </button>
-  );
-}
-
-function Carousel({ items, cardWidth = 220, mobileCardWidth, gap = 16, renderCard }) {
-  const trackRef = useRef(null);
-  const [canLeft, setCanLeft] = useState(false);
-  const [canRight, setCanRight] = useState(true);
-  const [drag, setDrag] = useState(false);
-  const [startX, setStartX] = useState(0);
-  const [sl, setSl] = useState(0);
-  const [activeWidth, setActiveWidth] = useState(cardWidth);
-  const [isMobile, setIsMobile] = useState(typeof window !== "undefined" && window.innerWidth <= 768);
-
-  const getWidth = useCallback(() => {
-    return (mobileCardWidth && window.innerWidth <= 768) ? mobileCardWidth : cardWidth;
-  }, [cardWidth, mobileCardWidth]);
-
-  const checkScroll = useCallback(() => {
-    const el = trackRef.current; if (!el) return;
-    setCanLeft(el.scrollLeft > 4);
-    setCanRight(el.scrollLeft < el.scrollWidth - el.clientWidth - 4);
-  }, []);
-
-  const centreOnMiddle = useCallback((w) => {
-    const el = trackRef.current; if (!el) return;
-    const pad = 40;
-    const middleIndex = Math.floor(items.length / 2);
-    const middleOffset = pad + middleIndex * (w + gap);
-    const centreScroll = middleOffset - (el.clientWidth / 2) + (w / 2);
-    el.scrollLeft = Math.max(0, centreScroll);
-  }, [items.length, gap]);
-
-  useEffect(() => {
-    const mobile = window.innerWidth <= 768;
-    setIsMobile(mobile);
-    const w = getWidth();
-    setActiveWidth(w);
-    centreOnMiddle(w);
-    checkScroll();
-    const onScroll = () => checkScroll();
-    const onResize = () => {
-      setIsMobile(window.innerWidth <= 768);
-      const nw = getWidth();
-      setActiveWidth(nw);
-      centreOnMiddle(nw);
-      checkScroll();
-    };
-    const el = trackRef.current;
-    if (el) el.addEventListener("scroll", onScroll, { passive: true });
-    window.addEventListener("resize", onResize);
-    return () => { if (el) el.removeEventListener("scroll", onScroll); window.removeEventListener("resize", onResize); };
-  }, [items.length, cardWidth, mobileCardWidth, gap, checkScroll, getWidth, centreOnMiddle]);
-
-  const scroll = (dir) => {
-    const el = trackRef.current; if (!el) return;
-    el.scrollBy({ left: dir === "left" ? -(activeWidth + gap) : (activeWidth + gap), behavior: "smooth" });
-  };
-
-  return (
-    <div style={{ position: "relative", width: "100%" }}>
-      <ArrowBtn direction="left" onClick={() => scroll("left")} visible={canLeft} />
-      <ArrowBtn direction="right" onClick={() => scroll("right")} visible={canRight} />
-      <div ref={trackRef} className="ctrack"
-        onMouseDown={e => { setDrag(true); setStartX(e.pageX - trackRef.current.offsetLeft); setSl(trackRef.current.scrollLeft); }}
-        onMouseMove={e => { if (!drag) return; e.preventDefault(); trackRef.current.scrollLeft = sl - (e.pageX - trackRef.current.offsetLeft - startX) * 1.5; }}
-        onMouseUp={() => setDrag(false)} onMouseLeave={() => setDrag(false)}
-        onTouchStart={e => { setStartX(e.touches[0].pageX); setSl(trackRef.current.scrollLeft); }}
-        onTouchMove={e => { trackRef.current.scrollLeft = sl - (e.touches[0].pageX - startX); }}
-        style={{ display: "flex", gap: `${gap}px`, overflowX: "auto", cursor: drag ? "grabbing" : "grab", padding: "0 40px 20px", scrollbarWidth: "none", WebkitOverflowScrolling: "touch", scrollSnapType: isMobile ? "none" : "x mandatory" }}>
-        {items.map((item, i) => (
-          <div key={item.id || i} style={{ scrollSnapAlign: isMobile ? "none" : "center", flex: `0 0 ${activeWidth}px` }}>
-            {renderCard(item, i)}
-          </div>
-        ))}
-      </div>
-    </div>
-  );
-}
-
-function CarouselCard({ item, priority = false, priorityIndex = 0, ugc = false }) {
+function CarouselCard({ item, priority = false, priorityIndex = 0, ugc = false, ugcPriorityIndex = -1 }) {
   return (
     <div style={{ userSelect: "none" }}>
-      <MediaSlot type={item.type} src={item.src} priority={priority} priorityIndex={priorityIndex} ugc={ugc} />
+      <MediaSlot type={item.type} src={item.src} priority={priority} priorityIndex={priorityIndex} ugc={ugc} ugcPriorityIndex={ugcPriorityIndex} />
       {(item.label || item.sublabel) && (
         <div style={{ marginTop: "12px", padding: "0 4px", textAlign: "center" }}>
           {item.label && <div style={{ fontSize: "12px", color: "#F5F0EB", fontWeight: 400 }}>{item.label}</div>}
@@ -340,7 +236,7 @@ function CarouselCard({ item, priority = false, priorityIndex = 0, ugc = false }
   );
 }
 
-function GridImage({ item }) {
+const GridImage = memo(function GridImage({ item }) {
   const [h, setH] = useState(false);
   return (
     <div onMouseEnter={() => setH(true)} onMouseLeave={() => setH(false)} style={{
@@ -351,7 +247,7 @@ function GridImage({ item }) {
       <MediaSlot type={item.type} src={item.src} aspectRatio="4/5" borderRadius="0px" />
     </div>
   );
-}
+});
 
 function StepCard({ number, title, description }) {
   return (
@@ -359,6 +255,55 @@ function StepCard({ number, title, description }) {
       <div style={{ fontSize: "11px", letterSpacing: "3px", textTransform: "uppercase", color: "rgba(245,240,235,0.45)", marginBottom: "16px", fontWeight: 500 }}>Step {number}</div>
       <div style={{ fontSize: "18px", fontWeight: 600, color: "#F5F0EB", marginBottom: "12px", fontFamily: "var(--fh)" }}>{title}</div>
       <p style={{ fontSize: "14px", lineHeight: 1.7, color: "rgba(245,240,235,0.4)", fontWeight: 300 }}>{description}</p>
+    </div>
+  );
+}
+
+/*
+ * ─── SwipeRow ───
+ * Unified horizontal scroll for Hero, Editorial, UGC.
+ * Desktop: click-and-drag with grab cursor (both directions).
+ * Mobile: native touch scroll.
+ * No arrows. No snap. No scroll hijacking.
+ */
+function SwipeRow({ children, className = "" }) {
+  const trackRef = useRef(null);
+  const dragState = useRef({ active: false, startX: 0, scrollStart: 0 });
+
+  const onMouseDown = useCallback((e) => {
+    const el = trackRef.current; if (!el) return;
+    dragState.current = { active: true, startX: e.pageX, scrollStart: el.scrollLeft };
+    el.style.cursor = "grabbing";
+    el.style.userSelect = "none";
+  }, []);
+
+  const onMouseMove = useCallback((e) => {
+    if (!dragState.current.active) return;
+    e.preventDefault();
+    const dx = e.pageX - dragState.current.startX;
+    trackRef.current.scrollLeft = dragState.current.scrollStart - dx * 1.5;
+  }, []);
+
+  const onMouseUp = useCallback(() => {
+    dragState.current.active = false;
+    const el = trackRef.current; if (!el) return;
+    el.style.cursor = "grab";
+    el.style.userSelect = "";
+  }, []);
+
+  return (
+    <div ref={trackRef} className={className}
+      onMouseDown={onMouseDown}
+      onMouseMove={onMouseMove}
+      onMouseUp={onMouseUp}
+      onMouseLeave={onMouseUp}
+      style={{
+        display: "flex", gap: "16px", justifyContent: "center",
+        padding: "0 24px 20px", overflowX: "auto",
+        scrollbarWidth: "none", WebkitOverflowScrolling: "touch",
+        cursor: "grab",
+      }}>
+      {children}
     </div>
   );
 }
@@ -433,6 +378,7 @@ function LeadForm() {
 export default function App() {
   const [scrollY, setScrollY] = useState(0);
   const [menuOpen, setMenuOpen] = useState(false);
+
   useEffect(() => {
     let ticking = false;
     const fn = () => {
@@ -441,16 +387,11 @@ export default function App() {
     window.addEventListener("scroll", fn, { passive: true });
     return () => window.removeEventListener("scroll", fn);
   }, []);
+
   const go = id => { document.getElementById(id)?.scrollIntoView({ behavior: "smooth" }); setMenuOpen(false); };
 
   return (
     <div style={{ "--fh": "'Syne','Helvetica Neue',sans-serif", "--fb": "'Inter',-apple-system,sans-serif", minHeight: "100vh", background: "#0A0A0A", color: "#F5F0EB", fontFamily: "var(--fb)", overflowX: "hidden" }}>
-      {/*
-        ─── PERF FIX #4: Font loading strategy ───
-        • Added font-display=swap to prevent render blocking
-        • Split into preconnect + preload hints + non-blocking import
-        • Subset to only weights actually used (Syne 400-800, Inter 300-600)
-      */}
       <style>{`
         @import url('https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=Inter:wght@300;400;500;600&display=swap');
         *{margin:0;padding:0;box-sizing:border-box}html{scroll-behavior:smooth;-webkit-font-smoothing:antialiased}
@@ -472,10 +413,7 @@ export default function App() {
         @media(max-width:640px){.eg{grid-template-columns:repeat(2,1fr)}}
         .sr{display:flex;gap:20px;flex-wrap:wrap}
         @media(max-width:768px){.sr{flex-direction:column}}
-        .ctrack::-webkit-scrollbar{display:none}
-        .edit-row::-webkit-scrollbar{display:none}
-        .hero-row::-webkit-scrollbar{display:none}
-        .ugc-row::-webkit-scrollbar{display:none}
+        .swipe-row::-webkit-scrollbar{display:none}
         .hero-card{width:440px}
         .edit-card{width:340px}
         .ugc-card{width:340px}
@@ -511,7 +449,7 @@ export default function App() {
         <a href={CALENDLY_URL} target="_blank" rel="noopener noreferrer" className="bp" style={{ marginTop: "12px" }}>Book a Call</a>
       </div>}
 
-      {/* HERO — 3 cinematic reels, centred flexbox */}
+      {/* ════ HERO ════ */}
       <section id="hero" style={{ minHeight: "100vh", display: "flex", flexDirection: "column", justifyContent: "center", padding: "120px 0 60px", position: "relative" }}>
         <div style={{ position: "absolute", width: "600px", height: "600px", borderRadius: "50%", background: "radial-gradient(circle,rgba(245,240,235,0.02) 0%,transparent 70%)", top: "30%", left: "50%", transform: `translate(-50%,-50%) translateY(${scrollY * -0.06}px)`, pointerEvents: "none" }} />
         <div style={{ padding: "0 32px", maxWidth: "1100px", margin: "0 auto", width: "100%", textAlign: "center" }}>
@@ -530,14 +468,13 @@ export default function App() {
           <div className="mb" style={{ justifyContent: "center", marginBottom: "12px" }}>
             <span style={{ fontSize: "9px", letterSpacing: "3px", textTransform: "uppercase", color: "rgba(245,240,235,0.2)", fontWeight: 400 }}>Swipe to explore</span>
           </div>
-          <div className="hero-row" style={{ display: "flex", gap: "16px", justifyContent: "center", padding: "0 24px 20px", overflowX: "auto", scrollbarWidth: "none", WebkitOverflowScrolling: "touch" }}>
+          <SwipeRow className="swipe-row">
             {HERO_ITEMS.map((item, i) => (
               <div key={item.id} className="hero-card" style={{ flex: "0 0 auto" }}>
-                {/* PERF FIX #1: Pass priorityIndex for staggered loading */}
                 <CarouselCard item={item} priority={true} priorityIndex={i} />
               </div>
             ))}
-          </div>
+          </SwipeRow>
         </div>
         <div style={{ padding: "0 32px", marginTop: "40px", animation: "fadeUp 0.9s ease 0.85s both", textAlign: "center" }}>
           <a href={CALENDLY_URL} target="_blank" rel="noopener noreferrer" className="bp">Book a Discovery Call</a>
@@ -548,7 +485,7 @@ export default function App() {
         </div>
       </section>
 
-      {/* EDITORIAL — 6 luxury images, swipeable row */}
+      {/* ════ EDITORIAL ════ */}
       <section id="work" className="mob-sec" style={{ padding: "80px 0 100px" }}>
         <div style={{ padding: "0 32px", maxWidth: "1100px", margin: "0 auto", textAlign: "center" }}>
           <Reveal><div className="sl">The Work</div><h2 className="sh">Luxury <span style={{ fontWeight: 400, color: "rgba(245,240,235,0.45)" }}>editorial</span></h2></Reveal>
@@ -557,18 +494,18 @@ export default function App() {
           <div className="mb" style={{ justifyContent: "center", marginBottom: "12px" }}>
             <span style={{ fontSize: "9px", letterSpacing: "3px", textTransform: "uppercase", color: "rgba(245,240,235,0.2)", fontWeight: 400 }}>Swipe to explore</span>
           </div>
-          <div className="edit-row" style={{ display: "flex", gap: "16px", justifyContent: "center", padding: "0 24px 20px", overflowX: "auto", scrollbarWidth: "none", WebkitOverflowScrolling: "touch" }}>
+          <SwipeRow className="swipe-row">
             {EDIT_ITEMS.map((item) => (
               <div key={item.id} className="edit-card" style={{ flex: "0 0 auto" }}>
                 <CarouselCard item={item} />
               </div>
             ))}
-          </div>
+          </SwipeRow>
         </Reveal>
         <Reveal><div style={{ textAlign: "center", marginTop: "40px" }}><a href={CALENDLY_URL} target="_blank" rel="noopener noreferrer" className="bg">Like what you see? Let's talk</a></div></Reveal>
       </section>
 
-      {/* UGC — 5 videos */}
+      {/* ════ UGC ════ */}
       <section id="ugc" className="mob-sec" style={{ padding: "80px 0 100px" }}>
         <div style={{ padding: "0 32px", maxWidth: "1100px", margin: "0 auto", textAlign: "center" }}>
           <Reveal><div className="sl">UGC</div><h2 className="sh">Scroll-stopping <span style={{ fontWeight: 400, color: "rgba(245,240,235,0.45)" }}>UGC</span></h2></Reveal>
@@ -577,18 +514,18 @@ export default function App() {
           <div className="mb" style={{ justifyContent: "center", marginBottom: "12px" }}>
             <span style={{ fontSize: "9px", letterSpacing: "3px", textTransform: "uppercase", color: "rgba(245,240,235,0.2)", fontWeight: 400 }}>Swipe to explore</span>
           </div>
-          <div className="ugc-row" style={{ display: "flex", gap: "16px", justifyContent: "center", padding: "0 24px 20px", overflowX: "auto", scrollbarWidth: "none", WebkitOverflowScrolling: "touch" }}>
-            {UGC_ITEMS.map((item) => (
+          <SwipeRow className="swipe-row">
+            {UGC_ITEMS.map((item, i) => (
               <div key={item.id} className="ugc-card" style={{ flex: "0 0 auto" }}>
-                <CarouselCard item={item} ugc={true} />
+                <CarouselCard item={item} ugc={true} ugcPriorityIndex={i} />
               </div>
             ))}
-          </div>
+          </SwipeRow>
         </Reveal>
         <Reveal><div style={{ textAlign: "center", marginTop: "40px" }}><a href={CALENDLY_URL} target="_blank" rel="noopener noreferrer" className="bg">Get this for your brand</a></div></Reveal>
       </section>
 
-      {/* LEAD CAPTURE */}
+      {/* ════ LEAD CAPTURE ════ */}
       <section className="mob-cta" style={{ padding: "100px 24px", background: "linear-gradient(180deg,#0A0A0A 0%,#0d0d0d 50%,#0A0A0A 100%)" }}>
         <Reveal>
           <div style={{ maxWidth: "520px", margin: "0 auto", textAlign: "center" }}>
@@ -603,14 +540,14 @@ export default function App() {
         </Reveal>
       </section>
 
-      {/* GRID */}
+      {/* ════ GRID ════ */}
       <section className="sp" style={{ textAlign: "center" }}>
         <Reveal><div className="sl">Editorial & Product</div><h2 className="sh">The full <span style={{ fontWeight: 400, color: "rgba(245,240,235,0.45)" }}>content ecosystem</span></h2></Reveal>
         <div className="eg">{GRID_ITEMS.map((item, i) => <Reveal key={i} delay={i * 0.05}><GridImage item={item} /></Reveal>)}</div>
         <Reveal><div style={{ marginTop: "48px" }}><a href={CALENDLY_URL} target="_blank" rel="noopener noreferrer" className="bp">Book a Discovery Call</a></div></Reveal>
       </section>
 
-      {/* WHAT THIS REPLACES */}
+      {/* ════ WHAT THIS REPLACES ════ */}
       <section className="mob-cta" style={{ padding: "120px 24px", textAlign: "center", background: "linear-gradient(180deg,#0A0A0A 0%,#0e0e0e 50%,#0A0A0A 100%)" }}>
         <Reveal>
           <div style={{ maxWidth: "700px", margin: "0 auto" }}>
@@ -624,7 +561,7 @@ export default function App() {
         </Reveal>
       </section>
 
-      {/* HOW IT WORKS */}
+      {/* ════ HOW IT WORKS ════ */}
       <section className="sp" style={{ textAlign: "center" }}>
         <Reveal><div className="sl">Process</div><h2 className="sh">How it <span style={{ fontWeight: 400, color: "rgba(245,240,235,0.45)" }}>works</span></h2></Reveal>
         <Reveal delay={0.1}>
@@ -637,7 +574,7 @@ export default function App() {
         <Reveal><div style={{ marginTop: "48px" }}><a href={CALENDLY_URL} target="_blank" rel="noopener noreferrer" className="bg">Book a Discovery Call</a></div></Reveal>
       </section>
 
-      {/* ABOUT */}
+      {/* ════ ABOUT ════ */}
       <section id="about" className="sp" style={{ textAlign: "center" }}>
         <Reveal>
           <div style={{ maxWidth: "600px", margin: "0 auto" }}>
@@ -653,7 +590,7 @@ export default function App() {
         </Reveal>
       </section>
 
-      {/* FINAL CTA */}
+      {/* ════ FINAL CTA ════ */}
       <section className="mob-cta" style={{ padding: "120px 24px", textAlign: "center", background: "linear-gradient(180deg,#0A0A0A 0%,#0d0d0d 100%)" }}>
         <Reveal>
           <h2 style={{ fontFamily: "var(--fh)", fontSize: "clamp(28px,5vw,52px)", fontWeight: 700, lineHeight: 1.1, maxWidth: "700px", margin: "0 auto 28px" }}>Ready to replace your entire content production<span style={{ display: "block", fontWeight: 400, color: "rgba(245,240,235,0.45)", marginTop: "4px" }}>with one partner?</span></h2>
@@ -665,7 +602,7 @@ export default function App() {
         </Reveal>
       </section>
 
-      {/* FOOTER */}
+      {/* ════ FOOTER ════ */}
       <footer style={{ padding: "28px 32px", borderTop: "1px solid rgba(255,255,255,0.04)", display: "flex", flexDirection: "column", alignItems: "center", gap: "16px", textAlign: "center" }}>
         <div style={{ fontFamily: "var(--fh)", fontSize: "12px", fontWeight: 500, letterSpacing: "2px", textTransform: "uppercase", color: "rgba(245,240,235,0.45)" }}>Ben Lewis Studios</div>
         <div style={{ display: "flex", gap: "24px", alignItems: "center" }}>
