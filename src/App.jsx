@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef, useCallback } from "react";
 
-const CALENDLY_URL = "#";
+const CALENDLY_URL = "https://calendly.com/benlewisltd/30min";
 const LINKEDIN_URL = "https://www.linkedin.com/in/ben-lewis-466a3a310/";
 const INSTAGRAM_URL = "https://www.instagram.com/benlewisstudios/";
 const YOUTUBE_URL = "https://www.youtube.com/@benlewis7548";
@@ -13,7 +13,7 @@ const HERO_ITEMS = [
   { id: 3, label: "Campaign Film", type: "video", src: "/assets/hero-4.mp4" },
 ];
 
-/* ── EDITORIAL: 6 luxury images (hero images added as 1st and last) ── */
+/* ── EDITORIAL: 6 luxury images ── */
 const EDIT_ITEMS = [
   { id: 1, label: "Editorial Beauty", sublabel: "Cinematic portrait with dramatic lighting", type: "image", src: "/assets/hero-1.jpg" },
   { id: 2, label: "Luxury Skincare", sublabel: "Premium product photography with cinematic lighting", type: "image", src: "/assets/edit-1.jpg" },
@@ -23,13 +23,13 @@ const EDIT_ITEMS = [
   { id: 6, label: "Beauty Portrait", sublabel: "Premium editorial with natural beauty aesthetic", type: "image", src: "/assets/hero-5.jpg" },
 ];
 
-/* ── UGC: 5 videos (ugc-2 is best, centred at position 3) ── */
+/* ── UGC: 5 videos with real brand labels (order matches current site layout) ── */
 const UGC_ITEMS = [
-  { id: 1, label: "Morning Routine", sublabel: "GRWM routine with product integration", type: "video", src: "/assets/ugc-3.mp4" },
-  { id: 2, label: "Get Ready With Me", sublabel: "Direct-to-camera testimonial with product B-roll", type: "video", src: "/assets/ugc-1.mp4" },
-  { id: 3, label: "Product Review", sublabel: "Authentic product showcase with natural lighting", type: "video", src: "/assets/ugc-2.mp4" },
-  { id: 4, label: "First Impressions", sublabel: "Unboxing with texture shots and before-after", type: "video", src: "/assets/ugc-4.mp4" },
-  { id: 5, label: "Brand Spotlight", sublabel: "Full product showcase with lifestyle integration", type: "video", src: "/assets/ugc-5.mp4" },
+  { id: 1, label: "Nuria", sublabel: "Calm Mist with Rose Water & Oat Extract", type: "video", src: "/assets/ugc-3.mp4" },
+  { id: 2, label: "Faace", sublabel: "Menopause Face Cream", type: "video", src: "/assets/ugc-1.mp4" },
+  { id: 3, label: "Codage Paris", sublabel: "Moisturising Serum N°01", type: "video", src: "/assets/ugc-2.mp4" },
+  { id: 4, label: "Ritmo", sublabel: "Energy Gummies", type: "video", src: "/assets/ugc-4.mp4" },
+  { id: 5, label: "MuscleFier", sublabel: "INFRNO Pre-Workout", type: "video", src: "/assets/ugc-5.mp4" },
 ];
 
 /* ── GRID: 9 images (unchanged) ── */
@@ -63,6 +63,7 @@ function Reveal({ children, delay = 0, style = {} }) {
   return (<div ref={ref} style={{ opacity: vis ? 1 : 0, transform: vis ? "translateY(0)" : "translateY(20px)", transition: `opacity 0.6s ease ${delay}s, transform 0.6s cubic-bezier(0.25,0.46,0.45,0.94) ${delay}s`, willChange: "opacity, transform", ...style }}>{children}</div>);
 }
 
+/* Standard lazy video — muted, no user controls */
 function LazyVideo({ src, aspectRatio = "9/16", borderRadius = "10px", priority = false }) {
   const ref = useRef(null);
   const [inView, setInView] = useState(priority);
@@ -72,14 +73,14 @@ function LazyVideo({ src, aspectRatio = "9/16", borderRadius = "10px", priority 
     const el = ref.current; if (!el) return;
     const obs = new IntersectionObserver(([e]) => {
       if (e.isIntersecting) { setInView(true); obs.unobserve(el); }
-    }, { rootMargin: "400px" });
+    }, { rootMargin: "200px" });
     obs.observe(el);
     return () => obs.disconnect();
   }, [priority]);
   return (
     <div ref={ref} style={{ aspectRatio, borderRadius, overflow: "hidden", background: "#111", position: "relative" }}>
       {inView ? (
-        <video src={src} autoPlay muted loop playsInline
+        <video src={src} autoPlay muted loop playsInline preload="none"
           onLoadedData={() => setLoaded(true)}
           style={{ width: "100%", height: "100%", objectFit: "cover", display: "block", opacity: loaded || priority ? 1 : 0, transition: "opacity 0.5s ease" }} />
       ) : null}
@@ -94,7 +95,57 @@ function LazyVideo({ src, aspectRatio = "9/16", borderRadius = "10px", priority 
   );
 }
 
-function MediaSlot({ type, src, aspectRatio = "9/16", borderRadius = "10px", priority = false }) {
+/* UGC lazy video — with mute/unmute toggle */
+function UgcVideo({ src, aspectRatio = "9/16", borderRadius = "10px" }) {
+  const ref = useRef(null);
+  const vidRef = useRef(null);
+  const [inView, setInView] = useState(false);
+  const [loaded, setLoaded] = useState(false);
+  const [muted, setMuted] = useState(true);
+
+  useEffect(() => {
+    const el = ref.current; if (!el) return;
+    const obs = new IntersectionObserver(([e]) => {
+      if (e.isIntersecting) { setInView(true); obs.unobserve(el); }
+    }, { rootMargin: "200px" });
+    obs.observe(el);
+    return () => obs.disconnect();
+  }, []);
+
+  const toggleMute = (e) => {
+    e.stopPropagation();
+    if (vidRef.current) { vidRef.current.muted = !vidRef.current.muted; setMuted(!muted); }
+  };
+
+  return (
+    <div ref={ref} style={{ aspectRatio, borderRadius, overflow: "hidden", background: "#111", position: "relative", cursor: "pointer" }} onClick={toggleMute}>
+      {inView ? (
+        <video ref={vidRef} src={src} autoPlay muted loop playsInline preload="none"
+          onLoadedData={() => setLoaded(true)}
+          style={{ width: "100%", height: "100%", objectFit: "cover", display: "block", opacity: loaded ? 1 : 0, transition: "opacity 0.5s ease" }} />
+      ) : null}
+      {(!inView || !loaded) && (
+        <div style={{ position: "absolute", inset: 0, background: "linear-gradient(160deg,#1a1a2e,#080808)", display: "flex", alignItems: "center", justifyContent: "center", transition: "opacity 0.5s ease", opacity: loaded ? 0 : 1, pointerEvents: loaded ? "none" : "auto" }}>
+          <div style={{ width: "44px", height: "44px", borderRadius: "50%", border: "1.5px solid rgba(255,255,255,0.15)", display: "flex", alignItems: "center", justifyContent: "center" }}>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.4)" strokeWidth="2"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+          </div>
+        </div>
+      )}
+      {/* Mute/unmute indicator */}
+      {loaded && (
+        <div style={{ position: "absolute", bottom: "12px", right: "12px", width: "32px", height: "32px", borderRadius: "50%", background: "rgba(0,0,0,0.55)", backdropFilter: "blur(8px)", display: "flex", alignItems: "center", justifyContent: "center", transition: "opacity 0.3s", zIndex: 2 }}>
+          {muted ? (
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2" strokeLinecap="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><line x1="23" y1="9" x2="17" y2="15"/><line x1="17" y1="9" x2="23" y2="15"/></svg>
+          ) : (
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2" strokeLinecap="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"/></svg>
+          )}
+        </div>
+      )}
+    </div>
+  );
+}
+
+function MediaSlot({ type, src, aspectRatio = "9/16", borderRadius = "10px", priority = false, ugc = false }) {
   if (!src) {
     return (
       <div style={{ aspectRatio, borderRadius, background: "linear-gradient(160deg,#1a1a2e,#080808)", position: "relative", overflow: "hidden" }}>
@@ -106,6 +157,7 @@ function MediaSlot({ type, src, aspectRatio = "9/16", borderRadius = "10px", pri
       </div>
     );
   }
+  if (type === "video" && ugc) return <UgcVideo src={src} aspectRatio={aspectRatio} borderRadius={borderRadius} />;
   if (type === "video") return <LazyVideo src={src} aspectRatio={aspectRatio} borderRadius={borderRadius} priority={priority} />;
   return <img src={src} alt="" loading="lazy" style={{ width: "100%", aspectRatio, objectFit: "cover", borderRadius, display: "block" }} />;
 }
@@ -206,10 +258,10 @@ function Carousel({ items, cardWidth = 220, mobileCardWidth, gap = 16, renderCar
   );
 }
 
-function CarouselCard({ item, priority = false }) {
+function CarouselCard({ item, priority = false, ugc = false }) {
   return (
     <div style={{ userSelect: "none" }}>
-      <MediaSlot type={item.type} src={item.src} priority={priority} />
+      <MediaSlot type={item.type} src={item.src} priority={priority} ugc={ugc} />
       {(item.label || item.sublabel) && (
         <div style={{ marginTop: "12px", padding: "0 4px", textAlign: "center" }}>
           {item.label && <div style={{ fontSize: "12px", color: "#F5F0EB", fontWeight: 400 }}>{item.label}</div>}
@@ -245,15 +297,16 @@ function StepCard({ number, title, description }) {
 
 /* ── Lead Capture Form ── */
 function LeadForm() {
-  const [form, setForm] = useState({ brand: "", url: "", email: "" });
+  const [form, setForm] = useState({ firstName: "", brand: "", email: "" });
   const [sent, setSent] = useState(false);
   const update = (k, v) => setForm(p => ({ ...p, [k]: v }));
 
   const handleSubmit = (e) => {
     e.preventDefault();
+    if (!form.firstName || !form.brand || !form.email) return;
     const subject = encodeURIComponent(`Free UGC Video Request — ${form.brand}`);
-    const body = encodeURIComponent(`Brand: ${form.brand}\nProduct URL: ${form.url}\nEmail: ${form.email}`);
-    window.open(`mailto:${EMAIL}?subject=${subject}&body=${body}`, "_blank");
+    const body = encodeURIComponent(`First Name: ${form.firstName}\nBrand: ${form.brand}\nEmail: ${form.email}`);
+    window.location.href = `mailto:${EMAIL}?subject=${subject}&body=${body}`;
     setSent(true);
   };
 
@@ -275,17 +328,17 @@ function LeadForm() {
   }
 
   return (
-    <div onSubmit={handleSubmit} style={{ display: "flex", flexDirection: "column", gap: "16px", maxWidth: "420px", margin: "0 auto" }}>
-      <input type="text" placeholder="Brand name" value={form.brand} onChange={e => update("brand", e.target.value)} required
+    <form onSubmit={handleSubmit} style={{ display: "flex", flexDirection: "column", gap: "16px", maxWidth: "420px", margin: "0 auto" }}>
+      <input type="text" placeholder="First name" value={form.firstName} onChange={e => update("firstName", e.target.value)} required
         style={inputStyle} onFocus={e => e.target.style.borderColor = "rgba(255,255,255,0.25)"} onBlur={e => e.target.style.borderColor = "rgba(255,255,255,0.08)"} />
-      <input type="url" placeholder="Product URL" value={form.url} onChange={e => update("url", e.target.value)} required
+      <input type="text" placeholder="Brand name" value={form.brand} onChange={e => update("brand", e.target.value)} required
         style={inputStyle} onFocus={e => e.target.style.borderColor = "rgba(255,255,255,0.25)"} onBlur={e => e.target.style.borderColor = "rgba(255,255,255,0.08)"} />
       <input type="email" placeholder="Email address" value={form.email} onChange={e => update("email", e.target.value)} required
         style={inputStyle} onFocus={e => e.target.style.borderColor = "rgba(255,255,255,0.25)"} onBlur={e => e.target.style.borderColor = "rgba(255,255,255,0.08)"} />
-      <button type="submit" onClick={handleSubmit} className="bp" style={{ width: "100%", justifyContent: "center", marginTop: "8px", padding: "18px 36px" }}>
+      <button type="submit" className="bp" style={{ width: "100%", justifyContent: "center", marginTop: "8px", padding: "18px 36px" }}>
         Get Your Free Video
       </button>
-    </div>
+    </form>
   );
 }
 
@@ -350,7 +403,7 @@ export default function App() {
           <span className="nl" onClick={() => go("work")}>Work</span>
           <span className="nl" onClick={() => go("ugc")}>UGC</span>
           <span className="nl" onClick={() => go("about")}>About</span>
-          <a href={CALENDLY_URL} className="bp" style={{ padding: "10px 24px", fontSize: "10px" }}>Book a Call</a>
+          <a href={CALENDLY_URL} target="_blank" rel="noopener noreferrer" className="bp" style={{ padding: "10px 24px", fontSize: "10px" }}>Book a Call</a>
         </div>
         <button className="mb" onClick={() => setMenuOpen(!menuOpen)} style={{ background: "none", border: "none", cursor: "pointer", display: "flex", flexDirection: "column", gap: "5px", padding: "8px" }}>
           {[0, 1, 2].map(i => <div key={i} style={{ width: "22px", height: "1.5px", background: "#F5F0EB", transition: "all 0.3s", transform: menuOpen ? (i === 0 ? "rotate(45deg) translate(4.5px,4.5px)" : i === 1 ? "scaleX(0)" : "rotate(-45deg) translate(4.5px,-4.5px)") : "none", opacity: menuOpen && i === 1 ? 0 : 1 }} />)}
@@ -360,10 +413,10 @@ export default function App() {
         <span className="nl" style={{ fontSize: "16px" }} onClick={() => go("work")}>Work</span>
         <span className="nl" style={{ fontSize: "16px" }} onClick={() => go("ugc")}>UGC</span>
         <span className="nl" style={{ fontSize: "16px" }} onClick={() => go("about")}>About</span>
-        <a href={CALENDLY_URL} className="bp" style={{ marginTop: "12px" }}>Book a Call</a>
+        <a href={CALENDLY_URL} target="_blank" rel="noopener noreferrer" className="bp" style={{ marginTop: "12px" }}>Book a Call</a>
       </div>}
 
-      {/* HERO — 3 cinematic reels, larger cards */}
+      {/* HERO — 3 cinematic reels, centred flexbox */}
       <section id="hero" style={{ minHeight: "100vh", display: "flex", flexDirection: "column", justifyContent: "center", padding: "120px 0 60px", position: "relative" }}>
         <div style={{ position: "absolute", width: "600px", height: "600px", borderRadius: "50%", background: "radial-gradient(circle,rgba(245,240,235,0.02) 0%,transparent 70%)", top: "30%", left: "50%", transform: `translate(-50%,-50%) translateY(${scrollY * -0.06}px)`, pointerEvents: "none" }} />
         <div style={{ padding: "0 32px", maxWidth: "1100px", margin: "0 auto", width: "100%", textAlign: "center" }}>
@@ -383,15 +436,15 @@ export default function App() {
             <span style={{ fontSize: "9px", letterSpacing: "3px", textTransform: "uppercase", color: "rgba(245,240,235,0.2)", fontWeight: 400 }}>Swipe to explore</span>
           </div>
           <div className="hero-row" style={{ display: "flex", gap: "16px", justifyContent: "center", padding: "0 24px 20px", overflowX: "auto", scrollbarWidth: "none", WebkitOverflowScrolling: "touch" }}>
-            {HERO_ITEMS.map((item) => (
+            {HERO_ITEMS.map((item, i) => (
               <div key={item.id} className="hero-card" style={{ flex: "0 0 auto" }}>
-                <CarouselCard item={item} priority={true} />
+                <CarouselCard item={item} priority={i === 1} />
               </div>
             ))}
           </div>
         </div>
         <div style={{ padding: "0 32px", marginTop: "40px", animation: "fadeUp 0.9s ease 0.85s both", textAlign: "center" }}>
-          <a href={CALENDLY_URL} className="bp">Book a Discovery Call</a>
+          <a href={CALENDLY_URL} target="_blank" rel="noopener noreferrer" className="bp">Book a Discovery Call</a>
         </div>
         <div style={{ position: "absolute", bottom: "28px", left: "50%", transform: "translateX(-50%)", display: "flex", flexDirection: "column", alignItems: "center", gap: "6px", animation: "fadeIn 1s ease 1.2s both" }}>
           <span style={{ fontSize: "9px", letterSpacing: "3px", textTransform: "uppercase", color: "rgba(245,240,235,0.25)" }}>Scroll</span>
@@ -405,10 +458,10 @@ export default function App() {
           <Reveal><div className="sl">The Work</div><h2 className="sh">Luxury <span style={{ fontWeight: 400, color: "rgba(245,240,235,0.45)" }}>editorial</span></h2></Reveal>
         </div>
         <Reveal><Carousel items={EDIT_ITEMS} cardWidth={340} mobileCardWidth={280} renderCard={(item) => <CarouselCard item={item} />} /></Reveal>
-        <Reveal><div style={{ textAlign: "center", marginTop: "40px" }}><a href={CALENDLY_URL} className="bg">Like what you see? Let's talk</a></div></Reveal>
+        <Reveal><div style={{ textAlign: "center", marginTop: "40px" }}><a href={CALENDLY_URL} target="_blank" rel="noopener noreferrer" className="bg">Like what you see? Let's talk</a></div></Reveal>
       </section>
 
-      {/* UGC — 5 videos */}
+      {/* UGC — 5 videos, flexbox row with mute toggle */}
       <section id="ugc" className="mob-sec" style={{ padding: "80px 0 100px" }}>
         <div style={{ padding: "0 32px", maxWidth: "1100px", margin: "0 auto", textAlign: "center" }}>
           <Reveal><div className="sl">UGC</div><h2 className="sh">Scroll-stopping <span style={{ fontWeight: 400, color: "rgba(245,240,235,0.45)" }}>UGC</span></h2></Reveal>
@@ -420,15 +473,15 @@ export default function App() {
           <div className="ugc-row" style={{ display: "flex", gap: "16px", justifyContent: "center", padding: "0 24px 20px", overflowX: "auto", scrollbarWidth: "none", WebkitOverflowScrolling: "touch" }}>
             {UGC_ITEMS.map((item) => (
               <div key={item.id} className="ugc-card" style={{ flex: "0 0 auto" }}>
-                <CarouselCard item={item} />
+                <CarouselCard item={item} ugc={true} />
               </div>
             ))}
           </div>
         </Reveal>
-        <Reveal><div style={{ textAlign: "center", marginTop: "40px" }}><a href={CALENDLY_URL} className="bg">Get this for your brand</a></div></Reveal>
+        <Reveal><div style={{ textAlign: "center", marginTop: "40px" }}><a href={CALENDLY_URL} target="_blank" rel="noopener noreferrer" className="bg">Get this for your brand</a></div></Reveal>
       </section>
 
-      {/* LEAD CAPTURE — right after UGC */}
+      {/* LEAD CAPTURE */}
       <section className="mob-cta" style={{ padding: "100px 24px", background: "linear-gradient(180deg,#0A0A0A 0%,#0d0d0d 50%,#0A0A0A 100%)" }}>
         <Reveal>
           <div style={{ maxWidth: "520px", margin: "0 auto", textAlign: "center" }}>
@@ -447,7 +500,7 @@ export default function App() {
       <section className="sp" style={{ textAlign: "center" }}>
         <Reveal><div className="sl">Editorial & Product</div><h2 className="sh">The full <span style={{ fontWeight: 400, color: "rgba(245,240,235,0.45)" }}>content ecosystem</span></h2></Reveal>
         <div className="eg">{GRID_ITEMS.map((item, i) => <Reveal key={i} delay={i * 0.05}><GridImage item={item} /></Reveal>)}</div>
-        <Reveal><div style={{ marginTop: "48px" }}><a href={CALENDLY_URL} className="bp">Book a Discovery Call</a></div></Reveal>
+        <Reveal><div style={{ marginTop: "48px" }}><a href={CALENDLY_URL} target="_blank" rel="noopener noreferrer" className="bp">Book a Discovery Call</a></div></Reveal>
       </section>
 
       {/* WHAT THIS REPLACES */}
@@ -459,7 +512,7 @@ export default function App() {
             <p style={{ fontSize: "15px", lineHeight: 1.8, color: "rgba(245,240,235,0.45)", maxWidth: "480px", margin: "0 auto 12px", fontWeight: 300 }}>Photographers. Videographers. UGC creators. Content agencies. Studio hire. Model fees.</p>
             <p style={{ fontFamily: "var(--fh)", fontSize: "clamp(22px,3.5vw,36px)", fontWeight: 600, color: "#F5F0EB", marginTop: "40px", lineHeight: 1.2 }}>We replace all of it.</p>
             <p style={{ fontSize: "15px", color: "rgba(245,240,235,0.45)", fontWeight: 300, marginTop: "16px" }}>One partner. Campaign-grade output. A fraction of the cost.</p>
-            <div style={{ marginTop: "44px" }}><a href={CALENDLY_URL} className="bp">See How It Works</a></div>
+            <div style={{ marginTop: "44px" }}><a href={CALENDLY_URL} target="_blank" rel="noopener noreferrer" className="bp">See How It Works</a></div>
           </div>
         </Reveal>
       </section>
@@ -474,7 +527,7 @@ export default function App() {
             <StepCard number="03" title="Deliver & Scale" description="You receive ready-to-post content every month. We optimise based on performance and scale what works." />
           </div>
         </Reveal>
-        <Reveal><div style={{ marginTop: "48px" }}><a href={CALENDLY_URL} className="bg">Book a Discovery Call</a></div></Reveal>
+        <Reveal><div style={{ marginTop: "48px" }}><a href={CALENDLY_URL} target="_blank" rel="noopener noreferrer" className="bg">Book a Discovery Call</a></div></Reveal>
       </section>
 
       {/* ABOUT */}
@@ -488,7 +541,7 @@ export default function App() {
             <h2 style={{ fontFamily: "var(--fh)", fontSize: "clamp(24px,3.5vw,36px)", fontWeight: 600, lineHeight: 1.2, marginBottom: "20px" }}>Ben Lewis</h2>
             <p style={{ fontSize: "15px", lineHeight: 1.8, color: "rgba(245,240,235,0.45)", fontWeight: 300, maxWidth: "480px", margin: "0 auto" }}>I build AI-powered content production systems that give DTC beauty brands campaign-grade content without the traditional production overhead. My work spans editorial fashion, skincare campaigns, and cinematic brand films.</p>
             <p style={{ fontSize: "15px", lineHeight: 1.8, color: "rgba(245,240,235,0.45)", fontWeight: 300, maxWidth: "480px", margin: "16px auto 0" }}>One partner replaces an entire production team — photographers, videographers, UGC creators, stylists, and studio sessions. You get the output. I handle the rest.</p>
-            <div style={{ marginTop: "36px" }}><a href={CALENDLY_URL} className="bp">Book a Discovery Call</a></div>
+            <div style={{ marginTop: "36px" }}><a href={CALENDLY_URL} target="_blank" rel="noopener noreferrer" className="bp">Book a Discovery Call</a></div>
           </div>
         </Reveal>
       </section>
@@ -499,7 +552,7 @@ export default function App() {
           <h2 style={{ fontFamily: "var(--fh)", fontSize: "clamp(28px,5vw,52px)", fontWeight: 700, lineHeight: 1.1, maxWidth: "700px", margin: "0 auto 28px" }}>Ready to replace your entire content production<span style={{ display: "block", fontWeight: 400, color: "rgba(245,240,235,0.45)", marginTop: "4px" }}>with one partner?</span></h2>
           <p style={{ fontSize: "15px", color: "rgba(245,240,235,0.45)", fontWeight: 300, maxWidth: "420px", margin: "0 auto 44px", lineHeight: 1.7 }}>15-minute discovery call. No pitch deck. Just a conversation about your content and how to fix it.</p>
           <div style={{ display: "flex", gap: "16px", justifyContent: "center", flexWrap: "wrap" }}>
-            <a href={CALENDLY_URL} className="bp">Book a Discovery Call</a>
+            <a href={CALENDLY_URL} target="_blank" rel="noopener noreferrer" className="bp">Book a Discovery Call</a>
             <a href={LINKEDIN_URL} target="_blank" rel="noopener noreferrer" className="bg">Connect on LinkedIn</a>
           </div>
         </Reveal>
