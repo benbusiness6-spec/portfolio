@@ -253,34 +253,50 @@ function StepCard({ number, title, description }) {
 
 /*
  * ─── SwipeRow ───
- * Unified horizontal scroll for Hero, Editorial, UGC.
- * Desktop: click-and-drag with grab cursor (both directions).
- * Mobile: native touch scroll.
- * centreIndex: if provided, scrolls to centre that child on mount + resize.
+ * Flat flex container with overflow scroll. No inner wrapper.
+ * centreIndex: scrolls to centre that child on mount + resize.
+ * Edge padding is added dynamically so any card (including first/last)
+ * can be scrolled to the exact centre of the viewport.
+ * Desktop: click-and-drag. Mobile: native touch.
  */
 function SwipeRow({ children, className = "", centreIndex = -1 }) {
   const trackRef = useRef(null);
-  const innerRef = useRef(null);
   const dragState = useRef({ active: false, startX: 0, scrollStart: 0 });
 
   useEffect(() => {
-    if (centreIndex < 0) return;
+    const el = trackRef.current;
+    if (!el) return;
+
     const centre = () => {
-      const outer = trackRef.current;
-      const inner = innerRef.current;
-      if (!outer || !inner) return;
-      const cards = inner.children;
-      if (!cards[centreIndex]) return;
-      const card = cards[centreIndex];
-      /* card.offsetLeft is relative to inner wrapper, add inner's offset from outer */
-      const cardCentreInOuter = inner.offsetLeft + card.offsetLeft + card.offsetWidth / 2;
-      const scrollTarget = cardCentreInOuter - outer.clientWidth / 2;
-      outer.scrollLeft = Math.max(0, scrollTarget);
+      const cards = Array.from(el.children);
+      /* Skip if no cards or only padding spacers */
+      if (cards.length === 0) return;
+
+      /* Calculate edge padding so any card can reach dead centre */
+      const viewportW = el.clientWidth;
+      const firstCard = cards[0];
+      const lastCard = cards[cards.length - 1];
+
+      /* Set padding so first card's centre and last card's centre can align with viewport centre */
+      const padLeft = Math.max(0, (viewportW / 2) - (firstCard.offsetWidth / 2));
+      const padRight = Math.max(0, (viewportW / 2) - (lastCard.offsetWidth / 2));
+      el.style.paddingLeft = padLeft + "px";
+      el.style.paddingRight = padRight + "px";
+
+      /* Scroll to centreIndex */
+      if (centreIndex >= 0 && cards[centreIndex]) {
+        const card = cards[centreIndex];
+        const cardLeft = card.offsetLeft;
+        const cardCentre = cardLeft + card.offsetWidth / 2;
+        el.scrollLeft = cardCentre - viewportW / 2;
+      }
     };
-    centre();
+
+    /* Run after a frame so card widths from CSS classes are resolved */
+    requestAnimationFrame(centre);
     window.addEventListener("resize", centre);
     return () => window.removeEventListener("resize", centre);
-  }, [centreIndex]);
+  }, [centreIndex, children]);
 
   const onMouseDown = useCallback((e) => {
     const el = trackRef.current; if (!el) return;
@@ -310,14 +326,13 @@ function SwipeRow({ children, className = "", centreIndex = -1 }) {
       onMouseUp={onMouseUp}
       onMouseLeave={onMouseUp}
       style={{
-        display: "flex",
-        padding: "0 24px 20px", overflowX: "auto",
+        display: "flex", gap: "16px",
+        paddingTop: 0, paddingBottom: "20px",
+        overflowX: "auto",
         scrollbarWidth: "none", WebkitOverflowScrolling: "touch",
         cursor: "grab",
       }}>
-      <div ref={innerRef} style={{ display: "flex", gap: "16px", margin: "0 auto", flexShrink: 0 }}>
-        {children}
-      </div>
+      {children}
     </div>
   );
 }
