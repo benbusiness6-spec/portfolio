@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef, useCallback, memo } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
 
 const CALENDLY_URL = "https://calendly.com/benlewisltd/30min";
 const LINKEDIN_URL = "https://www.linkedin.com/in/ben-lewis-466a3a310/";
@@ -6,7 +6,7 @@ const INSTAGRAM_URL = "https://www.instagram.com/benlewisstudios/";
 const YOUTUBE_URL = "https://www.youtube.com/@benlewis7548";
 const EMAIL = "ben@benlewisltd.com";
 
-/* ── HERO: 3 cinematic reels ── */
+/* ── HERO: 3 cinematic reels only ── */
 const HERO_ITEMS = [
   { id: 1, label: "Cinematic Reel", type: "video", src: "/assets/hero-2.mp4" },
   { id: 2, label: "Brand Film", type: "video", src: "/assets/hero-3.mp4" },
@@ -15,15 +15,15 @@ const HERO_ITEMS = [
 
 /* ── EDITORIAL: 6 luxury images ── */
 const EDIT_ITEMS = [
-  { id: 1, label: "Editorial Beauty", sublabel: "Cinematic portrait with dramatic lighting", type: "image", src: "/assets/hero-1-c.webp" },
-  { id: 2, label: "Luxury Skincare", sublabel: "Premium product photography with cinematic lighting", type: "image", src: "/assets/edit-1-c.webp" },
-  { id: 3, label: "Beauty Editorial", sublabel: "High-end editorial series for skincare campaigns", type: "image", src: "/assets/edit-2-c.webp" },
-  { id: 4, label: "Product Campaign", sublabel: "Hero shots for e-commerce and brand retail", type: "image", src: "/assets/edit-3-c.webp" },
-  { id: 5, label: "Fashion Editorial", sublabel: "Editorial beauty with dramatic composition", type: "image", src: "/assets/edit-4-c.webp" },
-  { id: 6, label: "Beauty Portrait", sublabel: "Premium editorial with natural beauty aesthetic", type: "image", src: "/assets/hero-5-c.webp" },
+  { id: 1, label: "Editorial Beauty", sublabel: "Cinematic portrait with dramatic lighting", type: "image", src: "/assets/hero-1.jpg" },
+  { id: 2, label: "Luxury Skincare", sublabel: "Premium product photography with cinematic lighting", type: "image", src: "/assets/edit-1.jpg" },
+  { id: 3, label: "Beauty Editorial", sublabel: "High-end editorial series for skincare campaigns", type: "image", src: "/assets/edit-2.jpg" },
+  { id: 4, label: "Product Campaign", sublabel: "Hero shots for e-commerce and brand retail", type: "image", src: "/assets/edit-3.jpg" },
+  { id: 5, label: "Fashion Editorial", sublabel: "Editorial beauty with dramatic composition", type: "image", src: "/assets/edit-4.jpg" },
+  { id: 6, label: "Beauty Portrait", sublabel: "Premium editorial with natural beauty aesthetic", type: "image", src: "/assets/hero-5.jpg" },
 ];
 
-/* ── UGC: 5 videos — 3rd in carousel (index 2, Codage Paris) loads first ── */
+/* ── UGC: 5 videos with real brand labels (order matches current site layout) ── */
 const UGC_ITEMS = [
   { id: 1, label: "Nuria", sublabel: "Calm Mist with Rose Water & Oat Extract", type: "video", src: "/assets/ugc-3.mp4" },
   { id: 2, label: "Faace", sublabel: "Menopause Face Cream", type: "video", src: "/assets/ugc-1.mp4" },
@@ -32,20 +32,20 @@ const UGC_ITEMS = [
   { id: 5, label: "MuscleFier", sublabel: "INFRNO Pre-Workout", type: "video", src: "/assets/ugc-5.mp4" },
 ];
 
-/* ── GRID: 9 images ── */
+/* ── GRID: 9 images (unchanged) ── */
 const GRID_ITEMS = [
-  { type: "image", src: "/assets/15-c.webp" },
-  { type: "image", src: "/assets/16-c.webp" },
-  { type: "image", src: "/assets/17-c.webp" },
-  { type: "image", src: "/assets/18-c.webp" },
-  { type: "image", src: "/assets/19-c.webp" },
-  { type: "image", src: "/assets/20-c.webp" },
-  { type: "image", src: "/assets/21-c.webp" },
-  { type: "image", src: "/assets/22-c.webp" },
-  { type: "image", src: "/assets/23-c.webp" },
+  { type: "image", src: "/assets/15.png" },
+  { type: "image", src: "/assets/16.png" },
+  { type: "image", src: "/assets/17.png" },
+  { type: "image", src: "/assets/18.jpg" },
+  { type: "image", src: "/assets/19.jpg" },
+  { type: "image", src: "/assets/20.jpg" },
+  { type: "image", src: "/assets/21.png" },
+  { type: "image", src: "/assets/22.png" },
+  { type: "image", src: "/assets/23.png" },
 ];
 
-/* ═══════════ HOOKS ═══════════ */
+/* ═══════════ COMPONENTS ═══════════ */
 
 function useInView(threshold = 0.1) {
   const ref = useRef(null);
@@ -58,36 +58,26 @@ function useInView(threshold = 0.1) {
   return [ref, visible];
 }
 
-/* ═══════════ COMPONENTS ═══════════ */
-
 function Reveal({ children, delay = 0, style = {} }) {
   const [ref, vis] = useInView(0.05);
   return (<div ref={ref} style={{ opacity: vis ? 1 : 0, transform: vis ? "translateY(0)" : "translateY(20px)", transition: `opacity 0.6s ease ${delay}s, transform 0.6s cubic-bezier(0.25,0.46,0.45,0.94) ${delay}s`, willChange: "opacity, transform", ...style }}>{children}</div>);
 }
 
-/*
- * ─── LazyVideo ───
- * Hero: centre reel (priorityIndex 1) loads first, others 1500ms after.
- * Non-priority: IO-based, 200px rootMargin.
- * All use preload="metadata" (~50KB not entire file).
- */
-function LazyVideo({ src, aspectRatio = "9/16", borderRadius = "10px", priority = false, priorityIndex = 0 }) {
+/* Standard lazy video — muted, no user controls, poster placeholder */
+function LazyVideo({ src, aspectRatio = "9/16", borderRadius = "10px", priority = false }) {
   const ref = useRef(null);
   const [shouldLoad, setShouldLoad] = useState(false);
   const [loaded, setLoaded] = useState(false);
 
+  /* Priority videos: defer until after first paint so text renders first */
   useEffect(() => {
     if (priority) {
-      const delay = priorityIndex === 1 ? 0 : 1500;
       if ('requestIdleCallback' in window) {
-        const timeout = setTimeout(() => {
-          requestIdleCallback(() => setShouldLoad(true), { timeout: 500 });
-        }, delay);
-        return () => clearTimeout(timeout);
+        requestIdleCallback(() => setShouldLoad(true), { timeout: 300 });
       } else {
-        const timeout = setTimeout(() => setShouldLoad(true), 200 + delay);
-        return () => clearTimeout(timeout);
+        setTimeout(() => setShouldLoad(true), 100);
       }
+      return;
     }
     const el = ref.current; if (!el) return;
     const obs = new IntersectionObserver(([e]) => {
@@ -95,15 +85,15 @@ function LazyVideo({ src, aspectRatio = "9/16", borderRadius = "10px", priority 
     }, { rootMargin: "200px" });
     obs.observe(el);
     return () => obs.disconnect();
-  }, [priority, priorityIndex]);
+  }, [priority]);
 
   return (
     <div ref={ref} style={{ aspectRatio, borderRadius, overflow: "hidden", background: "#111", position: "relative" }}>
-      {shouldLoad && (
-        <video src={src} autoPlay muted loop playsInline preload="metadata"
+      {shouldLoad ? (
+        <video src={src} autoPlay muted loop playsInline preload="auto"
           onLoadedData={() => setLoaded(true)}
           style={{ width: "100%", height: "100%", objectFit: "cover", display: "block", opacity: loaded ? 1 : 0, transition: "opacity 0.6s ease" }} />
-      )}
+      ) : null}
       <div style={{ position: "absolute", inset: 0, background: "linear-gradient(160deg,#1a1520,#080808)", display: "flex", alignItems: "center", justifyContent: "center", transition: "opacity 0.6s ease", opacity: loaded ? 0 : 1, pointerEvents: loaded ? "none" : "auto" }}>
         <div style={{ width: "44px", height: "44px", borderRadius: "50%", border: "1.5px solid rgba(255,255,255,0.1)", display: "flex", alignItems: "center", justifyContent: "center" }}>
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.3)" strokeWidth="2"><polygon points="5 3 19 12 5 21 5 3"/></svg>
@@ -113,13 +103,8 @@ function LazyVideo({ src, aspectRatio = "9/16", borderRadius = "10px", priority 
   );
 }
 
-/*
- * ─── UgcVideo ───
- * IO-based, 100px rootMargin.
- * ugcPriorityIndex 2 (3rd in carousel = Codage Paris) loads immediately on intersect.
- * Others get 800ms delay to avoid bandwidth contention.
- */
-function UgcVideo({ src, aspectRatio = "9/16", borderRadius = "10px", ugcPriorityIndex = -1 }) {
+/* UGC lazy video — with mute/unmute toggle */
+function UgcVideo({ src, aspectRatio = "9/16", borderRadius = "10px" }) {
   const ref = useRef(null);
   const vidRef = useRef(null);
   const [shouldLoad, setShouldLoad] = useState(false);
@@ -130,10 +115,10 @@ function UgcVideo({ src, aspectRatio = "9/16", borderRadius = "10px", ugcPriorit
     const el = ref.current; if (!el) return;
     const obs = new IntersectionObserver(([e]) => {
       if (e.isIntersecting) { setShouldLoad(true); obs.unobserve(el); }
-    }, { rootMargin: "100px" });
+    }, { rootMargin: "600px" });
     obs.observe(el);
     return () => obs.disconnect();
-  }, [ugcPriorityIndex]);
+  }, []);
 
   const toggleMute = (e) => {
     e.stopPropagation();
@@ -142,16 +127,17 @@ function UgcVideo({ src, aspectRatio = "9/16", borderRadius = "10px", ugcPriorit
 
   return (
     <div ref={ref} style={{ aspectRatio, borderRadius, overflow: "hidden", background: "#111", position: "relative", cursor: "pointer" }} onClick={toggleMute}>
-      {shouldLoad && (
-        <video ref={vidRef} src={src} autoPlay muted loop playsInline preload="metadata"
+      {shouldLoad ? (
+        <video ref={vidRef} src={src} autoPlay muted loop playsInline preload="auto"
           onLoadedData={() => setLoaded(true)}
           style={{ width: "100%", height: "100%", objectFit: "cover", display: "block", opacity: loaded ? 1 : 0, transition: "opacity 0.6s ease" }} />
-      )}
+      ) : null}
       <div style={{ position: "absolute", inset: 0, background: "linear-gradient(160deg,#1a1520,#080808)", display: "flex", alignItems: "center", justifyContent: "center", transition: "opacity 0.6s ease", opacity: loaded ? 0 : 1, pointerEvents: loaded ? "none" : "auto" }}>
         <div style={{ width: "44px", height: "44px", borderRadius: "50%", border: "1.5px solid rgba(255,255,255,0.1)", display: "flex", alignItems: "center", justifyContent: "center" }}>
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.3)" strokeWidth="2"><polygon points="5 3 19 12 5 21 5 3"/></svg>
         </div>
       </div>
+      {/* Mute/unmute indicator */}
       {loaded && (
         <div style={{ position: "absolute", bottom: "12px", right: "12px", width: "32px", height: "32px", borderRadius: "50%", background: "rgba(0,0,0,0.55)", backdropFilter: "blur(8px)", display: "flex", alignItems: "center", justifyContent: "center", transition: "opacity 0.3s", zIndex: 2 }}>
           {muted ? (
@@ -165,39 +151,7 @@ function UgcVideo({ src, aspectRatio = "9/16", borderRadius = "10px", ugcPriorit
   );
 }
 
-/*
- * ─── LazyImage ───
- * IO-based, 150px rootMargin. decoding="async". Placeholder shimmer.
- */
-function LazyImage({ src, aspectRatio = "9/16", borderRadius = "10px" }) {
-  const ref = useRef(null);
-  const [shouldLoad, setShouldLoad] = useState(false);
-  const [loaded, setLoaded] = useState(false);
-
-  useEffect(() => {
-    const el = ref.current; if (!el) return;
-    const obs = new IntersectionObserver(([e]) => {
-      if (e.isIntersecting) { setShouldLoad(true); obs.unobserve(el); }
-    }, { rootMargin: "150px" });
-    obs.observe(el);
-    return () => obs.disconnect();
-  }, []);
-
-  return (
-    <div ref={ref} style={{ aspectRatio, borderRadius, overflow: "hidden", background: "#111", position: "relative" }}>
-      {shouldLoad && (
-        <img src={src} alt="" decoding="async"
-          onLoad={() => setLoaded(true)}
-          style={{ width: "100%", height: "100%", objectFit: "cover", display: "block", opacity: loaded ? 1 : 0, transition: "opacity 0.4s ease" }} />
-      )}
-      {!loaded && (
-        <div style={{ position: "absolute", inset: 0, background: "linear-gradient(160deg,#1a1520,#080808)", transition: "opacity 0.4s ease" }} />
-      )}
-    </div>
-  );
-}
-
-function MediaSlot({ type, src, aspectRatio = "9/16", borderRadius = "10px", priority = false, priorityIndex = 0, ugc = false, ugcPriorityIndex = -1 }) {
+function MediaSlot({ type, src, aspectRatio = "9/16", borderRadius = "10px", priority = false, ugc = false }) {
   if (!src) {
     return (
       <div style={{ aspectRatio, borderRadius, background: "linear-gradient(160deg,#1a1a2e,#080808)", position: "relative", overflow: "hidden" }}>
@@ -209,15 +163,111 @@ function MediaSlot({ type, src, aspectRatio = "9/16", borderRadius = "10px", pri
       </div>
     );
   }
-  if (type === "video" && ugc) return <UgcVideo src={src} aspectRatio={aspectRatio} borderRadius={borderRadius} ugcPriorityIndex={ugcPriorityIndex} />;
-  if (type === "video") return <LazyVideo src={src} aspectRatio={aspectRatio} borderRadius={borderRadius} priority={priority} priorityIndex={priorityIndex} />;
-  return <LazyImage src={src} aspectRatio={aspectRatio} borderRadius={borderRadius} />;
+  if (type === "video" && ugc) return <UgcVideo src={src} aspectRatio={aspectRatio} borderRadius={borderRadius} />;
+  if (type === "video") return <LazyVideo src={src} aspectRatio={aspectRatio} borderRadius={borderRadius} priority={priority} />;
+  return <img src={src} alt="" loading="lazy" style={{ width: "100%", aspectRatio, objectFit: "cover", borderRadius, display: "block" }} />;
 }
 
-function CarouselCard({ item, priority = false, priorityIndex = 0, ugc = false, ugcPriorityIndex = -1 }) {
+function ArrowBtn({ direction, onClick, visible }) {
+  return (
+    <button onClick={onClick} aria-label={direction === "left" ? "Previous" : "Next"} style={{
+      position: "absolute", top: "50%", transform: "translateY(-60%)",
+      [direction === "left" ? "left" : "right"]: "8px",
+      width: "44px", height: "44px", borderRadius: "50%",
+      background: "rgba(10,10,10,0.7)", backdropFilter: "blur(12px)",
+      border: "1px solid rgba(255,255,255,0.1)", display: "flex", alignItems: "center", justifyContent: "center",
+      cursor: "pointer", zIndex: 10, opacity: visible ? 1 : 0, pointerEvents: visible ? "auto" : "none",
+      transition: "opacity 0.3s, background 0.3s",
+    }}
+      onMouseEnter={e => e.currentTarget.style.background = "rgba(30,30,30,0.9)"}
+      onMouseLeave={e => e.currentTarget.style.background = "rgba(10,10,10,0.7)"}>
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#F5F0EB" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+        {direction === "left" ? <polyline points="15 18 9 12 15 6"/> : <polyline points="9 6 15 12 9 18"/>}
+      </svg>
+    </button>
+  );
+}
+
+function Carousel({ items, cardWidth = 220, mobileCardWidth, gap = 16, renderCard }) {
+  const trackRef = useRef(null);
+  const [canLeft, setCanLeft] = useState(false);
+  const [canRight, setCanRight] = useState(true);
+  const [drag, setDrag] = useState(false);
+  const [startX, setStartX] = useState(0);
+  const [sl, setSl] = useState(0);
+  const [activeWidth, setActiveWidth] = useState(cardWidth);
+  const [isMobile, setIsMobile] = useState(typeof window !== "undefined" && window.innerWidth <= 768);
+
+  const getWidth = useCallback(() => {
+    return (mobileCardWidth && window.innerWidth <= 768) ? mobileCardWidth : cardWidth;
+  }, [cardWidth, mobileCardWidth]);
+
+  const checkScroll = useCallback(() => {
+    const el = trackRef.current; if (!el) return;
+    setCanLeft(el.scrollLeft > 4);
+    setCanRight(el.scrollLeft < el.scrollWidth - el.clientWidth - 4);
+  }, []);
+
+  const centreOnMiddle = useCallback((w) => {
+    const el = trackRef.current; if (!el) return;
+    const pad = 40;
+    const middleIndex = Math.floor(items.length / 2);
+    const middleOffset = pad + middleIndex * (w + gap);
+    const centreScroll = middleOffset - (el.clientWidth / 2) + (w / 2);
+    el.scrollLeft = Math.max(0, centreScroll);
+  }, [items.length, gap]);
+
+  useEffect(() => {
+    const mobile = window.innerWidth <= 768;
+    setIsMobile(mobile);
+    const w = getWidth();
+    setActiveWidth(w);
+    centreOnMiddle(w);
+    checkScroll();
+    const onScroll = () => checkScroll();
+    const onResize = () => {
+      setIsMobile(window.innerWidth <= 768);
+      const nw = getWidth();
+      setActiveWidth(nw);
+      centreOnMiddle(nw);
+      checkScroll();
+    };
+    const el = trackRef.current;
+    if (el) el.addEventListener("scroll", onScroll, { passive: true });
+    window.addEventListener("resize", onResize);
+    return () => { if (el) el.removeEventListener("scroll", onScroll); window.removeEventListener("resize", onResize); };
+  }, [items.length, cardWidth, mobileCardWidth, gap, checkScroll, getWidth, centreOnMiddle]);
+
+  const scroll = (dir) => {
+    const el = trackRef.current; if (!el) return;
+    el.scrollBy({ left: dir === "left" ? -(activeWidth + gap) : (activeWidth + gap), behavior: "smooth" });
+  };
+
+  return (
+    <div style={{ position: "relative", width: "100%" }}>
+      <ArrowBtn direction="left" onClick={() => scroll("left")} visible={canLeft} />
+      <ArrowBtn direction="right" onClick={() => scroll("right")} visible={canRight} />
+      <div ref={trackRef} className="ctrack"
+        onMouseDown={e => { setDrag(true); setStartX(e.pageX - trackRef.current.offsetLeft); setSl(trackRef.current.scrollLeft); }}
+        onMouseMove={e => { if (!drag) return; e.preventDefault(); trackRef.current.scrollLeft = sl - (e.pageX - trackRef.current.offsetLeft - startX) * 1.5; }}
+        onMouseUp={() => setDrag(false)} onMouseLeave={() => setDrag(false)}
+        onTouchStart={e => { setStartX(e.touches[0].pageX); setSl(trackRef.current.scrollLeft); }}
+        onTouchMove={e => { trackRef.current.scrollLeft = sl - (e.touches[0].pageX - startX); }}
+        style={{ display: "flex", gap: `${gap}px`, overflowX: "auto", cursor: drag ? "grabbing" : "grab", padding: "0 40px 20px", scrollbarWidth: "none", WebkitOverflowScrolling: "touch", scrollSnapType: isMobile ? "none" : "x mandatory" }}>
+        {items.map((item, i) => (
+          <div key={item.id || i} style={{ scrollSnapAlign: isMobile ? "none" : "center", flex: `0 0 ${activeWidth}px` }}>
+            {renderCard(item, i)}
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+function CarouselCard({ item, priority = false, ugc = false }) {
   return (
     <div style={{ userSelect: "none" }}>
-      <MediaSlot type={item.type} src={item.src} priority={priority} priorityIndex={priorityIndex} ugc={ugc} ugcPriorityIndex={ugcPriorityIndex} />
+      <MediaSlot type={item.type} src={item.src} priority={priority} ugc={ugc} />
       {(item.label || item.sublabel) && (
         <div style={{ marginTop: "12px", padding: "0 4px", textAlign: "center" }}>
           {item.label && <div style={{ fontSize: "12px", color: "#F5F0EB", fontWeight: 400 }}>{item.label}</div>}
@@ -228,7 +278,7 @@ function CarouselCard({ item, priority = false, priorityIndex = 0, ugc = false, 
   );
 }
 
-const GridImage = memo(function GridImage({ item }) {
+function GridImage({ item }) {
   const [h, setH] = useState(false);
   return (
     <div onMouseEnter={() => setH(true)} onMouseLeave={() => setH(false)} style={{
@@ -239,7 +289,7 @@ const GridImage = memo(function GridImage({ item }) {
       <MediaSlot type={item.type} src={item.src} aspectRatio="4/5" borderRadius="0px" />
     </div>
   );
-});
+}
 
 function StepCard({ number, title, description }) {
   return (
@@ -247,92 +297,6 @@ function StepCard({ number, title, description }) {
       <div style={{ fontSize: "11px", letterSpacing: "3px", textTransform: "uppercase", color: "rgba(245,240,235,0.45)", marginBottom: "16px", fontWeight: 500 }}>Step {number}</div>
       <div style={{ fontSize: "18px", fontWeight: 600, color: "#F5F0EB", marginBottom: "12px", fontFamily: "var(--fh)" }}>{title}</div>
       <p style={{ fontSize: "14px", lineHeight: 1.7, color: "rgba(245,240,235,0.4)", fontWeight: 300 }}>{description}</p>
-    </div>
-  );
-}
-
-/*
- * ─── SwipeRow ───
- * Flat flex container with overflow scroll. No inner wrapper.
- * centreIndex: scrolls to centre that child on mount + resize.
- * Edge padding is added dynamically so any card (including first/last)
- * can be scrolled to the exact centre of the viewport.
- * Desktop: click-and-drag. Mobile: native touch.
- */
-function SwipeRow({ children, className = "", centreIndex = -1 }) {
-  const trackRef = useRef(null);
-  const dragState = useRef({ active: false, startX: 0, scrollStart: 0 });
-
-  useEffect(() => {
-    const el = trackRef.current;
-    if (!el) return;
-
-    const centre = () => {
-      const cards = Array.from(el.children);
-      /* Skip if no cards or only padding spacers */
-      if (cards.length === 0) return;
-
-      /* Calculate edge padding so any card can reach dead centre */
-      const viewportW = el.clientWidth;
-      const firstCard = cards[0];
-      const lastCard = cards[cards.length - 1];
-
-      /* Set padding so first card's centre and last card's centre can align with viewport centre */
-      const padLeft = Math.max(0, (viewportW / 2) - (firstCard.offsetWidth / 2));
-      const padRight = Math.max(0, (viewportW / 2) - (lastCard.offsetWidth / 2));
-      el.style.paddingLeft = padLeft + "px";
-      el.style.paddingRight = padRight + "px";
-
-      /* Scroll to centreIndex */
-      if (centreIndex >= 0 && cards[centreIndex]) {
-        const card = cards[centreIndex];
-        const cardLeft = card.offsetLeft;
-        const cardCentre = cardLeft + card.offsetWidth / 2;
-        el.scrollLeft = cardCentre - viewportW / 2;
-      }
-    };
-
-    /* Run after a frame so card widths from CSS classes are resolved */
-    requestAnimationFrame(centre);
-    window.addEventListener("resize", centre);
-    return () => window.removeEventListener("resize", centre);
-  }, [centreIndex, children]);
-
-  const onMouseDown = useCallback((e) => {
-    const el = trackRef.current; if (!el) return;
-    dragState.current = { active: true, startX: e.pageX, scrollStart: el.scrollLeft };
-    el.style.cursor = "grabbing";
-    el.style.userSelect = "none";
-  }, []);
-
-  const onMouseMove = useCallback((e) => {
-    if (!dragState.current.active) return;
-    e.preventDefault();
-    const dx = e.pageX - dragState.current.startX;
-    trackRef.current.scrollLeft = dragState.current.scrollStart - dx * 1.5;
-  }, []);
-
-  const onMouseUp = useCallback(() => {
-    dragState.current.active = false;
-    const el = trackRef.current; if (!el) return;
-    el.style.cursor = "grab";
-    el.style.userSelect = "";
-  }, []);
-
-  return (
-    <div ref={trackRef} className={className}
-      onMouseDown={onMouseDown}
-      onMouseMove={onMouseMove}
-      onMouseUp={onMouseUp}
-      onMouseLeave={onMouseUp}
-      style={{
-        display: "flex", gap: "16px",
-        paddingTop: 0, paddingBottom: "20px",
-        overflowX: "auto",
-        scrollbarWidth: "none", WebkitOverflowScrolling: "touch",
-        cursor: "grab",
-      }}>
-      {children}
     </div>
   );
 }
@@ -362,6 +326,7 @@ function LeadForm() {
       });
       setSent(true);
     } catch {
+      /* Fallback to mailto if fetch fails */
       const subject = encodeURIComponent(`Free UGC Video Request — ${form.brand}`);
       const body = encodeURIComponent(`First Name: ${form.firstName}\nBrand: ${form.brand}\nEmail: ${form.email}`);
       window.location.href = `mailto:${EMAIL}?subject=${subject}&body=${body}`;
@@ -407,7 +372,6 @@ function LeadForm() {
 export default function App() {
   const [scrollY, setScrollY] = useState(0);
   const [menuOpen, setMenuOpen] = useState(false);
-
   useEffect(() => {
     let ticking = false;
     const fn = () => {
@@ -416,7 +380,6 @@ export default function App() {
     window.addEventListener("scroll", fn, { passive: true });
     return () => window.removeEventListener("scroll", fn);
   }, []);
-
   const go = id => { document.getElementById(id)?.scrollIntoView({ behavior: "smooth" }); setMenuOpen(false); };
 
   return (
@@ -442,15 +405,15 @@ export default function App() {
         @media(max-width:640px){.eg{grid-template-columns:repeat(2,1fr)}}
         .sr{display:flex;gap:20px;flex-wrap:wrap}
         @media(max-width:768px){.sr{flex-direction:column}}
-        .swipe-row::-webkit-scrollbar{display:none}
+        .ctrack::-webkit-scrollbar{display:none}
+        .hero-row::-webkit-scrollbar{display:none}
+        .ugc-row::-webkit-scrollbar{display:none}
         .hero-card{width:440px}
-        .edit-card{width:340px}
         .ugc-card{width:340px}
         .sl{font-size:10px;letter-spacing:4px;text-transform:uppercase;color:rgba(245,240,235,0.45);margin-bottom:16px;font-weight:500;text-align:center}
         .sh{font-family:var(--fh);font-size:clamp(28px,4vw,44px);font-weight:600;line-height:1.15;margin-bottom:48px;text-align:center}
         @media(max-width:768px){
           .hero-card{width:280px}
-          .edit-card{width:280px}
           .ugc-card{width:280px}
           .sp{padding:70px 20px!important}
           .mob-sec{padding-top:56px!important;padding-bottom:70px!important}
@@ -478,7 +441,7 @@ export default function App() {
         <a href={CALENDLY_URL} target="_blank" rel="noopener noreferrer" className="bp" style={{ marginTop: "12px" }}>Book a Call</a>
       </div>}
 
-      {/* ════ HERO ════ */}
+      {/* HERO — 3 cinematic reels, centred flexbox */}
       <section id="hero" style={{ minHeight: "100vh", display: "flex", flexDirection: "column", justifyContent: "center", padding: "120px 0 60px", position: "relative" }}>
         <div style={{ position: "absolute", width: "600px", height: "600px", borderRadius: "50%", background: "radial-gradient(circle,rgba(245,240,235,0.02) 0%,transparent 70%)", top: "30%", left: "50%", transform: `translate(-50%,-50%) translateY(${scrollY * -0.06}px)`, pointerEvents: "none" }} />
         <div style={{ padding: "0 32px", maxWidth: "1100px", margin: "0 auto", width: "100%", textAlign: "center" }}>
@@ -486,24 +449,24 @@ export default function App() {
             <div style={{ fontFamily: "var(--fh)", fontSize: "11px", fontWeight: 500, letterSpacing: "4px", textTransform: "uppercase", color: "rgba(245,240,235,0.45)", marginBottom: "32px" }}>Ben Lewis Studios</div>
           </div>
           <h1 style={{ fontFamily: "var(--fh)", fontSize: "clamp(36px,7vw,76px)", fontWeight: 700, lineHeight: 1.05, maxWidth: "800px", margin: "0 auto", animation: "fadeUp 0.9s ease 0.35s both", letterSpacing: "-1px" }}>
-            Your brand deserves better content.<br />
-            <span style={{ color: "rgba(245,240,235,0.45)", fontWeight: 400 }}>We make it effortless.</span>
+            Content that scales your brand.<br />
+            <span style={{ color: "rgba(245,240,235,0.45)", fontWeight: 400 }}>Produced in days, not weeks.</span>
           </h1>
           <p style={{ fontSize: "16px", lineHeight: 1.75, color: "rgba(245,240,235,0.45)", maxWidth: "540px", margin: "28px auto 0", fontWeight: 300, animation: "fadeUp 0.9s ease 0.55s both" }}>
-            Editorial photography. UGC videos. Product shots. Cinematic reels. One partner. Unlimited output.
+            Editorial photography. UGC videos. Product shots. Cinematic reels. One partner. Built to perform.
           </p>
         </div>
         <div style={{ marginTop: "52px", animation: "fadeUp 0.9s ease 0.7s both" }}>
           <div className="mb" style={{ justifyContent: "center", marginBottom: "12px" }}>
             <span style={{ fontSize: "9px", letterSpacing: "3px", textTransform: "uppercase", color: "rgba(245,240,235,0.2)", fontWeight: 400 }}>Swipe to explore</span>
           </div>
-          <SwipeRow className="swipe-row" centreIndex={1}>
+          <div className="hero-row" style={{ display: "flex", gap: "16px", justifyContent: "center", padding: "0 24px 20px", overflowX: "auto", scrollbarWidth: "none", WebkitOverflowScrolling: "touch" }}>
             {HERO_ITEMS.map((item, i) => (
               <div key={item.id} className="hero-card" style={{ flex: "0 0 auto" }}>
-                <CarouselCard item={item} priority={true} priorityIndex={i} />
+                <CarouselCard item={item} priority={true} />
               </div>
             ))}
-          </SwipeRow>
+          </div>
         </div>
         <div style={{ padding: "0 32px", marginTop: "40px", animation: "fadeUp 0.9s ease 0.85s both", textAlign: "center" }}>
           <a href={CALENDLY_URL} target="_blank" rel="noopener noreferrer" className="bp">Book a Discovery Call</a>
@@ -514,52 +477,41 @@ export default function App() {
         </div>
       </section>
 
-      {/* ════ EDITORIAL ════ */}
+      {/* EDITORIAL — 6 luxury images */}
       <section id="work" className="mob-sec" style={{ padding: "80px 0 100px" }}>
         <div style={{ padding: "0 32px", maxWidth: "1100px", margin: "0 auto", textAlign: "center" }}>
           <Reveal><div className="sl">The Work</div><h2 className="sh">Luxury <span style={{ fontWeight: 400, color: "rgba(245,240,235,0.45)" }}>editorial</span></h2></Reveal>
         </div>
-        <Reveal>
-          <div className="mb" style={{ justifyContent: "center", marginBottom: "12px" }}>
-            <span style={{ fontSize: "9px", letterSpacing: "3px", textTransform: "uppercase", color: "rgba(245,240,235,0.2)", fontWeight: 400 }}>Swipe to explore</span>
-          </div>
-          <SwipeRow className="swipe-row" centreIndex={2}>
-            {EDIT_ITEMS.map((item) => (
-              <div key={item.id} className="edit-card" style={{ flex: "0 0 auto" }}>
-                <CarouselCard item={item} />
-              </div>
-            ))}
-          </SwipeRow>
-        </Reveal>
+        <Reveal><Carousel items={EDIT_ITEMS} cardWidth={340} mobileCardWidth={280} renderCard={(item) => <CarouselCard item={item} />} /></Reveal>
         <Reveal><div style={{ textAlign: "center", marginTop: "40px" }}><a href={CALENDLY_URL} target="_blank" rel="noopener noreferrer" className="bg">Like what you see? Let's talk</a></div></Reveal>
       </section>
 
-      {/* ════ UGC ════ */}
+      {/* UGC — 5 videos, flexbox row with mute toggle */}
       <section id="ugc" className="mob-sec" style={{ padding: "80px 0 100px" }}>
         <div style={{ padding: "0 32px", maxWidth: "1100px", margin: "0 auto", textAlign: "center" }}>
-          <Reveal><div className="sl">UGC</div><h2 className="sh">Scroll-stopping <span style={{ fontWeight: 400, color: "rgba(245,240,235,0.45)" }}>UGC</span></h2></Reveal>
+          <Reveal><div className="sl">UGC</div><h2 className="sh">UGC that <span style={{ fontWeight: 400, color: "rgba(245,240,235,0.45)" }}>converts</span></h2></Reveal>
         </div>
         <Reveal>
           <div className="mb" style={{ justifyContent: "center", marginBottom: "12px" }}>
             <span style={{ fontSize: "9px", letterSpacing: "3px", textTransform: "uppercase", color: "rgba(245,240,235,0.2)", fontWeight: 400 }}>Swipe to explore</span>
           </div>
-          <SwipeRow className="swipe-row" centreIndex={2}>
-            {UGC_ITEMS.map((item, i) => (
+          <div className="ugc-row" style={{ display: "flex", gap: "16px", justifyContent: "center", padding: "0 24px 20px", overflowX: "auto", scrollbarWidth: "none", WebkitOverflowScrolling: "touch" }}>
+            {UGC_ITEMS.map((item) => (
               <div key={item.id} className="ugc-card" style={{ flex: "0 0 auto" }}>
-                <CarouselCard item={item} ugc={true} ugcPriorityIndex={i} />
+                <CarouselCard item={item} ugc={true} />
               </div>
             ))}
-          </SwipeRow>
+          </div>
         </Reveal>
         <Reveal><div style={{ textAlign: "center", marginTop: "40px" }}><a href={CALENDLY_URL} target="_blank" rel="noopener noreferrer" className="bg">Get this for your brand</a></div></Reveal>
       </section>
 
-      {/* ════ LEAD CAPTURE ════ */}
+      {/* LEAD CAPTURE */}
       <section className="mob-cta" style={{ padding: "100px 24px", background: "linear-gradient(180deg,#0A0A0A 0%,#0d0d0d 50%,#0A0A0A 100%)" }}>
         <Reveal>
           <div style={{ maxWidth: "520px", margin: "0 auto", textAlign: "center" }}>
             <h2 style={{ fontFamily: "var(--fh)", fontSize: "clamp(26px,4vw,40px)", fontWeight: 600, lineHeight: 1.15, marginBottom: "16px" }}>
-              See what this looks like<span style={{ display: "block", fontWeight: 400, color: "rgba(245,240,235,0.45)" }}>for your brand.</span>
+              See what this could do<span style={{ display: "block", fontWeight: 400, color: "rgba(245,240,235,0.45)" }}>for your brand.</span>
             </h2>
             <p style={{ fontSize: "15px", lineHeight: 1.7, color: "rgba(245,240,235,0.45)", fontWeight: 300, maxWidth: "420px", margin: "0 auto 40px" }}>
               We'll produce a custom UGC video featuring your product — yours to keep and use, no strings attached.
@@ -569,61 +521,61 @@ export default function App() {
         </Reveal>
       </section>
 
-      {/* ════ GRID ════ */}
+      {/* GRID */}
       <section className="sp" style={{ textAlign: "center" }}>
         <Reveal><div className="sl">Editorial & Product</div><h2 className="sh">The full <span style={{ fontWeight: 400, color: "rgba(245,240,235,0.45)" }}>content ecosystem</span></h2></Reveal>
         <div className="eg">{GRID_ITEMS.map((item, i) => <Reveal key={i} delay={i * 0.05}><GridImage item={item} /></Reveal>)}</div>
         <Reveal><div style={{ marginTop: "48px" }}><a href={CALENDLY_URL} target="_blank" rel="noopener noreferrer" className="bp">Book a Discovery Call</a></div></Reveal>
       </section>
 
-      {/* ════ WHAT THIS REPLACES ════ */}
+      {/* WHAT THIS REPLACES */}
       <section className="mob-cta" style={{ padding: "120px 24px", textAlign: "center", background: "linear-gradient(180deg,#0A0A0A 0%,#0e0e0e 50%,#0A0A0A 100%)" }}>
         <Reveal>
           <div style={{ maxWidth: "700px", margin: "0 auto" }}>
             <div className="sl" style={{ marginBottom: "32px" }}>What This Replaces</div>
-            <h2 style={{ fontFamily: "var(--fh)", fontSize: "clamp(26px,4.5vw,48px)", fontWeight: 700, lineHeight: 1.12, marginBottom: "32px" }}>Your current content production costs<span style={{ display: "block", color: "#F5F0EB", marginTop: "8px" }}>£19,000–£45,000 per month.</span></h2>
-            <p style={{ fontSize: "15px", lineHeight: 1.8, color: "rgba(245,240,235,0.45)", maxWidth: "480px", margin: "0 auto 12px", fontWeight: 300 }}>Photographers. Videographers. UGC creators. Content agencies. Studio hire. Model fees.</p>
+            <h2 style={{ fontFamily: "var(--fh)", fontSize: "clamp(26px,4.5vw,48px)", fontWeight: 700, lineHeight: 1.12, marginBottom: "32px" }}>Your current content production is slow, expensive,<span style={{ display: "block", color: "#F5F0EB", marginTop: "8px" }}>and impossible to test at scale.</span></h2>
+            <p style={{ fontSize: "15px", lineHeight: 1.8, color: "rgba(245,240,235,0.45)", maxWidth: "480px", margin: "0 auto 12px", fontWeight: 300 }}>Photographers. Videographers. UGC creators. Agencies. Studio hire. Model fees. Weeks of lead time. No way to iterate fast enough to find what converts.</p>
             <p style={{ fontFamily: "var(--fh)", fontSize: "clamp(22px,3.5vw,36px)", fontWeight: 600, color: "#F5F0EB", marginTop: "40px", lineHeight: 1.2 }}>We replace all of it.</p>
-            <p style={{ fontSize: "15px", color: "rgba(245,240,235,0.45)", fontWeight: 300, marginTop: "16px" }}>One partner. Campaign-grade output. A fraction of the cost.</p>
+            <p style={{ fontSize: "15px", color: "rgba(245,240,235,0.45)", fontWeight: 300, marginTop: "16px" }}>One partner. Campaign-grade output. Produced in days. A fraction of the cost.</p>
             <div style={{ marginTop: "44px" }}><a href={CALENDLY_URL} target="_blank" rel="noopener noreferrer" className="bp">See How It Works</a></div>
           </div>
         </Reveal>
       </section>
 
-      {/* ════ HOW IT WORKS ════ */}
+      {/* HOW IT WORKS */}
       <section className="sp" style={{ textAlign: "center" }}>
         <Reveal><div className="sl">Process</div><h2 className="sh">How it <span style={{ fontWeight: 400, color: "rgba(245,240,235,0.45)" }}>works</span></h2></Reveal>
         <Reveal delay={0.1}>
           <div className="sr">
             <StepCard number="01" title="Brand Immersion" description="We learn your brand, your audience, your aesthetic. We study your products, your competitors, and your content gaps." />
             <StepCard number="02" title="Content Production" description="We produce a complete monthly content library — editorial stills, UGC videos, product shots, and cinematic reels — all tailored to your brand." />
-            <StepCard number="03" title="Deliver & Scale" description="You receive ready-to-post content every month. We optimise based on performance and scale what works." />
+            <StepCard number="03" title="Deliver & Scale" description="You receive ready-to-deploy content every month. We analyse performance data, double down on winners, and kill what doesn't convert." />
           </div>
         </Reveal>
         <Reveal><div style={{ marginTop: "48px" }}><a href={CALENDLY_URL} target="_blank" rel="noopener noreferrer" className="bg">Book a Discovery Call</a></div></Reveal>
       </section>
 
-      {/* ════ ABOUT ════ */}
+      {/* ABOUT */}
       <section id="about" className="sp" style={{ textAlign: "center" }}>
         <Reveal>
           <div style={{ maxWidth: "600px", margin: "0 auto" }}>
             <div style={{ width: "200px", height: "250px", borderRadius: "10px", margin: "0 auto 36px", overflow: "hidden", border: "1px solid rgba(255,255,255,0.04)" }}>
-              <img src="/assets/about.png" alt="Ben Lewis" loading="lazy" decoding="async" style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }} />
+              <img src="/assets/about.png" alt="Ben Lewis" style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }} />
             </div>
             <div className="sl">About</div>
             <h2 style={{ fontFamily: "var(--fh)", fontSize: "clamp(24px,3.5vw,36px)", fontWeight: 600, lineHeight: 1.2, marginBottom: "20px" }}>Ben Lewis</h2>
-            <p style={{ fontSize: "15px", lineHeight: 1.8, color: "rgba(245,240,235,0.45)", fontWeight: 300, maxWidth: "480px", margin: "0 auto" }}>I build AI-powered content production systems that give DTC beauty brands campaign-grade content without the traditional production overhead. My work spans editorial fashion, skincare campaigns, and cinematic brand films.</p>
-            <p style={{ fontSize: "15px", lineHeight: 1.8, color: "rgba(245,240,235,0.45)", fontWeight: 300, maxWidth: "480px", margin: "16px auto 0" }}>One partner replaces an entire production team — photographers, videographers, UGC creators, stylists, and studio sessions. You get the output. I handle the rest.</p>
+            <p style={{ fontSize: "15px", lineHeight: 1.8, color: "rgba(245,240,235,0.45)", fontWeight: 300, maxWidth: "480px", margin: "0 auto" }}>I build content systems that give DTC brands campaign-grade creative without the traditional production overhead — and the volume to test, iterate, and find what actually converts.</p>
+            <p style={{ fontSize: "15px", lineHeight: 1.8, color: "rgba(245,240,235,0.45)", fontWeight: 300, maxWidth: "480px", margin: "16px auto 0" }}>My work spans editorial, product, UGC, and cinematic brand films — all engineered for performance.</p>
             <div style={{ marginTop: "36px" }}><a href={CALENDLY_URL} target="_blank" rel="noopener noreferrer" className="bp">Book a Discovery Call</a></div>
           </div>
         </Reveal>
       </section>
 
-      {/* ════ FINAL CTA ════ */}
+      {/* FINAL CTA */}
       <section className="mob-cta" style={{ padding: "120px 24px", textAlign: "center", background: "linear-gradient(180deg,#0A0A0A 0%,#0d0d0d 100%)" }}>
         <Reveal>
-          <h2 style={{ fontFamily: "var(--fh)", fontSize: "clamp(28px,5vw,52px)", fontWeight: 700, lineHeight: 1.1, maxWidth: "700px", margin: "0 auto 28px" }}>Ready to replace your entire content production<span style={{ display: "block", fontWeight: 400, color: "rgba(245,240,235,0.45)", marginTop: "4px" }}>with one partner?</span></h2>
-          <p style={{ fontSize: "15px", color: "rgba(245,240,235,0.45)", fontWeight: 300, maxWidth: "420px", margin: "0 auto 44px", lineHeight: 1.7 }}>15-minute discovery call. No pitch deck. Just a conversation about your content and how to fix it.</p>
+          <h2 style={{ fontFamily: "var(--fh)", fontSize: "clamp(28px,5vw,52px)", fontWeight: 700, lineHeight: 1.1, maxWidth: "700px", margin: "0 auto 28px" }}>Ready for content that actually moves the needle?<span style={{ display: "block", fontWeight: 400, color: "rgba(245,240,235,0.45)", marginTop: "4px" }}></span></h2>
+          <p style={{ fontSize: "15px", color: "rgba(245,240,235,0.45)", fontWeight: 300, maxWidth: "420px", margin: "0 auto 44px", lineHeight: 1.7 }}>15-minute discovery call. No pitch deck. Just a conversation about your content, your growth, and how to unlock both.</p>
           <div style={{ display: "flex", gap: "16px", justifyContent: "center", flexWrap: "wrap" }}>
             <a href={CALENDLY_URL} target="_blank" rel="noopener noreferrer" className="bp">Book a Discovery Call</a>
             <a href={LINKEDIN_URL} target="_blank" rel="noopener noreferrer" className="bg">Connect on LinkedIn</a>
@@ -631,7 +583,7 @@ export default function App() {
         </Reveal>
       </section>
 
-      {/* ════ FOOTER ════ */}
+      {/* FOOTER */}
       <footer style={{ padding: "28px 32px", borderTop: "1px solid rgba(255,255,255,0.04)", display: "flex", flexDirection: "column", alignItems: "center", gap: "16px", textAlign: "center" }}>
         <div style={{ fontFamily: "var(--fh)", fontSize: "12px", fontWeight: 500, letterSpacing: "2px", textTransform: "uppercase", color: "rgba(245,240,235,0.45)" }}>Ben Lewis Studios</div>
         <div style={{ display: "flex", gap: "24px", alignItems: "center" }}>
