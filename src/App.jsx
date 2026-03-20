@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef, useCallback } from "react";
 
-const CALENDLY_URL = "https://calendly.com/benlewisltd/30min";
+const CALENDLY_URL = "https://calendly.com/ben-business/30min";
 const LINKEDIN_URL = "https://www.linkedin.com/in/ben-lewis-466a3a310/";
 const INSTAGRAM_URL = "https://www.instagram.com/benlewisstudios/";
 const YOUTUBE_URL = "https://www.youtube.com/@benlewis7548";
