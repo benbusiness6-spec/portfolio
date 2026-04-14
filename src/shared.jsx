@@ -365,8 +365,8 @@ export function Nav() {
   }, []);
   const goCta = () => {
     setMenuOpen(false);
-    if (location.pathname !== "/") {
-      navigate("/");
+    if (location.pathname !== "/work") {
+      navigate("/work");
       setTimeout(() => document.getElementById("cta")?.scrollIntoView({ behavior: "smooth" }), 100);
     } else {
       document.getElementById("cta")?.scrollIntoView({ behavior: "smooth" });

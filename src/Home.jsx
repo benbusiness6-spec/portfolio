@@ -32,7 +32,7 @@ function Stat({ num, lbl }) {
 export default function Home() {
   const [scrollY, setScrollY] = useState(0);
   useEffect(() => {
-    document.title = "Ben Lewis Studios — AI Content Production for DTC Brands";
+    document.title = "Work — Ben Lewis Studios";
     let ticking = false;
     const fn = () => { if (!ticking) { ticking = true; requestAnimationFrame(() => { setScrollY(window.scrollY); ticking = false; }); } };
     window.addEventListener("scroll", fn, { passive: true });

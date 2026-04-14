@@ -19,9 +19,9 @@ export default function App() {
       <ScrollToTop />
       <Nav />
       <Routes>
-        <Route path="/" element={<Home />} />
-        <Route path="/work" element={<Work />} />
-        <Route path="*" element={<Home />} />
+        <Route path="/" element={<Work />} />
+        <Route path="/work" element={<Home />} />
+        <Route path="*" element={<Work />} />
       </Routes>
       <Footer />
     </div>
