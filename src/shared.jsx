@@ -338,6 +338,15 @@ export function GlobalStyles() {
       .sl{font-size:10px;letter-spacing:4px;text-transform:uppercase;color:rgba(245,240,235,0.45);margin-bottom:16px;font-weight:500;text-align:center}
       .sh{font-family:var(--fh);font-size:clamp(28px,4vw,44px);font-weight:600;line-height:1.15;margin-bottom:48px;text-align:center}
       .stats-bar{display:flex;gap:48px;justify-content:center;flex-wrap:wrap;padding:48px 24px;border-top:1px solid rgba(255,255,255,0.06);border-bottom:1px solid rgba(255,255,255,0.06)}
+      @keyframes marquee{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+      .marquee-wrap{overflow:hidden;padding:56px 0;border-top:1px solid rgba(255,255,255,0.06);border-bottom:1px solid rgba(255,255,255,0.06);position:relative}
+      .marquee-wrap::before,.marquee-wrap::after{content:"";position:absolute;top:0;bottom:0;width:120px;z-index:2;pointer-events:none}
+      .marquee-wrap::before{left:0;background:linear-gradient(to right,#0A0A0A,transparent)}
+      .marquee-wrap::after{right:0;background:linear-gradient(to left,#0A0A0A,transparent)}
+      .marquee-track{display:flex;gap:80px;width:max-content;animation:marquee 40s linear infinite}
+      .marquee-item{display:flex;flex-direction:column;align-items:center;min-width:160px}
+      .popup-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.75);backdrop-filter:blur(8px);z-index:1000;display:flex;align-items:center;justify-content:center;padding:24px;animation:fadeIn 0.3s ease}
+      .popup-card{background:#0e0e0e;border:1px solid rgba(255,255,255,0.08);border-radius:12px;padding:40px 32px;max-width:460px;width:100%;position:relative;box-shadow:0 24px 80px rgba(0,0,0,0.6)}
       .stat-num{font-family:var(--fh);font-size:clamp(32px,5vw,56px);font-weight:700;color:#F5F0EB;letter-spacing:-1px}
       .stat-lbl{font-size:11px;letter-spacing:3px;text-transform:uppercase;color:rgba(245,240,235,0.45);margin-top:8px;font-weight:500}
       @media(max-width:768px){
@@ -365,21 +374,19 @@ export function Nav() {
   }, []);
   const goCta = () => {
     setMenuOpen(false);
-    if (location.pathname !== "/work") {
-      navigate("/work");
-      setTimeout(() => document.getElementById("cta")?.scrollIntoView({ behavior: "smooth" }), 100);
+    if (location.pathname !== "/") {
+      navigate("/");
+      setTimeout(() => document.getElementById("form")?.scrollIntoView({ behavior: "smooth" }), 100);
     } else {
-      document.getElementById("cta")?.scrollIntoView({ behavior: "smooth" });
+      document.getElementById("form")?.scrollIntoView({ behavior: "smooth" });
     }
   };
-  const onHome = location.pathname === "/";
   const onWork = location.pathname === "/work";
   return (
     <>
       <nav style={{ position: "fixed", top: 0, left: 0, right: 0, zIndex: 100, padding: "18px 32px", display: "flex", justifyContent: "space-between", alignItems: "center", background: scrollY > 60 ? "rgba(10,10,10,0.92)" : "transparent", backdropFilter: scrollY > 60 ? "blur(20px)" : "none", borderBottom: scrollY > 60 ? "1px solid rgba(255,255,255,0.04)" : "none", transition: "all 0.4s ease" }}>
         <Link to="/" style={{ fontFamily: "var(--fh)", fontSize: "14px", fontWeight: 600, letterSpacing: "3px", textTransform: "uppercase", color: "#F5F0EB", cursor: "pointer", textDecoration: "none" }}>Ben Lewis Studios</Link>
         <div className="dk" style={{ display: "flex", gap: "28px", alignItems: "center" }}>
-          <Link to="/" className={`nl${onHome ? " active" : ""}`}>Home</Link>
           <Link to="/work" className={`nl${onWork ? " active" : ""}`}>Work</Link>
           <span className="nl" onClick={goCta} style={{ color: "#F5F0EB" }} role="button">Get Your Free Spec Ad</span>
         </div>
@@ -388,7 +395,6 @@ export function Nav() {
         </button>
       </nav>
       {menuOpen && <div className="mm">
-        <Link to="/" className="nl" style={{ fontSize: "16px" }} onClick={() => setMenuOpen(false)}>Home</Link>
         <Link to="/work" className="nl" style={{ fontSize: "16px" }} onClick={() => setMenuOpen(false)}>Work</Link>
         <span className="nl" style={{ fontSize: "16px" }} onClick={goCta}>Get Your Free Spec Ad</span>
       </div>}
@@ -398,11 +404,11 @@ export function Nav() {
 
 export function Footer() {
   return (
-    <footer style={{ padding: "28px 32px", borderTop: "1px solid rgba(255,255,255,0.04)", display: "flex", flexDirection: "column", alignItems: "center", gap: "16px", textAlign: "center" }}>
-      <div style={{ fontFamily: "var(--fh)", fontSize: "12px", fontWeight: 500, letterSpacing: "2px", textTransform: "uppercase", color: "rgba(245,240,235,0.45)" }}>Ben Lewis Studios</div>
-      <div style={{ fontSize: "11px", color: "rgba(245,240,235,0.35)", letterSpacing: "1px" }}>London, UK</div>
+    <footer style={{ padding: "28px 32px", borderTop: "1px solid rgba(255,255,255,0.04)", display: "flex", flexDirection: "column", alignItems: "center", gap: "14px", textAlign: "center" }}>
+      <div style={{ fontSize: "11px", color: "rgba(245,240,235,0.35)", letterSpacing: "1px" }}>
+        Ben Lewis Studios · London, UK · <Link to="/work" style={{ color: "rgba(245,240,235,0.55)", textDecoration: "none", borderBottom: "1px solid rgba(245,240,235,0.2)" }}>See the full portfolio</Link>
+      </div>
       <div style={{ display: "flex", gap: "24px", alignItems: "center" }}>
-        <Link to="/work" style={{ color: "rgba(245,240,235,0.45)", fontSize: "11px", letterSpacing: "2px", textTransform: "uppercase", textDecoration: "none" }}>Work</Link>
         <a href={LINKEDIN_URL} target="_blank" rel="noopener noreferrer" style={{ color: "rgba(245,240,235,0.25)", transition: "color 0.3s", display: "flex" }}>
           <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 01-2.063-2.065 2.064 2.064 0 112.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>
         </a>

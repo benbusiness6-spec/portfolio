@@ -38,7 +38,7 @@ const GRID_ITEMS = [
 
 export default function Work() {
   useEffect(() => {
-    document.title = "Ben Lewis Studios — AI Content Production for DTC Brands";
+    document.title = "Work — Ben Lewis Studios";
   }, []);
   return (
     <>
