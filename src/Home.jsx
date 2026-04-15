@@ -11,12 +11,12 @@ const STATS = [
 ];
 
 const CAMPAIGNS = [
-  { brand: "Karviva", category: "Functional beverage", src: null, type: null },
-  { brand: "Watchdog", category: "DTC security", src: null, type: null },
-  { brand: "MuscleFier", category: "Sports nutrition", src: "/assets/ugc-5.mp4", type: "video" },
-  { brand: "Coming soon", category: "Spec piece", src: null, type: null, placeholder: true },
-  { brand: "Coming soon", category: "Spec piece", src: null, type: null, placeholder: true },
-  { brand: "Coming soon", category: "Spec piece", src: null, type: null, placeholder: true },
+  { brand: "Karviva", category: "Functional beverage", src: "/assets/posts/homepage-carousel/karviva.mp4", type: "video" },
+  { brand: "Watchdog", category: "DTC security", src: "/assets/posts/homepage-carousel/watchdog.mp4", type: "video" },
+  { brand: "MuscleFier", category: "Sports nutrition", src: "/assets/posts/homepage-carousel/musclefier.mp4", type: "video" },
+  { brand: "Undeniable", category: "Skincare", src: "/assets/posts/homepage-carousel/skincare.mp4", type: "video" },
+  { brand: "Panther", category: "Spec piece", src: "/assets/posts/homepage-carousel/panther.mp4", type: "video" },
+  { brand: "Beauty Editorial", category: "AI fashion campaign", src: "/assets/posts/homepage-carousel/beauty.mp4", type: "video" },
 ];
 
 const FORM_FIELDS = [
