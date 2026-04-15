@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import { Reveal, LazyVideo, LeadForm } from "./shared.jsx";
+import { Reveal, MediaSlot, LeadForm } from "./shared.jsx";
 
 const STATS = [
   { num: "100K+", lbl: "Organic views" },
@@ -11,9 +11,12 @@ const STATS = [
 ];
 
 const CAMPAIGNS = [
-  { brand: "Karviva", category: "Functional beverage" },
-  { brand: "Watchdog", category: "DTC security" },
-  { brand: "MuscleFier", category: "Sports nutrition" },
+  { brand: "Karviva", category: "Functional beverage", src: null, type: null },
+  { brand: "Watchdog", category: "DTC security", src: null, type: null },
+  { brand: "MuscleFier", category: "Sports nutrition", src: "/assets/ugc-5.mp4", type: "video" },
+  { brand: "Coming soon", category: "Spec piece", src: null, type: null, placeholder: true },
+  { brand: "Coming soon", category: "Spec piece", src: null, type: null, placeholder: true },
+  { brand: "Coming soon", category: "Spec piece", src: null, type: null, placeholder: true },
 ];
 
 const FORM_FIELDS = [
@@ -72,7 +75,7 @@ export default function Home() {
   return (
     <>
       {/* HERO */}
-      <section style={{ minHeight: "100vh", display: "flex", flexDirection: "column", justifyContent: "center", padding: "120px 24px 60px", position: "relative" }}>
+      <section style={{ paddingTop: "140px", paddingBottom: "40px", padding: "140px 24px 40px" }}>
         <div style={{ maxWidth: "920px", margin: "0 auto", width: "100%", textAlign: "center" }}>
           <div style={{ animation: "fadeIn 0.8s ease 0.2s both", fontFamily: "var(--fh)", fontSize: "11px", fontWeight: 500, letterSpacing: "4px", textTransform: "uppercase", color: "rgba(245,240,235,0.45)", marginBottom: "32px" }}>Ben Lewis Studios</div>
           <h1 style={{ fontFamily: "var(--fh)", fontSize: "clamp(34px,6vw,68px)", fontWeight: 700, lineHeight: 1.08, letterSpacing: "-1px", animation: "fadeUp 0.9s ease 0.35s both" }}>
@@ -82,17 +85,14 @@ export default function Home() {
           <p style={{ fontSize: "clamp(15px,1.8vw,18px)", lineHeight: 1.7, color: "rgba(245,240,235,0.65)", maxWidth: "640px", margin: "28px auto 0", fontWeight: 300, animation: "fadeUp 0.9s ease 0.5s both" }}>
             I'll produce a spec ad for your brand in under 24 hours. Free. No strings. Yours to keep regardless.
           </p>
-          <div style={{ marginTop: "48px", maxWidth: "760px", margin: "48px auto 0", animation: "fadeUp 0.9s ease 0.65s both" }}>
-            <LazyVideo src="/assets/hero-2.mp4" aspectRatio="16/9" borderRadius="12px" priority={true} />
-          </div>
-          <p style={{ fontSize: "13px", letterSpacing: "1px", color: "rgba(245,240,235,0.4)", marginTop: "24px", fontWeight: 300, animation: "fadeUp 0.9s ease 0.8s both" }}>
+          <p style={{ fontSize: "13px", letterSpacing: "1px", color: "rgba(245,240,235,0.4)", marginTop: "20px", fontWeight: 300, animation: "fadeUp 0.9s ease 0.65s both" }}>
             Cinematic video ads. Editorial photography. UGC content. One partner.
           </p>
         </div>
       </section>
 
       {/* LEAD CAPTURE FORM */}
-      <section id="form" style={{ padding: "40px 24px 100px" }}>
+      <section id="form" style={{ padding: "24px 24px 60px" }}>
         <Reveal>
           <div style={{ maxWidth: "460px", margin: "0 auto", textAlign: "center" }}>
             <LeadForm
@@ -106,20 +106,39 @@ export default function Home() {
         </Reveal>
       </section>
 
-      {/* RECENT CAMPAIGNS */}
-      <section id="campaigns" className="sp" style={{ textAlign: "center" }}>
+      {/* SCROLL INDICATOR */}
+      <Reveal>
+        <div style={{ textAlign: "center", padding: "20px 24px 48px", cursor: "pointer" }} onClick={() => document.getElementById("campaigns")?.scrollIntoView({ behavior: "smooth" })} role="button" aria-label="Scroll to campaigns">
+          <div style={{ fontSize: "12px", letterSpacing: "2px", textTransform: "uppercase", color: "rgba(245,240,235,0.45)", fontWeight: 400, marginBottom: "10px" }}>
+            See what we did for brands like yours
+          </div>
+          <div className="scroll-arrow" style={{ display: "inline-block", color: "rgba(245,240,235,0.35)" }}>
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+          </div>
+        </div>
+      </Reveal>
+
+      {/* CAMPAIGNS CAROUSEL */}
+      <section id="campaigns" style={{ padding: "40px 0 100px" }}>
         <Reveal>
-          <div className="sl">Recent Campaigns</div>
+          <div style={{ textAlign: "center", padding: "0 24px" }}>
+            <div className="sl">Campaigns we've produced</div>
+          </div>
         </Reveal>
         <Reveal delay={0.1}>
-          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(260px, 1fr))", gap: "20px", maxWidth: "1000px", margin: "0 auto" }}>
-            {CAMPAIGNS.map(c => (
-              <div key={c.brand}>
-                <div style={{ aspectRatio: "4/5", background: "linear-gradient(160deg,#1a1a1a,#0d0d0d)", border: "1px solid rgba(255,255,255,0.06)", borderRadius: "10px", display: "flex", alignItems: "center", justifyContent: "center" }}>
-                  <span style={{ fontFamily: "var(--fh)", fontSize: "18px", letterSpacing: "2px", textTransform: "uppercase", color: "rgba(245,240,235,0.35)", fontWeight: 600 }}>{c.brand}</span>
-                </div>
-                <div style={{ marginTop: "14px" }}>
-                  <div style={{ fontFamily: "var(--fh)", fontSize: "16px", fontWeight: 600, color: "#F5F0EB" }}>{c.brand}</div>
+          <div className="campaigns-row" style={{ display: "flex", gap: "16px", overflowX: "auto", padding: "32px 24px 20px", scrollbarWidth: "none", WebkitOverflowScrolling: "touch", scrollSnapType: "x mandatory" }}>
+            {CAMPAIGNS.map((c, i) => (
+              <div key={i} className="campaign-card" style={{ flex: "0 0 auto", width: "280px", scrollSnapAlign: "start" }}>
+                {c.src ? (
+                  <MediaSlot type={c.type} src={c.src} aspectRatio="9/16" borderRadius="10px" />
+                ) : (
+                  <div style={{ aspectRatio: "9/16", background: "linear-gradient(160deg,#1a1a1a,#0d0d0d)", border: "1px solid rgba(255,255,255,0.06)", borderRadius: "10px", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", gap: "8px" }}>
+                    <span style={{ fontFamily: "var(--fh)", fontSize: "16px", letterSpacing: "2px", textTransform: "uppercase", color: "rgba(245,240,235,0.35)", fontWeight: 600 }}>{c.placeholder ? "Coming soon" : c.brand}</span>
+                    {c.placeholder && (<span style={{ fontSize: "10px", letterSpacing: "2px", color: "rgba(245,240,235,0.25)", textTransform: "uppercase" }}>Spec piece</span>)}
+                  </div>
+                )}
+                <div style={{ marginTop: "14px", padding: "0 4px" }}>
+                  <div style={{ fontFamily: "var(--fh)", fontSize: "15px", fontWeight: 600, color: "#F5F0EB" }}>{c.brand}</div>
                   <div style={{ fontSize: "12px", letterSpacing: "1px", color: "rgba(245,240,235,0.4)", marginTop: "4px", fontWeight: 300 }}>{c.category}</div>
                 </div>
               </div>

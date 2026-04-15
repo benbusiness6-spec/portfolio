@@ -333,6 +333,9 @@ export function GlobalStyles() {
       .ctrack::-webkit-scrollbar{display:none}
       .hero-row::-webkit-scrollbar{display:none}
       .ugc-row::-webkit-scrollbar{display:none}
+      .campaigns-row::-webkit-scrollbar{display:none}
+      @keyframes arrowBounce{0%,100%{transform:translateY(0)}50%{transform:translateY(5px)}}
+      .scroll-arrow{animation:arrowBounce 2s ease-in-out infinite}
       .hero-card{width:440px}
       .ugc-card{width:340px}
       .sl{font-size:10px;letter-spacing:4px;text-transform:uppercase;color:rgba(245,240,235,0.45);margin-bottom:16px;font-weight:500;text-align:center}
