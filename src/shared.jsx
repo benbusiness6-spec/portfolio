@@ -350,9 +350,9 @@ export function GlobalStyles() {
       .marquee-wrap::after{right:0;background:linear-gradient(to left,#0A0A0A,transparent)}
       .marquee-track{display:flex;gap:80px;width:max-content;animation:marquee 40s linear infinite}
       .marquee-item{display:flex;flex-direction:column;align-items:center;min-width:160px}
-      .hero-sec{padding:140px 24px 40px}
-      .form-sec{padding:24px 24px 60px}
-      .scroll-sec{text-align:center;padding:20px 24px 48px;cursor:pointer}
+      .hero-sec{padding:100px 24px 20px}
+      .form-sec{padding:12px 24px 24px}
+      .scroll-sec{text-align:center;padding:8px 24px 28px;cursor:pointer}
       .campaigns-row{padding:32px 24px 20px}
       .about-label{text-align:left}
       .cta-hint{position:relative;display:inline-block;padding-bottom:6px}
