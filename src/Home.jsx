@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 import { Reveal, MediaSlot, LeadForm } from "./shared.jsx";
 
 const STATS = [
-  { num: "100K+", lbl: "Organic views" },
+  { num: "100K+", lbl: "Avg views per post" },
   { num: "100×", lbl: "Engagement spike" },
   { num: "50+", lbl: "Assets delivered" },
   { num: "<24hr", lbl: "Turnaround" },
@@ -47,7 +47,28 @@ function Popup({ onClose }) {
 export default function Home() {
   const [popupOpen, setPopupOpen] = useState(false);
   const popupOpenRef = useRef(false);
+  const carouselRef = useRef(null);
   useEffect(() => { popupOpenRef.current = popupOpen; }, [popupOpen]);
+
+  useEffect(() => {
+    const el = carouselRef.current;
+    if (!el) return;
+    const centerCard = (card) => {
+      if (!card) return;
+      const cardRect = card.getBoundingClientRect();
+      const containerRect = el.getBoundingClientRect();
+      const cardCenter = cardRect.left - containerRect.left + el.scrollLeft + cardRect.width / 2;
+      el.scrollLeft = cardCenter - el.clientWidth / 2;
+    };
+    const positionKarviva = () => {
+      if (window.innerWidth > 768) return;
+      const cards = el.querySelectorAll(".campaign-card");
+      centerCard(cards[2]);
+    };
+    positionKarviva();
+    window.addEventListener("resize", positionKarviva);
+    return () => window.removeEventListener("resize", positionKarviva);
+  }, []);
 
   useEffect(() => {
     document.title = "Ben Lewis Studios — AI Content Production for DTC Brands";
@@ -77,7 +98,7 @@ export default function Home() {
   return (
     <>
       {/* HERO */}
-      <section style={{ paddingTop: "140px", paddingBottom: "40px", padding: "140px 24px 40px" }}>
+      <section className="hero-sec">
         <div style={{ maxWidth: "920px", margin: "0 auto", width: "100%", textAlign: "center" }}>
           <div style={{ animation: "fadeIn 0.8s ease 0.2s both", fontFamily: "var(--fh)", fontSize: "11px", fontWeight: 500, letterSpacing: "4px", textTransform: "uppercase", color: "rgba(245,240,235,0.45)", marginBottom: "32px" }}>Ben Lewis Studios</div>
           <h1 style={{ fontFamily: "var(--fh)", fontSize: "clamp(34px,6vw,68px)", fontWeight: 700, lineHeight: 1.08, letterSpacing: "-1px", animation: "fadeUp 0.9s ease 0.35s both" }}>
@@ -94,7 +115,7 @@ export default function Home() {
       </section>
 
       {/* LEAD CAPTURE FORM */}
-      <section id="form" style={{ padding: "24px 24px 60px" }}>
+      <section id="form" className="form-sec">
         <Reveal>
           <div style={{ maxWidth: "460px", margin: "0 auto", textAlign: "center" }}>
             <LeadForm
@@ -110,11 +131,11 @@ export default function Home() {
 
       {/* SCROLL INDICATOR */}
       <Reveal>
-        <div style={{ textAlign: "center", padding: "20px 24px 48px", cursor: "pointer" }} onClick={() => document.getElementById("campaigns")?.scrollIntoView({ behavior: "smooth" })} role="button" aria-label="Scroll to campaigns">
-          <div style={{ fontSize: "12px", letterSpacing: "2px", textTransform: "uppercase", color: "rgba(245,240,235,0.45)", fontWeight: 400, marginBottom: "10px" }}>
+        <div className="scroll-sec" onClick={() => document.getElementById("campaigns")?.scrollIntoView({ behavior: "smooth" })} role="button" aria-label="Scroll to campaigns">
+          <span className="cta-hint" style={{ fontSize: "12px", letterSpacing: "2px", textTransform: "uppercase", color: "rgba(245,240,235,0.75)", fontWeight: 500 }}>
             See what we did for brands like yours
-          </div>
-          <div className="scroll-arrow" style={{ display: "inline-block", color: "rgba(245,240,235,0.35)" }}>
+          </span>
+          <div className="scroll-arrow" style={{ display: "inline-block", color: "rgba(245,240,235,0.4)", marginTop: "12px" }}>
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
           </div>
         </div>
@@ -128,7 +149,7 @@ export default function Home() {
           </div>
         </Reveal>
         <Reveal delay={0.1}>
-          <div className="campaigns-row" style={{ display: "flex", gap: "16px", overflowX: "auto", padding: "32px 24px 20px", scrollbarWidth: "none", WebkitOverflowScrolling: "touch", scrollSnapType: "x mandatory" }}>
+          <div ref={carouselRef} className="campaigns-row" style={{ display: "flex", gap: "16px", overflowX: "auto", scrollbarWidth: "none", WebkitOverflowScrolling: "touch", scrollSnapType: "x mandatory" }}>
             {CAMPAIGNS.map((c, i) => (
               <div key={i} className="campaign-card" style={{ flex: "0 0 auto", width: "280px", scrollSnapAlign: "start" }}>
                 {c.src ? (
@@ -167,11 +188,11 @@ export default function Home() {
           <div style={{ display: "flex", gap: "48px", alignItems: "center", flexWrap: "wrap", justifyContent: "center" }}>
             <div style={{ flex: "0 0 auto" }}>
               <div style={{ width: "220px", height: "220px", borderRadius: "50%", background: "linear-gradient(160deg,#1a1a1a,#0d0d0d)", border: "1px solid rgba(255,255,255,0.06)", overflow: "hidden" }}>
-                <img src="/assets/ben-lewis.png" alt="Ben Lewis" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
+                <img src="/assets/ben-lewis.png" alt="Ben Lewis" style={{ width: "100%", height: "100%", objectFit: "cover", objectPosition: "50% 15%" }} />
               </div>
             </div>
-            <div style={{ flex: "1 1 320px", maxWidth: "560px" }}>
-              <div className="sl" style={{ textAlign: "left" }}>About</div>
+            <div className="about-text" style={{ flex: "1 1 320px", maxWidth: "560px" }}>
+              <div className="sl about-label">About</div>
               <h2 style={{ fontFamily: "var(--fh)", fontSize: "clamp(24px,3vw,34px)", fontWeight: 600, lineHeight: 1.2, marginBottom: "20px", color: "#F5F0EB" }}>Ben Lewis</h2>
               <p style={{ fontSize: "15px", lineHeight: 1.8, color: "rgba(245,240,235,0.55)", fontWeight: 300, marginBottom: "16px" }}>
                 I produce cinematic content for multi-million pound DTC brands. I co-founded a business that did £200K in year one with zero paid media. I consult for 7 and 8-figure companies on AI infrastructure.

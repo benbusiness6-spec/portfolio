@@ -350,6 +350,23 @@ export function GlobalStyles() {
       .marquee-wrap::after{right:0;background:linear-gradient(to left,#0A0A0A,transparent)}
       .marquee-track{display:flex;gap:80px;width:max-content;animation:marquee 40s linear infinite}
       .marquee-item{display:flex;flex-direction:column;align-items:center;min-width:160px}
+      .hero-sec{padding:140px 24px 40px}
+      .form-sec{padding:24px 24px 60px}
+      .scroll-sec{text-align:center;padding:20px 24px 48px;cursor:pointer}
+      .campaigns-row{padding:32px 24px 20px}
+      .about-label{text-align:left}
+      .cta-hint{position:relative;display:inline-block;padding-bottom:6px}
+      .cta-hint::after{content:"";position:absolute;left:0;right:0;bottom:0;height:1px;background:linear-gradient(90deg,transparent 0%,rgba(245,240,235,0.65) 50%,transparent 100%);background-size:50% 100%;background-repeat:no-repeat;animation:ctaShimmer 2.8s ease-in-out infinite}
+      @keyframes ctaShimmer{0%{background-position:-60% 0}100%{background-position:160% 0}}
+      @media(max-width:768px){
+        .hero-sec{padding:86px 20px 10px}
+        .form-sec{padding:8px 20px 14px}
+        .scroll-sec{padding:6px 20px 20px}
+        .about-text{text-align:center}
+        .about-label{text-align:center!important}
+        .campaigns-row{padding-top:24px!important;padding-bottom:16px!important;padding-left:calc((100vw - 280px) / 2)!important;padding-right:calc((100vw - 280px) / 2)!important}
+        .campaigns-row .campaign-card{scroll-snap-align:center!important}
+      }
       .popup-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.75);backdrop-filter:blur(8px);z-index:1000;display:flex;align-items:center;justify-content:center;padding:24px;animation:fadeIn 0.3s ease}
       .popup-card{background:#0e0e0e;border:1px solid rgba(255,255,255,0.08);border-radius:12px;padding:40px 32px;max-width:460px;width:100%;position:relative;box-shadow:0 24px 80px rgba(0,0,0,0.6)}
       .stat-num{font-family:var(--fh);font-size:clamp(32px,5vw,56px);font-weight:700;color:#F5F0EB;letter-spacing:-1px}
