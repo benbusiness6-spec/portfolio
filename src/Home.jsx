@@ -11,12 +11,12 @@ const STATS = [
 ];
 
 const CAMPAIGNS = [
-  { brand: "Karviva", category: "Functional beverage", src: "/assets/posts/homepage-carousel/karviva.mp4", type: "video" },
-  { brand: "Watchdog", category: "DTC security", src: "/assets/posts/homepage-carousel/watchdog.mp4", type: "video" },
-  { brand: "MuscleFier", category: "Sports nutrition", src: "/assets/posts/homepage-carousel/musclefier.mp4", type: "video" },
-  { brand: "Undeniable", category: "Skincare", src: "/assets/posts/homepage-carousel/skincare.mp4", type: "video" },
-  { brand: "Panther", category: "Spec piece", src: "/assets/posts/homepage-carousel/panther.mp4", type: "video" },
   { brand: "Beauty Editorial", category: "AI fashion campaign", src: "/assets/posts/homepage-carousel/beauty.mp4", type: "video" },
+  { brand: "Watchdog", category: "DTC security", src: "/assets/posts/homepage-carousel/watchdog.mp4", type: "video" },
+  { brand: "Karviva", category: "Functional beverage", src: "/assets/posts/homepage-carousel/karviva.mp4", type: "video" },
+  { brand: "Undeniable", category: "Skincare", src: "/assets/posts/homepage-carousel/skincare.mp4", type: "video" },
+  { brand: "MuscleFier", category: "Sports nutrition", src: "/assets/posts/homepage-carousel/musclefier.mp4", type: "video" },
+  { brand: "Panther", category: "Spec piece", src: "/assets/posts/homepage-carousel/panther.mp4", type: "video" },
 ];
 
 const FORM_FIELDS = [
@@ -164,8 +164,8 @@ export default function Home() {
         <Reveal>
           <div style={{ display: "flex", gap: "48px", alignItems: "center", flexWrap: "wrap", justifyContent: "center" }}>
             <div style={{ flex: "0 0 auto" }}>
-              <div style={{ width: "220px", height: "220px", borderRadius: "50%", background: "linear-gradient(160deg,#1a1a1a,#0d0d0d)", border: "1px solid rgba(255,255,255,0.06)", overflow: "hidden", display: "flex", alignItems: "center", justifyContent: "center" }}>
-                <span style={{ fontSize: "11px", letterSpacing: "2px", textTransform: "uppercase", color: "rgba(245,240,235,0.3)", fontWeight: 500 }}>Photo</span>
+              <div style={{ width: "220px", height: "220px", borderRadius: "50%", background: "linear-gradient(160deg,#1a1a1a,#0d0d0d)", border: "1px solid rgba(255,255,255,0.06)", overflow: "hidden" }}>
+                <img src="/assets/ben-lewis.png" alt="Ben Lewis" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
               </div>
             </div>
             <div style={{ flex: "1 1 320px", maxWidth: "560px" }}>
