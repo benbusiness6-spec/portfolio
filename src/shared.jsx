@@ -266,8 +266,10 @@ export function LeadForm({ fields, subjectPrefix = "Lead", buttonText = "Submit"
         headers: { "Content-Type": "application/json", "Accept": "application/json" },
         body: JSON.stringify({ ...payload, "_subject": `${subjectPrefix} — ${subjectKey}`, "_template": "table" }),
       });
+      try { sessionStorage.setItem("bls_lead_submitted", "1"); } catch {}
       setSent(true);
     } catch {
+      try { sessionStorage.setItem("bls_lead_submitted", "1"); } catch {}
       const subject = encodeURIComponent(`${subjectPrefix} — ${subjectKey}`);
       const body = encodeURIComponent(fields.map(f => `${f.label}: ${form[f.name]}`).join("\n"));
       window.location.href = `mailto:${EMAIL}?subject=${subject}&body=${body}`;

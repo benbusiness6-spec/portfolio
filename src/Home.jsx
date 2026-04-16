@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Link } from "react-router-dom";
 import { Reveal, MediaSlot, LeadForm } from "./shared.jsx";
 
@@ -30,8 +30,8 @@ function Popup({ onClose }) {
     <div className="popup-overlay" onClick={onClose}>
       <div className="popup-card" onClick={e => e.stopPropagation()}>
         <button aria-label="Close" onClick={onClose} style={{ position: "absolute", top: "14px", right: "14px", width: "32px", height: "32px", borderRadius: "50%", background: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.08)", color: "#F5F0EB", cursor: "pointer", fontSize: "16px", display: "flex", alignItems: "center", justifyContent: "center" }}>×</button>
-        <h3 style={{ fontFamily: "var(--fh)", fontSize: "24px", fontWeight: 600, lineHeight: 1.2, marginBottom: "10px", textAlign: "center" }}>Want one of these for your brand?</h3>
-        <p style={{ fontSize: "14px", lineHeight: 1.6, color: "rgba(245,240,235,0.55)", fontWeight: 300, textAlign: "center", marginBottom: "28px" }}>Drop your details. Under 24 hours. Zero cost.</p>
+        <h3 style={{ fontFamily: "var(--fh)", fontSize: "24px", fontWeight: 600, lineHeight: 1.2, marginBottom: "10px", textAlign: "center" }}>Before you go, I want to make you something.</h3>
+        <p style={{ fontSize: "14px", lineHeight: 1.6, color: "rgba(245,240,235,0.55)", fontWeight: 300, textAlign: "center", marginBottom: "28px" }}>A spec ad for your brand. Under 24 hours. Completely free. If you love it we talk, if not, it's yours to post anyway.</p>
         <LeadForm
           fields={FORM_FIELDS}
           subjectPrefix="Free Spec Ad Request (Popup)"
@@ -46,28 +46,30 @@ function Popup({ onClose }) {
 
 export default function Home() {
   const [popupOpen, setPopupOpen] = useState(false);
+  const popupOpenRef = useRef(false);
+  useEffect(() => { popupOpenRef.current = popupOpen; }, [popupOpen]);
 
   useEffect(() => {
     document.title = "Ben Lewis Studios — AI Content Production for DTC Brands";
-    if (sessionStorage.getItem("bls_popup_shown") === "1") return;
-    let shown = false;
-    const show = () => {
-      if (shown) return;
-      shown = true;
-      sessionStorage.setItem("bls_popup_shown", "1");
+
+    const getCount = () => parseInt(sessionStorage.getItem("bls_popup_count") || "0", 10);
+    const isSubmitted = () => sessionStorage.getItem("bls_lead_submitted") === "1";
+    const fire = () => {
+      if (isSubmitted() || getCount() >= 2 || popupOpenRef.current) return;
+      sessionStorage.setItem("bls_popup_count", String(getCount() + 1));
       setPopupOpen(true);
-      window.removeEventListener("scroll", onScroll);
-      clearTimeout(timer);
     };
-    const timer = setTimeout(show, 10000);
-    const onScroll = () => {
-      const campaigns = document.getElementById("campaigns");
-      if (!campaigns) return;
-      const rect = campaigns.getBoundingClientRect();
-      if (rect.bottom < window.innerHeight * 0.5) show();
+
+    const timer = setTimeout(() => { if (getCount() === 0) fire(); }, 15000);
+
+    const onMouseOut = (e) => {
+      if (e.clientY > 0 || e.relatedTarget) return;
+      if (getCount() < 1) return;
+      fire();
     };
-    window.addEventListener("scroll", onScroll, { passive: true });
-    return () => { clearTimeout(timer); window.removeEventListener("scroll", onScroll); };
+    document.addEventListener("mouseout", onMouseOut);
+
+    return () => { clearTimeout(timer); document.removeEventListener("mouseout", onMouseOut); };
   }, []);
 
   const scrollToForm = () => document.getElementById("form")?.scrollIntoView({ behavior: "smooth" });
