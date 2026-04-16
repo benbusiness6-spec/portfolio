@@ -93,7 +93,7 @@ export default function Home() {
     return () => { clearTimeout(timer); document.removeEventListener("mouseout", onMouseOut); };
   }, []);
 
-  const scrollToForm = () => document.getElementById("form")?.scrollIntoView({ behavior: "smooth" });
+  const scrollToForm = () => window.scrollTo({ top: 0, behavior: "smooth" });
 
   return (
     <>

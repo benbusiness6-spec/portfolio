@@ -398,9 +398,9 @@ export function Nav() {
     setMenuOpen(false);
     if (location.pathname !== "/") {
       navigate("/");
-      setTimeout(() => document.getElementById("form")?.scrollIntoView({ behavior: "smooth" }), 100);
+      setTimeout(() => window.scrollTo({ top: 0, behavior: "smooth" }), 100);
     } else {
-      document.getElementById("form")?.scrollIntoView({ behavior: "smooth" });
+      window.scrollTo({ top: 0, behavior: "smooth" });
     }
   };
   const onWork = location.pathname === "/work";
