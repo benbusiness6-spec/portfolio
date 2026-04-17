@@ -358,7 +358,7 @@ export function GlobalStyles() {
       .hero-sec{padding:100px 24px 20px}
       .form-sec{padding:12px 24px 24px}
       .scroll-sec{text-align:center;padding:8px 24px 72px;cursor:pointer}
-      .campaigns-row{padding:32px 24px 20px}
+      .campaigns-row{padding:32px 24px 20px;justify-content:safe center}
       .about-label{text-align:left}
       .cta-hint{position:relative;display:inline-block;padding-bottom:6px}
       .cta-hint::after{content:"";position:absolute;left:0;right:0;bottom:0;height:1px;background:linear-gradient(90deg,transparent 0%,rgba(245,240,235,0.65) 50%,transparent 100%);background-size:50% 100%;background-repeat:no-repeat;animation:ctaShimmer 2.8s ease-in-out infinite}
