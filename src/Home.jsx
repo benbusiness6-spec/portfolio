@@ -188,7 +188,7 @@ export default function Home() {
           <div style={{ display: "flex", gap: "48px", alignItems: "center", flexWrap: "wrap", justifyContent: "center" }}>
             <div style={{ flex: "0 0 auto" }}>
               <div style={{ width: "220px", height: "220px", borderRadius: "50%", background: "linear-gradient(160deg,#1a1a1a,#0d0d0d)", border: "1px solid rgba(255,255,255,0.06)", overflow: "hidden" }}>
-                <img src="/assets/ben-lewis.png" alt="Ben Lewis" style={{ width: "100%", height: "100%", objectFit: "cover", objectPosition: "50% 15%" }} />
+                <img src="/assets/ben-lewis.webp" alt="Ben Lewis" width="220" height="220" loading="eager" decoding="async" fetchpriority="high" style={{ width: "100%", height: "100%", objectFit: "cover", objectPosition: "50% 15%" }} />
               </div>
             </div>
             <div className="about-text" style={{ flex: "1 1 320px", maxWidth: "560px" }}>
