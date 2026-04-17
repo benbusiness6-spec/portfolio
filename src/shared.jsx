@@ -46,7 +46,7 @@ export function LazyVideo({ src, aspectRatio = "9/16", borderRadius = "10px", pr
   return (
     <div ref={ref} style={{ aspectRatio, borderRadius, overflow: "hidden", background: "#111", position: "relative" }}>
       {shouldLoad ? (
-        <video src={src} autoPlay muted loop playsInline preload="auto"
+        <video src={src} autoPlay muted loop playsInline preload="metadata"
           onLoadedData={() => setLoaded(true)}
           style={{ width: "100%", height: "100%", objectFit: "cover", display: "block", opacity: loaded ? 1 : 0, transition: "opacity 0.6s ease" }} />
       ) : null}
@@ -80,7 +80,7 @@ export function UgcVideo({ src, aspectRatio = "9/16", borderRadius = "10px" }) {
   return (
     <div ref={ref} style={{ aspectRatio, borderRadius, overflow: "hidden", background: "#111", position: "relative", cursor: "pointer" }} onClick={toggleMute}>
       {shouldLoad ? (
-        <video ref={vidRef} src={src} autoPlay muted loop playsInline preload="auto"
+        <video ref={vidRef} src={src} autoPlay muted loop playsInline preload="metadata"
           onLoadedData={() => setLoaded(true)}
           style={{ width: "100%", height: "100%", objectFit: "cover", display: "block", opacity: loaded ? 1 : 0, transition: "opacity 0.6s ease" }} />
       ) : null}

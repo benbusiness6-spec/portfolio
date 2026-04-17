@@ -8,12 +8,12 @@ const HERO_ITEMS = [
 ];
 
 const EDIT_ITEMS = [
-  { id: 1, label: "Editorial Beauty", sublabel: "Cinematic portrait with dramatic lighting", type: "image", src: "/assets/hero-1.jpg" },
-  { id: 2, label: "Luxury Skincare", sublabel: "Premium product photography with cinematic lighting", type: "image", src: "/assets/edit-1.jpg" },
-  { id: 3, label: "Beauty Editorial", sublabel: "High-end editorial series for skincare campaigns", type: "image", src: "/assets/edit-2.jpg" },
-  { id: 4, label: "Product Campaign", sublabel: "Hero shots for e-commerce and brand retail", type: "image", src: "/assets/edit-3.jpg" },
-  { id: 5, label: "Fashion Editorial", sublabel: "Editorial beauty with dramatic composition", type: "image", src: "/assets/edit-4.jpg" },
-  { id: 6, label: "Beauty Portrait", sublabel: "Premium editorial with natural beauty aesthetic", type: "image", src: "/assets/hero-5.jpg" },
+  { id: 1, label: "Editorial Beauty", sublabel: "Cinematic portrait with dramatic lighting", type: "image", src: "/assets/hero-1-c.webp" },
+  { id: 2, label: "Luxury Skincare", sublabel: "Premium product photography with cinematic lighting", type: "image", src: "/assets/edit-1-c.webp" },
+  { id: 3, label: "Beauty Editorial", sublabel: "High-end editorial series for skincare campaigns", type: "image", src: "/assets/edit-2-c.webp" },
+  { id: 4, label: "Product Campaign", sublabel: "Hero shots for e-commerce and brand retail", type: "image", src: "/assets/edit-3-c.webp" },
+  { id: 5, label: "Fashion Editorial", sublabel: "Editorial beauty with dramatic composition", type: "image", src: "/assets/edit-4-c.webp" },
+  { id: 6, label: "Beauty Portrait", sublabel: "Premium editorial with natural beauty aesthetic", type: "image", src: "/assets/hero-5-c.webp" },
 ];
 
 const UGC_ITEMS = [
@@ -25,15 +25,15 @@ const UGC_ITEMS = [
 ];
 
 const GRID_ITEMS = [
-  { type: "image", src: "/assets/15.png" },
-  { type: "image", src: "/assets/16.png" },
-  { type: "image", src: "/assets/17.png" },
-  { type: "image", src: "/assets/18.jpg" },
-  { type: "image", src: "/assets/19.jpg" },
-  { type: "image", src: "/assets/20.jpg" },
-  { type: "image", src: "/assets/21.png" },
-  { type: "image", src: "/assets/22.png" },
-  { type: "image", src: "/assets/23.png" },
+  { type: "image", src: "/assets/15-c.webp" },
+  { type: "image", src: "/assets/16-c.webp" },
+  { type: "image", src: "/assets/17-c.webp" },
+  { type: "image", src: "/assets/18-c.webp" },
+  { type: "image", src: "/assets/19-c.webp" },
+  { type: "image", src: "/assets/20-c.webp" },
+  { type: "image", src: "/assets/21-c.webp" },
+  { type: "image", src: "/assets/22-c.webp" },
+  { type: "image", src: "/assets/23-c.webp" },
 ];
 
 export default function Work() {
