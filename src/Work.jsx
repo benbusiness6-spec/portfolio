@@ -154,17 +154,24 @@ export default function Work() {
         <Reveal><div style={{ marginTop: "48px" }}><a href={CALENDLY_URL} target="_blank" rel="noopener noreferrer" className="bg">Book a Discovery Call</a></div></Reveal>
       </section>
 
-      <section id="about" className="sp" style={{ textAlign: "center" }}>
+      <section id="about" className="sp">
         <Reveal>
-          <div style={{ maxWidth: "600px", margin: "0 auto" }}>
-            <div style={{ width: "200px", height: "250px", borderRadius: "10px", margin: "0 auto 36px", overflow: "hidden", border: "1px solid rgba(255,255,255,0.04)" }}>
-              <img src="/assets/about.png" alt="Ben Lewis" style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }} />
+          <div style={{ display: "flex", gap: "48px", alignItems: "center", flexWrap: "wrap", justifyContent: "center" }}>
+            <div style={{ flex: "0 0 auto" }}>
+              <div style={{ width: "220px", height: "220px", borderRadius: "50%", background: "linear-gradient(160deg,#1a1a1a,#0d0d0d)", border: "1px solid rgba(255,255,255,0.06)", overflow: "hidden" }}>
+                <img src="/assets/ben-lewis.png" alt="Ben Lewis" style={{ width: "100%", height: "100%", objectFit: "cover", objectPosition: "50% 15%" }} />
+              </div>
             </div>
-            <div className="sl">About</div>
-            <h2 style={{ fontFamily: "var(--fh)", fontSize: "clamp(24px,3.5vw,36px)", fontWeight: 600, lineHeight: 1.2, marginBottom: "20px" }}>Ben Lewis</h2>
-            <p style={{ fontSize: "15px", lineHeight: 1.8, color: "rgba(245,240,235,0.45)", fontWeight: 300, maxWidth: "480px", margin: "0 auto" }}>I build content systems that give DTC brands campaign-grade creative without the traditional production overhead — and the volume to test, iterate, and find what actually converts.</p>
-            <p style={{ fontSize: "15px", lineHeight: 1.8, color: "rgba(245,240,235,0.45)", fontWeight: 300, maxWidth: "480px", margin: "16px auto 0" }}>My work spans editorial, product, UGC, and cinematic brand films — all engineered for performance.</p>
-            <div style={{ marginTop: "36px" }}><a href={CALENDLY_URL} target="_blank" rel="noopener noreferrer" className="bp">Book a Discovery Call</a></div>
+            <div className="about-text" style={{ flex: "1 1 320px", maxWidth: "560px" }}>
+              <div className="sl about-label">About</div>
+              <h2 style={{ fontFamily: "var(--fh)", fontSize: "clamp(24px,3vw,34px)", fontWeight: 600, lineHeight: 1.2, marginBottom: "20px", color: "#F5F0EB" }}>Ben Lewis</h2>
+              <p style={{ fontSize: "15px", lineHeight: 1.8, color: "rgba(245,240,235,0.55)", fontWeight: 300, marginBottom: "16px" }}>
+                I produce cinematic content for multi-million pound DTC brands. I co-founded a business that did £200K in year one with zero paid media. I consult for 7 and 8-figure companies on AI infrastructure.
+              </p>
+              <p style={{ fontSize: "15px", lineHeight: 1.8, color: "rgba(245,240,235,0.55)", fontWeight: 300 }}>
+                The last brand I worked with was spending months producing a single campaign. I delivered the same quality in under a week. Now I want to do the same for yours.
+              </p>
+            </div>
           </div>
         </Reveal>
       </section>
