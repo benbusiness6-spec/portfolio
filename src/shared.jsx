@@ -365,8 +365,8 @@ export function GlobalStyles() {
       @keyframes ctaShimmer{0%{background-position:-60% 0}100%{background-position:160% 0}}
       @media(max-width:768px){
         .hero-sec{padding:86px 20px 10px}
-        .form-sec{padding:8px 20px 14px}
-        .scroll-sec{padding:6px 20px 20px}
+        .form-sec{padding:8px 20px 6px}
+        .scroll-sec{padding:0 20px 20px}
         .about-text{text-align:center}
         .about-label{text-align:center!important}
         .campaigns-row{padding-top:24px!important;padding-bottom:16px!important;padding-left:calc((100vw - 280px) / 2)!important;padding-right:calc((100vw - 280px) / 2)!important}

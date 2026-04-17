@@ -109,7 +109,7 @@ export default function Home() {
             I'll produce a spec ad for your brand in under 24 hours. Free. No strings. Yours to keep regardless.
           </p>
           <p style={{ fontSize: "13px", letterSpacing: "1px", color: "rgba(245,240,235,0.4)", marginTop: "20px", fontWeight: 300, animation: "fadeUp 0.9s ease 0.65s both" }}>
-            Cinematic video ads. Editorial photography. UGC content. One partner.
+            Video Ads | Editorial Photography | UGC Content
           </p>
         </div>
       </section>
