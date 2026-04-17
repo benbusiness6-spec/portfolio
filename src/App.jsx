@@ -1,8 +1,9 @@
-import { useEffect } from "react";
+import { useEffect, lazy, Suspense } from "react";
 import { Routes, Route, useLocation } from "react-router-dom";
 import { GlobalStyles, Nav, Footer } from "./shared.jsx";
-import Home from "./Home.jsx";
-import Work from "./Work.jsx";
+
+const Home = lazy(() => import("./Home.jsx"));
+const Work = lazy(() => import("./Work.jsx"));
 
 function ScrollToTop() {
   const { pathname, hash } = useLocation();
@@ -18,11 +19,13 @@ export default function App() {
       <GlobalStyles />
       <ScrollToTop />
       <Nav />
-      <Routes>
-        <Route path="/" element={<Home />} />
-        <Route path="/work" element={<Work />} />
-        <Route path="*" element={<Home />} />
-      </Routes>
+      <Suspense fallback={<div style={{ minHeight: "100vh", background: "#0A0A0A" }} />}>
+        <Routes>
+          <Route path="/" element={<Home />} />
+          <Route path="/work" element={<Work />} />
+          <Route path="*" element={<Home />} />
+        </Routes>
+      </Suspense>
       <Footer />
     </div>
   );

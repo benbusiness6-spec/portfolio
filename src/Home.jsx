@@ -11,12 +11,12 @@ const STATS = [
 ];
 
 const CAMPAIGNS = [
-  { brand: "Beauty Editorial", category: "AI fashion campaign", src: "/assets/posts/homepage-carousel/beauty.mp4", type: "video" },
-  { brand: "Watchdog", category: "DTC security", src: "/assets/posts/homepage-carousel/watchdog.mp4", type: "video" },
-  { brand: "Karviva", category: "Functional beverage", src: "/assets/posts/homepage-carousel/karviva.mp4", type: "video" },
-  { brand: "Undeniable", category: "Skincare", src: "/assets/posts/homepage-carousel/skincare.mp4", type: "video" },
-  { brand: "MuscleFier", category: "Sports nutrition", src: "/assets/posts/homepage-carousel/musclefier.mp4", type: "video" },
-  { brand: "Panther", category: "Spec piece", src: "/assets/posts/homepage-carousel/panther.mp4", type: "video" },
+  { brand: "Beauty Editorial", category: "AI fashion campaign", src: "/assets/posts/homepage-carousel/beauty.mp4", poster: "/assets/posts/homepage-carousel/beauty.webp", type: "video" },
+  { brand: "Watchdog", category: "DTC security", src: "/assets/posts/homepage-carousel/watchdog.mp4", poster: "/assets/posts/homepage-carousel/watchdog.webp", type: "video" },
+  { brand: "Karviva", category: "Functional beverage", src: "/assets/posts/homepage-carousel/karviva.mp4", poster: "/assets/posts/homepage-carousel/karviva.webp", type: "video" },
+  { brand: "Undeniable", category: "Skincare", src: "/assets/posts/homepage-carousel/skincare.mp4", poster: "/assets/posts/homepage-carousel/skincare.webp", type: "video" },
+  { brand: "MuscleFier", category: "Sports nutrition", src: "/assets/posts/homepage-carousel/musclefier.mp4", poster: "/assets/posts/homepage-carousel/musclefier.webp", type: "video" },
+  { brand: "Panther", category: "Spec piece", src: "/assets/posts/homepage-carousel/panther.mp4", poster: "/assets/posts/homepage-carousel/panther.webp", type: "video" },
 ];
 
 const FORM_FIELDS = [
@@ -153,7 +153,7 @@ export default function Home() {
             {CAMPAIGNS.map((c, i) => (
               <div key={i} className="campaign-card" style={{ flex: "0 0 auto", width: "280px", scrollSnapAlign: "start" }}>
                 {c.src ? (
-                  <MediaSlot type={c.type} src={c.src} aspectRatio="9/16" borderRadius="10px" />
+                  <MediaSlot type={c.type} src={c.src} poster={c.poster} aspectRatio="9/16" borderRadius="10px" />
                 ) : (
                   <div style={{ aspectRatio: "9/16", background: "linear-gradient(160deg,#1a1a1a,#0d0d0d)", border: "1px solid rgba(255,255,255,0.06)", borderRadius: "10px", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", gap: "8px" }}>
                     <span style={{ fontFamily: "var(--fh)", fontSize: "16px", letterSpacing: "2px", textTransform: "uppercase", color: "rgba(245,240,235,0.35)", fontWeight: 600 }}>{c.placeholder ? "Coming soon" : c.brand}</span>

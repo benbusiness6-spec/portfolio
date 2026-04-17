@@ -23,7 +23,7 @@ export function Reveal({ children, delay = 0, style = {} }) {
   return (<div ref={ref} style={{ opacity: vis ? 1 : 0, transform: vis ? "translateY(0)" : "translateY(20px)", transition: `opacity 0.6s ease ${delay}s, transform 0.6s cubic-bezier(0.25,0.46,0.45,0.94) ${delay}s`, willChange: "opacity, transform", ...style }}>{children}</div>);
 }
 
-export function LazyVideo({ src, aspectRatio = "9/16", borderRadius = "10px", priority = false }) {
+export function LazyVideo({ src, poster, aspectRatio = "9/16", borderRadius = "10px", priority = false }) {
   const ref = useRef(null);
   const [shouldLoad, setShouldLoad] = useState(false);
   const [loaded, setLoaded] = useState(false);
@@ -45,16 +45,22 @@ export function LazyVideo({ src, aspectRatio = "9/16", borderRadius = "10px", pr
   }, [priority]);
   return (
     <div ref={ref} style={{ aspectRatio, borderRadius, overflow: "hidden", background: "#111", position: "relative" }}>
+      {poster && (
+        <img src={poster} alt="" loading="lazy" decoding="async"
+          style={{ position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover", opacity: loaded ? 0 : 1, transition: "opacity 0.4s ease" }} />
+      )}
       {shouldLoad ? (
-        <video src={src} autoPlay muted loop playsInline preload="metadata"
+        <video src={src} poster={poster} autoPlay muted loop playsInline preload="metadata"
           onLoadedData={() => setLoaded(true)}
-          style={{ width: "100%", height: "100%", objectFit: "cover", display: "block", opacity: loaded ? 1 : 0, transition: "opacity 0.6s ease" }} />
+          style={{ width: "100%", height: "100%", objectFit: "cover", display: "block", opacity: loaded ? 1 : 0, transition: "opacity 0.4s ease" }} />
       ) : null}
-      <div style={{ position: "absolute", inset: 0, background: "linear-gradient(160deg,#1a1520,#080808)", display: "flex", alignItems: "center", justifyContent: "center", transition: "opacity 0.6s ease", opacity: loaded ? 0 : 1, pointerEvents: loaded ? "none" : "auto" }}>
-        <div style={{ width: "44px", height: "44px", borderRadius: "50%", border: "1.5px solid rgba(255,255,255,0.1)", display: "flex", alignItems: "center", justifyContent: "center" }}>
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.3)" strokeWidth="2"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+      {!poster && (
+        <div style={{ position: "absolute", inset: 0, background: "linear-gradient(160deg,#1a1520,#080808)", display: "flex", alignItems: "center", justifyContent: "center", transition: "opacity 0.6s ease", opacity: loaded ? 0 : 1, pointerEvents: loaded ? "none" : "auto" }}>
+          <div style={{ width: "44px", height: "44px", borderRadius: "50%", border: "1.5px solid rgba(255,255,255,0.1)", display: "flex", alignItems: "center", justifyContent: "center" }}>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.3)" strokeWidth="2"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+          </div>
         </div>
-      </div>
+      )}
     </div>
   );
 }
@@ -102,7 +108,7 @@ export function UgcVideo({ src, aspectRatio = "9/16", borderRadius = "10px" }) {
   );
 }
 
-export function MediaSlot({ type, src, aspectRatio = "9/16", borderRadius = "10px", priority = false, ugc = false }) {
+export function MediaSlot({ type, src, poster, aspectRatio = "9/16", borderRadius = "10px", priority = false, ugc = false }) {
   if (!src) {
     return (
       <div style={{ aspectRatio, borderRadius, background: "linear-gradient(160deg,#1a1a2e,#080808)", position: "relative", overflow: "hidden" }}>
@@ -115,8 +121,8 @@ export function MediaSlot({ type, src, aspectRatio = "9/16", borderRadius = "10p
     );
   }
   if (type === "video" && ugc) return <UgcVideo src={src} aspectRatio={aspectRatio} borderRadius={borderRadius} />;
-  if (type === "video") return <LazyVideo src={src} aspectRatio={aspectRatio} borderRadius={borderRadius} priority={priority} />;
-  return <img src={src} alt="" loading="lazy" style={{ width: "100%", aspectRatio, objectFit: "cover", borderRadius, display: "block" }} />;
+  if (type === "video") return <LazyVideo src={src} poster={poster} aspectRatio={aspectRatio} borderRadius={borderRadius} priority={priority} />;
+  return <img src={src} alt="" loading="lazy" decoding="async" style={{ width: "100%", aspectRatio, objectFit: "cover", borderRadius, display: "block" }} />;
 }
 
 export function ArrowBtn({ direction, onClick, visible }) {
