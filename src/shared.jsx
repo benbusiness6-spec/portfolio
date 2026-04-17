@@ -311,7 +311,6 @@ export function LeadForm({ fields, subjectPrefix = "Lead", buttonText = "Submit"
 export function GlobalStyles() {
   return (
     <style>{`
-      @import url('https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=Inter:wght@300;400;500;600&display=swap');
       *{margin:0;padding:0;box-sizing:border-box}html{scroll-behavior:smooth;-webkit-font-smoothing:antialiased}
       body{-webkit-overflow-scrolling:touch;background:#0A0A0A;color:#F5F0EB}
       ::selection{background:rgba(245,240,235,0.2);color:#fff}
