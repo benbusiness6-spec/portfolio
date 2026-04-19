@@ -39,6 +39,11 @@ export default async function handler(req, res) {
   const { video_url, caption = "", alt_text = "" } = req.body || {};
   if (!video_url) return json(res, 400, { error: "video_url required" });
 
+  // /v2/* endpoints reject the LinkedIn-Version header; /rest/* endpoints require it
+  const H_V2 = {
+    "Authorization": `Bearer ${token}`,
+    "Content-Type": "application/json",
+  };
   const H = {
     "Authorization": `Bearer ${token}`,
     "Content-Type": "application/json",
@@ -51,7 +56,7 @@ export default async function handler(req, res) {
 
   try {
     // 1. Get author URN via /v2/userinfo (OpenID Connect — works with the `openid profile` scope)
-    const me = await fetchJson(`${LINKEDIN_API}/v2/userinfo`, { headers: H });
+    const me = await fetchJson(`${LINKEDIN_API}/v2/userinfo`, { headers: H_V2 });
     if (!me.ok) return json(res, 502, { error: "v2/userinfo failed", status: me.status, body: me.body });
     // /v2/userinfo returns { sub: "...", name, email, picture, ... } where `sub` is the member ID
     const authorId = me.body?.sub;
