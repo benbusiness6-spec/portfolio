@@ -145,23 +145,32 @@ export default async function handler(req, res) {
     }
     step("poll", { finalStatus: status });
 
-    // 7. Create post (videos — minimal body; altText not supported on video media)
-    const post = await fetchJson(`${LINKEDIN_API}/rest/posts`, {
+    // 7. Create post via legacy /v2/ugcPosts (better-documented schema for video)
+    const post = await fetchJson(`${LINKEDIN_API}/v2/ugcPosts`, {
       method: "POST",
-      headers: H,
+      headers: {
+        "Authorization": `Bearer ${token}`,
+        "Content-Type": "application/json",
+        "X-Restli-Protocol-Version": "2.0.0",
+      },
       body: JSON.stringify({
         author,
-        commentary: caption,
-        visibility: "PUBLIC",
-        distribution: {
-          feedDistribution: "MAIN_FEED",
-          targetEntities: [],
-          thirdPartyDistributionChannels: [],
-        },
-        content: {
-          media: { id: videoUrn },
-        },
         lifecycleState: "PUBLISHED",
+        specificContent: {
+          "com.linkedin.ugc.ShareContent": {
+            shareCommentary: { text: caption },
+            shareMediaCategory: "VIDEO",
+            media: [
+              {
+                status: "READY",
+                media: videoUrn,
+              },
+            ],
+          },
+        },
+        visibility: {
+          "com.linkedin.ugc.MemberNetworkVisibility": "PUBLIC",
+        },
       }),
     });
     if (!post.ok) return json(res, 502, { error: "create post failed", status: post.status, body: post.body });
