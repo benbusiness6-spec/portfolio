@@ -145,7 +145,7 @@ export default async function handler(req, res) {
     }
     step("poll", { finalStatus: status });
 
-    // 7. Create post
+    // 7. Create post (videos — minimal body; altText not supported on video media)
     const post = await fetchJson(`${LINKEDIN_API}/rest/posts`, {
       method: "POST",
       headers: H,
@@ -159,10 +159,9 @@ export default async function handler(req, res) {
           thirdPartyDistributionChannels: [],
         },
         content: {
-          media: { id: videoUrn, altText: alt_text },
+          media: { id: videoUrn },
         },
         lifecycleState: "PUBLISHED",
-        isReshareDisabledByAuthor: false,
       }),
     });
     if (!post.ok) return json(res, 502, { error: "create post failed", status: post.status, body: post.body });
