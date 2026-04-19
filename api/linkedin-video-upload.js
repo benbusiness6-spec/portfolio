@@ -23,6 +23,14 @@ export default async function handler(req, res) {
 
   const token = process.env.LINKEDIN_ACCESS_TOKEN;
   if (!token) return json(res, 500, { error: "LINKEDIN_ACCESS_TOKEN env var not set" });
+  if (req.body?.debug === "token") {
+    return json(res, 200, {
+      length: token.length,
+      first10: token.slice(0, 10),
+      last10: token.slice(-10),
+      hasTrailingWhitespace: token !== token.trim(),
+    });
+  }
 
   const shared = req.headers["x-bridge-secret"];
   const expected = process.env.BRIDGE_SECRET;
