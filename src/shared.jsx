@@ -433,7 +433,7 @@ export function Footer() {
   return (
     <footer style={{ padding: "28px 32px", borderTop: "1px solid rgba(255,255,255,0.04)", display: "flex", flexDirection: "column", alignItems: "center", gap: "14px", textAlign: "center" }}>
       <div style={{ fontSize: "11px", color: "rgba(245,240,235,0.35)", letterSpacing: "1px" }}>
-        Ben Lewis Studios · London, UK · <Link to="/work" style={{ color: "rgba(245,240,235,0.55)", textDecoration: "none", borderBottom: "1px solid rgba(245,240,235,0.2)" }}>See the full portfolio</Link>
+        Ben Lewis Studios · London, UK · <Link to="/work" style={{ color: "rgba(245,240,235,0.55)", textDecoration: "none", borderBottom: "1px solid rgba(245,240,235,0.2)" }}>See the full portfolio</Link> · <Link to="/privacy" style={{ color: "rgba(245,240,235,0.55)", textDecoration: "none", borderBottom: "1px solid rgba(245,240,235,0.2)" }}>Privacy</Link>
       </div>
       <div style={{ display: "flex", gap: "24px", alignItems: "center" }}>
         <a href={LINKEDIN_URL} target="_blank" rel="noopener noreferrer" style={{ color: "rgba(245,240,235,0.25)", transition: "color 0.3s", display: "flex" }}>

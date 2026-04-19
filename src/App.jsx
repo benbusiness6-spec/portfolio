@@ -4,6 +4,7 @@ import { GlobalStyles, Nav, Footer } from "./shared.jsx";
 
 const Home = lazy(() => import("./Home.jsx"));
 const Work = lazy(() => import("./Work.jsx"));
+const Privacy = lazy(() => import("./Privacy.jsx"));
 
 function ScrollToTop() {
   const { pathname, hash } = useLocation();
@@ -23,6 +24,7 @@ export default function App() {
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/work" element={<Work />} />
+          <Route path="/privacy" element={<Privacy />} />
           <Route path="*" element={<Home />} />
         </Routes>
       </Suspense>
