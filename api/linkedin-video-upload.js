@@ -42,11 +42,12 @@ export default async function handler(req, res) {
   const step = (name, data) => log.push({ name, ...data });
 
   try {
-    // 1. Get author URN
-    const me = await fetchJson(`${LINKEDIN_API}/v2/me`, { headers: H });
-    if (!me.ok) return json(res, 502, { error: "v2/me failed", status: me.status, body: me.body });
-    const authorId = me.body?.id;
-    if (!authorId) return json(res, 502, { error: "v2/me returned no id", body: me.body });
+    // 1. Get author URN via /v2/userinfo (OpenID Connect — works with the `openid profile` scope)
+    const me = await fetchJson(`${LINKEDIN_API}/v2/userinfo`, { headers: H });
+    if (!me.ok) return json(res, 502, { error: "v2/userinfo failed", status: me.status, body: me.body });
+    // /v2/userinfo returns { sub: "...", name, email, picture, ... } where `sub` is the member ID
+    const authorId = me.body?.sub;
+    if (!authorId) return json(res, 502, { error: "v2/userinfo returned no sub", body: me.body });
     const author = `urn:li:person:${authorId}`;
     step("me", { authorId });
 
