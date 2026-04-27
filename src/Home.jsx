@@ -13,6 +13,7 @@ const STATS = [
 const CAMPAIGNS = [
   { brand: "Beauty Editorial", category: "AI fashion campaign", src: "/assets/posts/homepage-carousel/beauty.mp4", poster: "/assets/posts/homepage-carousel/beauty.webp", type: "video" },
   { brand: "Watchdog", category: "DTC security", src: "/assets/posts/homepage-carousel/watchdog.mp4", poster: "/assets/posts/homepage-carousel/watchdog.webp", type: "video" },
+  { brand: "Karviva", category: "Functional beverage", src: "/assets/posts/homepage-carousel/karviva.mp4", poster: "/assets/posts/homepage-carousel/karviva.webp", type: "video" },
   { brand: "Undeniable", category: "Skincare", src: "/assets/posts/homepage-carousel/skincare.mp4", poster: "/assets/posts/homepage-carousel/skincare.webp", type: "video" },
   { brand: "MuscleFier", category: "Sports nutrition", src: "/assets/posts/homepage-carousel/musclefier.mp4", poster: "/assets/posts/homepage-carousel/musclefier.webp", type: "video" },
   { brand: "Panther", category: "Spec piece", src: "/assets/posts/homepage-carousel/panther.mp4", poster: "/assets/posts/homepage-carousel/panther.webp", type: "video" },
@@ -59,15 +60,14 @@ export default function Home() {
       const cardCenter = cardRect.left - containerRect.left + el.scrollLeft + cardRect.width / 2;
       el.scrollLeft = cardCenter - el.clientWidth / 2;
     };
-    const positionCarousel = () => {
+    const positionKarviva = () => {
       if (window.innerWidth > 768) return;
       const cards = el.querySelectorAll(".campaign-card");
-      if (!cards.length) return;
-      centerCard(cards[Math.floor(cards.length / 2)]);
+      centerCard(cards[2]);
     };
-    positionCarousel();
-    window.addEventListener("resize", positionCarousel);
-    return () => window.removeEventListener("resize", positionCarousel);
+    positionKarviva();
+    window.addEventListener("resize", positionKarviva);
+    return () => window.removeEventListener("resize", positionKarviva);
   }, []);
 
   useEffect(() => {
