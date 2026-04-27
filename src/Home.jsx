@@ -14,7 +14,7 @@ const CAMPAIGNS = [
   { brand: "Beauty Editorial", category: "AI fashion campaign", src: "/assets/posts/homepage-carousel/beauty.mp4", poster: "/assets/posts/homepage-carousel/beauty.webp", type: "video" },
   { brand: "Watchdog", category: "DTC security", src: "/assets/posts/homepage-carousel/watchdog.mp4", poster: "/assets/posts/homepage-carousel/watchdog.webp", type: "video" },
   { brand: "Karviva", category: "Functional beverage", src: "/assets/posts/homepage-carousel/karviva.mp4", poster: "/assets/posts/homepage-carousel/karviva.webp", type: "video" },
-  { brand: "Undeniable", category: "Skincare", src: "/assets/hero-2.mp4", poster: "/assets/posts/homepage-carousel/skincare.webp", type: "video" },
+  { brand: "Undeniable", category: "Spec piece", src: "/assets/hero-2.mp4", poster: "/assets/posts/homepage-carousel/skincare.webp", type: "video" },
   { brand: "MuscleFier", category: "Sports nutrition", src: "/assets/posts/homepage-carousel/musclefier.mp4", poster: "/assets/posts/homepage-carousel/musclefier.webp", type: "video" },
   { brand: "Panther", category: "Spec piece", src: "/assets/posts/homepage-carousel/panther.mp4", poster: "/assets/posts/homepage-carousel/panther.webp", type: "video" },
 ];
