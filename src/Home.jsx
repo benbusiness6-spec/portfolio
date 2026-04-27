@@ -171,7 +171,7 @@ export default function Home() {
       {/* SCROLLING STATS */}
       <div className="marquee-wrap">
         <div className="marquee-track">
-          {[...STATS, ...STATS, ...STATS].map((s, i) => (
+          {Array.from({ length: 8 }).flatMap(() => STATS).map((s, i) => (
             <div key={i} className="marquee-item">
               <div className="stat-num">{s.num}</div>
               <div className="stat-lbl">{s.lbl}</div>
