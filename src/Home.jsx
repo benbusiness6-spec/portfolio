@@ -6,7 +6,7 @@ const STATS = [
   { num: "100K+", lbl: "Avg views per post" },
   { num: "100×", lbl: "Engagement spike" },
   { num: "50+", lbl: "Assets delivered" },
-  { num: "<24hr", lbl: "Turnaround" },
+  { num: "72hr", lbl: "Brief to ad" },
   { num: "8-fig", lbl: "DTC brands consulted" },
 ];
 
