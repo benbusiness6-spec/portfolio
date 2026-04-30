@@ -164,7 +164,7 @@ export default function Work() {
             </div>
             <div className="about-text" style={{ flex: "1 1 320px", maxWidth: "560px" }}>
               <div className="sl about-label">About</div>
-              <h2 style={{ fontFamily: "var(--fh)", fontSize: "clamp(24px,3vw,34px)", fontWeight: 600, lineHeight: 1.2, marginBottom: "20px", color: "#F5F0EB" }}>Ben Lewis</h2>
+              <h2 style={{ fontFamily: "var(--fh)", fontSize: "clamp(24px,3vw,34px)", fontWeight: 600, lineHeight: 1.2, marginBottom: "20px", color: "#F5F0EB" }}>Ben Lewis Simpson</h2>
               <p style={{ fontSize: "15px", lineHeight: 1.8, color: "rgba(245,240,235,0.55)", fontWeight: 300, marginBottom: "16px" }}>
                 I produce cinematic content for multi-million pound DTC brands. I co-founded a business that did £200K in year one with zero paid media. I consult for 7 and 8-figure companies on AI infrastructure.
               </p>
