@@ -415,28 +415,18 @@ export function Nav() {
       <nav style={{ position: "fixed", top: 0, left: 0, right: 0, zIndex: 100, padding: "18px 32px", display: "flex", justifyContent: "space-between", alignItems: "center", background: scrollY > 60 ? "rgba(10,10,10,0.92)" : "transparent", backdropFilter: scrollY > 60 ? "blur(20px)" : "none", borderBottom: scrollY > 60 ? "1px solid rgba(255,255,255,0.04)" : "none", transition: "all 0.4s ease" }}>
         <Link to="/" style={{ fontFamily: "var(--fh)", fontSize: "14px", fontWeight: 600, letterSpacing: "3px", textTransform: "uppercase", color: "#F5F0EB", cursor: "pointer", textDecoration: "none" }}>Ben Lewis Studios</Link>
         <div className="dk" style={{ display: "flex", gap: "28px", alignItems: "center" }}>
-          {onSecurity ? (
-            <a href={CALENDLY_URL} target="_blank" rel="noopener noreferrer" className="nl" style={{ color: "#F5F0EB" }}>Book a Call</a>
-          ) : (
-            <>
-              <Link to="/work" className={`nl${onWork ? " active" : ""}`}>Work</Link>
-              <span className="nl" onClick={goCta} style={{ color: "#F5F0EB" }} role="button">Get Your Free Spec Ad</span>
-            </>
-          )}
+          <Link to="/work" className={`nl${onWork ? " active" : ""}`}>Work</Link>
+          <Link to="/security" className={`nl${onSecurity ? " active" : ""}`}>Security</Link>
+          <a href={CALENDLY_URL} target="_blank" rel="noopener noreferrer" className="nl" style={{ color: "#F5F0EB" }}>Book a Call</a>
         </div>
         <button className="mb" onClick={() => setMenuOpen(!menuOpen)} style={{ background: "none", border: "none", cursor: "pointer", display: "flex", flexDirection: "column", gap: "5px", padding: "8px" }}>
           {[0, 1, 2].map(i => <div key={i} style={{ width: "22px", height: "1.5px", background: "#F5F0EB", transition: "all 0.3s", transform: menuOpen ? (i === 0 ? "rotate(45deg) translate(4.5px,4.5px)" : i === 1 ? "scaleX(0)" : "rotate(-45deg) translate(4.5px,-4.5px)") : "none", opacity: menuOpen && i === 1 ? 0 : 1 }} />)}
         </button>
       </nav>
       {menuOpen && <div className="mm">
-        {onSecurity ? (
-          <a href={CALENDLY_URL} target="_blank" rel="noopener noreferrer" className="nl" style={{ fontSize: "16px" }} onClick={() => setMenuOpen(false)}>Book a Call</a>
-        ) : (
-          <>
-            <Link to="/work" className="nl" style={{ fontSize: "16px" }} onClick={() => setMenuOpen(false)}>Work</Link>
-            <span className="nl" style={{ fontSize: "16px" }} onClick={goCta}>Get Your Free Spec Ad</span>
-          </>
-        )}
+        <Link to="/work" className="nl" style={{ fontSize: "16px" }} onClick={() => setMenuOpen(false)}>Work</Link>
+        <Link to="/security" className="nl" style={{ fontSize: "16px" }} onClick={() => setMenuOpen(false)}>Security</Link>
+        <a href={CALENDLY_URL} target="_blank" rel="noopener noreferrer" className="nl" style={{ fontSize: "16px" }} onClick={() => setMenuOpen(false)}>Book a Call</a>
       </div>}
     </>
   );

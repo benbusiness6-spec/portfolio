@@ -14,7 +14,7 @@ const PROOF = [
 const GET = [
   {
     title: "Cinematic brand films",
-    body: "Hero pieces that make your firm look like it has a six-figure content budget — for a fraction of it.",
+    body: "Hero pieces that make your firm look like it has a six-figure content budget, for a fraction of it.",
   },
   {
     title: "A consistent visual world",
@@ -22,11 +22,11 @@ const GET = [
   },
   {
     title: "Proof-led content",
-    body: "Built to perform and to be remembered — not just to look good.",
+    body: "Built to perform and to be remembered, not just to look good.",
   },
 ];
 
-// Hero video — poster + autoplay muted loop, tap to unmute. LCP-priority.
+// Hero video: poster + autoplay muted loop, tap to unmute. LCP-priority.
 function HeroFilm() {
   const vidRef = useRef(null);
   const [loaded, setLoaded] = useState(false);
@@ -61,10 +61,10 @@ function BookBtn({ children = "Book a 20-minute call", style = {} }) {
 
 export default function Security() {
   useEffect(() => {
-    document.title = "Cinematic Brand Worlds for Security Firms — Ben Lewis Studios";
+    document.title = "Cinematic Brand Worlds for Security Firms · Ben Lewis Studios";
     const meta = document.querySelector('meta[name="description"]');
     const prev = meta?.getAttribute("content");
-    if (meta) meta.setAttribute("content", "We build security firms a proprietary brand character and cinematic world — the kind that makes you the first name people think of. 300,000+ organic views built for Watchdog. Book a call.");
+    if (meta) meta.setAttribute("content", "We build security firms a proprietary brand character and cinematic world, the kind that makes you the first name people think of. 300,000+ organic views built for Watchdog. Book a call.");
     return () => { if (meta && prev != null) meta.setAttribute("content", prev); };
   }, []);
 
@@ -82,7 +82,7 @@ export default function Security() {
               <span style={{ color: "rgba(245,240,235,0.5)", fontWeight: 500 }}>You need to be the first name they think of.</span>
             </h1>
             <p style={{ fontSize: "clamp(15px,1.7vw,18px)", lineHeight: 1.7, color: "rgba(245,240,235,0.65)", maxWidth: "520px", margin: "26px 0 0", fontWeight: 300, animation: "fadeUp 0.9s ease 0.4s both" }}>
-              We build the proprietary character and cinematic world that makes your firm the name people remember — and trust — before they ever start searching.
+              We build the proprietary character and cinematic world that makes your firm the name people remember, and trust, before they ever start searching.
             </p>
             <div style={{ marginTop: "36px", display: "flex", alignItems: "center", gap: "22px", flexWrap: "wrap", animation: "fadeUp 0.9s ease 0.55s both" }}>
               <BookBtn />
@@ -94,7 +94,7 @@ export default function Security() {
           <div style={{ flex: "0 0 auto", width: "min(340px, 80vw)", animation: "fadeUp 1s ease 0.45s both" }}>
             <HeroFilm />
             <p style={{ textAlign: "center", marginTop: "14px", fontSize: "11px", letterSpacing: "1px", color: "rgba(245,240,235,0.35)", fontWeight: 300 }}>
-              Cinematic brand film — Watchdog · (tap for sound)
+              Cinematic brand film · Watchdog · (tap for sound)
             </p>
           </div>
         </div>
@@ -109,9 +109,9 @@ export default function Security() {
           </h2>
           <div style={{ fontSize: "16px", lineHeight: 1.85, color: "rgba(245,240,235,0.6)", fontWeight: 300, display: "flex", flexDirection: "column", gap: "18px" }}>
             <p>You're good at what you do. The credibility's there. The service is there. The results are there.</p>
-            <p>But in a market where every firm looks the same — same stock photos, same "24/7 trusted security," same dated website — buyers can't tell the serious operator from the cheapest one.</p>
-            <p>So they default to whoever shouts loudest with the lowest price. That's the <em style={{ fontStyle: "normal", color: "#F5F0EB" }}>race to the bottom</em> — and it's a race you don't want to win.</p>
-            <p style={{ color: "rgba(245,240,235,0.8)" }}>The firms that pull ahead don't win on service alone. They win by being <em style={{ fontStyle: "normal", color: "#F5F0EB" }}>instantly recognisable</em> — the obvious, serious choice, the name that surfaces first before anyone even starts looking.</p>
+            <p>But in a market where every firm looks the same (same stock photos, same "24/7 trusted security," same dated website), buyers can't tell the serious operator from the cheapest one.</p>
+            <p>So they default to whoever shouts loudest with the lowest price. That's the <em style={{ fontStyle: "normal", color: "#F5F0EB" }}>race to the bottom</em>, and it's a race you don't want to win.</p>
+            <p style={{ color: "rgba(245,240,235,0.8)" }}>The firms that pull ahead don't win on service alone. They win by being <em style={{ fontStyle: "normal", color: "#F5F0EB" }}>instantly recognisable</em>, the obvious, serious choice, the name that surfaces first before anyone even starts looking.</p>
           </div>
         </Reveal>
       </section>
@@ -124,7 +124,7 @@ export default function Security() {
             A proprietary brand character and cinematic world that <span style={{ color: "rgba(245,240,235,0.5)" }}>you own.</span>
           </h2>
           <p style={{ textAlign: "center", fontSize: "16px", lineHeight: 1.75, color: "rgba(245,240,235,0.55)", fontWeight: 300, maxWidth: "640px", margin: "0 auto 56px" }}>
-            Not "a few videos." A recurring on-screen identity — a film-grade character and world built around your firm, that nobody else can copy and that gets stronger every month you run it.
+            Not "a few videos." A recurring on-screen identity, a film-grade character and world built around your firm, that nobody else can copy and that gets stronger every month you run it.
           </p>
         </Reveal>
         <div className="sr" style={{ justifyContent: "center" }}>
@@ -139,7 +139,7 @@ export default function Security() {
         </div>
         <Reveal delay={0.1}>
           <p style={{ textAlign: "center", fontSize: "17px", lineHeight: 1.7, color: "rgba(245,240,235,0.75)", fontWeight: 300, maxWidth: "620px", margin: "52px auto 0" }}>
-            And you <em style={{ fontStyle: "normal", color: "#F5F0EB" }}>barely lift a finger.</em> We run the entire engine — concept, production, delivery, all of it. You approve. That's the whole job.
+            And you <em style={{ fontStyle: "normal", color: "#F5F0EB" }}>barely lift a finger.</em> We run the entire engine: concept, production, delivery, all of it. You approve. That's the whole job.
           </p>
         </Reveal>
       </section>
@@ -148,10 +148,10 @@ export default function Security() {
       <section style={{ padding: "80px 24px 100px", background: "linear-gradient(180deg,#0A0A0A,#0d0d0d 50%,#0A0A0A)" }}>
         <div style={{ maxWidth: "1100px", margin: "0 auto" }}>
           <Reveal>
-            <div className="sl">Latest published results — Watchdog</div>
+            <div className="sl">Latest published results · Watchdog</div>
             <h2 className="sh" style={{ marginBottom: "16px" }}>A live engine for a real security group.</h2>
             <p style={{ textAlign: "center", fontSize: "15px", lineHeight: 1.7, color: "rgba(245,240,235,0.5)", fontWeight: 300, maxWidth: "640px", margin: "0 auto 8px" }}>
-              Watchdog — a UK security group — came to us looking for one thing: visibility. We built them a cinematic brand world from the ground up. Here's what it did, in the open, on organic reach alone.
+              Watchdog, a UK security group, came to us looking for one thing: visibility. We built them a cinematic brand world from the ground up. Here's what it did, in the open, on organic reach alone.
             </p>
           </Reveal>
 
@@ -195,8 +195,8 @@ export default function Security() {
         </Reveal>
         <div className="sr" style={{ justifyContent: "center" }}>
           {[
-            { tag: "The build", body: "You'll be thrilled with your character and your first film — or I keep working until you are. No drama, no fine print. We don't stop until it's right." },
-            { tag: "The retainer", body: "Month-to-month. No lock-in, no long contracts. I earn it every single month — or you walk. The work keeps you here, not the paperwork." },
+            { tag: "The build", body: "You'll be thrilled with your character and your first film, or I keep working until you are. No drama, no fine print. We don't stop until it's right." },
+            { tag: "The retainer", body: "Month-to-month. No lock-in, no long contracts. I earn it every single month, or you walk. The work keeps you here, not the paperwork." },
           ].map((g, i) => (
             <Reveal key={i} delay={i * 0.08} style={{ flex: "1 1 340px", maxWidth: "400px" }}>
               <div style={{ padding: "34px 30px", background: "rgba(255,255,255,0.02)", border: "1px solid rgba(255,255,255,0.06)", borderRadius: "12px", height: "100%" }}>
@@ -212,10 +212,10 @@ export default function Security() {
       <section className="sp" style={{ maxWidth: "760px", paddingTop: "20px", textAlign: "center" }}>
         <Reveal>
           <h2 style={{ fontFamily: "var(--fh)", fontSize: "clamp(22px,3vw,32px)", fontWeight: 600, lineHeight: 1.25, marginBottom: "20px", color: "#F5F0EB" }}>
-            I work with one security firm per market — never your direct competitor.
+            I work with one security firm per market, never your direct competitor.
           </h2>
           <p style={{ fontSize: "15px", lineHeight: 1.8, color: "rgba(245,240,235,0.55)", fontWeight: 300, maxWidth: "560px", margin: "0 auto" }}>
-            Which means once a firm in your area is in, that's it — your rivals can't have this. I'm taking on a small founding group at preferential rates while I build this out. When your slot's gone, it's gone.
+            Which means once a firm in your area is in, that's it. Your rivals can't have this. I'm taking on a small founding group at preferential rates while I build this out. When your slot's gone, it's gone.
           </p>
         </Reveal>
       </section>
@@ -227,7 +227,7 @@ export default function Security() {
             One 20-minute call.
           </h2>
           <p style={{ fontSize: "15px", color: "rgba(245,240,235,0.55)", fontWeight: 300, maxWidth: "480px", margin: "0 auto 36px", lineHeight: 1.7 }}>
-            I'll show you exactly what we built for Watchdog — and what the same engine would look like for your firm. No pressure, no pitch deck. Just a look at what's possible.
+            I'll show you exactly what we built for Watchdog, and what the same engine would look like for your firm. No pressure, no pitch deck. Just a look at what's possible.
           </p>
           <BookBtn />
         </Reveal>
