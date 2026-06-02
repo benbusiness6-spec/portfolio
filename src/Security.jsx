@@ -123,8 +123,10 @@ const SEC_STYLES = `
   .view-badge{font-size:10.5px!important;padding:4px 8px!important;gap:5px!important;bottom:10px!important;left:10px!important}
   .sec-sound-btn{width:30px!important;height:30px!important;bottom:10px!important;right:10px!important}
   .sec-cue{bottom:16px}
-  .sec-stats{flex-direction:column!important;gap:18px!important;padding:26px 20px!important}
-  .sec-stats .stat-num{font-size:30px!important;letter-spacing:0!important}
+  .sec-stats{flex-direction:row!important;flex-wrap:nowrap!important;gap:8px!important;padding:26px 8px!important}
+  .sec-stats>div{flex:1 1 0!important;min-width:0!important}
+  .sec-stats .stat-num{font-size:clamp(20px,6.2vw,30px)!important;letter-spacing:-0.5px!important}
+  .sec-stats .stat-lbl{font-size:9px!important;letter-spacing:0.8px!important;margin-top:6px!important}
   .sec-sp{padding-top:60px!important;padding-bottom:60px!important}
   .whoami{text-align:center}
   .whoami-copy{text-align:center}
