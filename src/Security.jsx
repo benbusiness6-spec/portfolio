@@ -110,20 +110,22 @@ const SEC_STYLES = `
 .whoami{display:flex;gap:48px;align-items:center;flex-wrap:wrap;justify-content:center}
 .whoami-copy{flex:1 1 360px;max-width:500px}
 @media(max-width:768px){
-  .sec-hero{padding:50px 20px 58px;align-items:center}
-  .sec-hero-inner{flex-direction:column;gap:10px}
-  .sec-hero-copy{flex:0 0 auto;max-width:100%;text-align:center;display:flex;flex-direction:column;align-items:center;gap:5px}
+  .sec-hero{padding:54px 20px 56px;align-items:center}
+  .sec-hero-inner{flex-direction:column;gap:22px}
+  .sec-hero-copy{flex:0 0 auto;max-width:100%;text-align:center;display:flex;flex-direction:column;align-items:center;gap:8px}
   .sec-eyebrow{font-size:9px!important;letter-spacing:1.6px!important;white-space:nowrap}
   .sec-hero h1{font-size:clamp(26px,6.6vw,42px)!important;margin-top:6px!important}
-  .sec-hero-sub{font-size:13.5px!important;line-height:1.5!important;margin-top:9px!important;max-width:400px!important}
-  .sec-hero-cta{margin-top:16px!important}
-  .sec-hero-cta .bp{padding:14px 30px!important;font-size:11px!important}
-  .sec-hero-frame{height:min(46svh,470px)}
+  .sec-hero-sub{font-size:13.5px!important;line-height:1.5!important;margin-top:8px!important;max-width:400px!important}
+  .sec-hero-cta{display:none!important}
+  .sec-hero-media{gap:14px}
+  .sec-hero-frame{height:min(52svh,510px)}
   .sec-hero-chip{display:none}
   .view-badge{font-size:10.5px!important;padding:4px 8px!important;gap:5px!important;bottom:10px!important;left:10px!important}
   .sec-sound-btn{width:30px!important;height:30px!important;bottom:10px!important;right:10px!important}
   .sec-cue{bottom:16px}
-  .sec-sp{padding-top:48px!important;padding-bottom:48px!important}
+  .sec-stats{flex-direction:column!important;gap:18px!important;padding:26px 20px!important}
+  .sec-stats .stat-num{font-size:30px!important;letter-spacing:0!important}
+  .sec-sp{padding-top:60px!important;padding-bottom:60px!important}
   .whoami{text-align:center}
   .whoami-copy{text-align:center}
   .whoami-copy .sl{text-align:center!important}
@@ -205,7 +207,7 @@ export default function Security() {
           </Reveal>
 
           <Reveal delay={0.05}>
-            <div className="stats-bar" style={{ border: "none", marginTop: "24px", marginBottom: "16px" }}>
+            <div className="stats-bar sec-stats" style={{ border: "none", marginTop: "24px", marginBottom: "16px" }}>
               <div style={{ textAlign: "center" }}>
                 <div className="stat-num">300k+</div>
                 <div className="stat-lbl">Organic views</div>
