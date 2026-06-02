@@ -69,9 +69,25 @@ function FramedVideo({ src, poster, views, priority = false, frameClass = "" }) 
   );
 }
 
+function markBooked() { try { sessionStorage.setItem("bls_sec_booked", "1"); } catch {} }
+
 function BookBtn({ children = "Book a 15-minute call", big = false }) {
   return (
-    <a href={CALENDLY_URL} target="_blank" rel="noopener noreferrer" className="bp" style={big ? { padding: "20px 48px", fontSize: "12px" } : {}}>{children}</a>
+    <a href={CALENDLY_URL} target="_blank" rel="noopener noreferrer" onClick={markBooked} className="bp" style={big ? { padding: "20px 48px", fontSize: "12px" } : {}}>{children}</a>
+  );
+}
+
+function CallPopup({ onClose }) {
+  return (
+    <div className="popup-overlay" onClick={onClose}>
+      <div className="popup-card" onClick={(e) => e.stopPropagation()} style={{ textAlign: "center", borderColor: "rgba(197,165,114,0.3)" }}>
+        <button aria-label="Close" onClick={onClose} style={{ position: "absolute", top: "14px", right: "14px", width: "32px", height: "32px", borderRadius: "50%", background: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.08)", color: "#F5F0EB", cursor: "pointer", fontSize: "16px", display: "flex", alignItems: "center", justifyContent: "center" }}>×</button>
+        <div style={{ fontSize: "11px", letterSpacing: "2.5px", textTransform: "uppercase", color: GOLD, fontWeight: 500, marginBottom: "16px" }}>Before you go</div>
+        <h3 style={{ fontFamily: "var(--fh)", fontSize: "23px", fontWeight: 600, lineHeight: 1.25, marginBottom: "12px", color: "#F5F0EB" }}>One 15-minute call could make you the name your market remembers.</h3>
+        <p style={{ fontSize: "14px", lineHeight: 1.65, color: "rgba(245,240,235,0.55)", fontWeight: 300, marginBottom: "26px" }}>I'll show you exactly what we built for Watchdog, and what the same would look like for your firm. No pressure, no pitch deck.</p>
+        <a href={CALENDLY_URL} target="_blank" rel="noopener noreferrer" onClick={() => { markBooked(); onClose(); }} className="bp" style={{ width: "100%", justifyContent: "center", padding: "18px 36px" }}>Book the 15-minute call</a>
+      </div>
+    </div>
   );
 }
 
@@ -104,16 +120,18 @@ const SEC_STYLES = `
 .whoami{display:flex;gap:48px;align-items:center;flex-wrap:wrap;justify-content:center}
 .whoami-copy{flex:1 1 360px;max-width:500px}
 @media(max-width:768px){
-  .sec-hero{padding:56px 20px 56px;align-items:center}
+  .sec-hero{padding:54px 20px 66px;align-items:center}
   .sec-hero-inner{flex-direction:column;gap:12px}
   .sec-hero-copy{flex:0 0 auto;max-width:100%;text-align:center;display:flex;flex-direction:column;align-items:center;gap:6px}
+  .sec-eyebrow{font-size:9px!important;letter-spacing:1.6px!important;white-space:nowrap}
   .sec-hero h1{font-size:clamp(27px,6.8vw,44px)!important;margin-top:8px!important}
   .sec-hero-sub{font-size:14px!important;line-height:1.5!important;margin-top:10px!important;max-width:420px!important}
   .sec-hero-rating{margin-top:12px!important}
   .sec-hero-cta{margin-top:16px!important}
-  .sec-hero-frame{height:min(40svh,470px)}
+  .sec-hero-frame{height:min(37svh,430px)}
   .rating-row{justify-content:center}
   .sec-hero-chip{display:none}
+  .sec-cue{bottom:16px}
   .sec-sp{padding-top:48px!important;padding-bottom:48px!important}
   .whoami{text-align:center}
   .whoami-copy{text-align:center}
@@ -122,6 +140,9 @@ const SEC_STYLES = `
 `;
 
 export default function Security() {
+  const [popupOpen, setPopupOpen] = useState(false);
+  const firedRef = useRef(false);
+
   useEffect(() => {
     document.title = "Cinematic AI Content for Security Firms · Ben Lewis Studios";
     const meta = document.querySelector('meta[name="description"]');
@@ -130,15 +151,31 @@ export default function Security() {
     return () => { if (meta && prev != null) meta.setAttribute("content", prev); };
   }, []);
 
+  // Popup: exit-intent (desktop) + one ~35s timer (covers mobile). Fires once; never if they've clicked Book.
+  useEffect(() => {
+    const blocked = () => { try { return sessionStorage.getItem("bls_sec_popup") === "1" || sessionStorage.getItem("bls_sec_booked") === "1"; } catch { return false; } };
+    const fire = () => {
+      if (firedRef.current || blocked()) return;
+      firedRef.current = true;
+      try { sessionStorage.setItem("bls_sec_popup", "1"); } catch {}
+      setPopupOpen(true);
+    };
+    const timer = setTimeout(fire, 35000);
+    const onMouseOut = (e) => { if (e.clientY > 0 || e.relatedTarget) return; fire(); };
+    document.addEventListener("mouseout", onMouseOut);
+    return () => { clearTimeout(timer); document.removeEventListener("mouseout", onMouseOut); };
+  }, []);
+
   return (
     <>
       <style>{SEC_STYLES}</style>
+      {popupOpen && <CallPopup onClose={() => setPopupOpen(false)} />}
 
       {/* HERO */}
       <section className="sec-hero">
         <div className="sec-hero-inner">
           <div className="sec-hero-copy">
-            <div style={{ fontFamily: "var(--fh)", fontSize: "11px", fontWeight: 500, letterSpacing: "4px", textTransform: "uppercase", color: "rgba(245,240,235,0.45)", animation: "fadeIn 0.8s ease 0.1s both" }}>
+            <div className="sec-eyebrow" style={{ fontFamily: "var(--fh)", fontSize: "11px", fontWeight: 500, letterSpacing: "4px", textTransform: "uppercase", color: "rgba(245,240,235,0.45)", animation: "fadeIn 0.8s ease 0.1s both" }}>
               Cinematic AI content · for security firms
             </div>
             <h1 style={{ fontFamily: "var(--fh)", fontSize: "clamp(34px,5.4vw,76px)", fontWeight: 700, lineHeight: 1.03, letterSpacing: "-1.5px", margin: "22px 0 0", animation: "fadeUp 0.9s ease 0.25s both" }}>
@@ -176,7 +213,7 @@ export default function Security() {
             <div className="sl">Latest case study · Watchdog</div>
             <h2 className="sh" style={{ marginBottom: "16px" }}>The work that made a security group impossible to ignore.</h2>
             <p style={{ textAlign: "center", fontSize: "15px", lineHeight: 1.7, color: "rgba(245,240,235,0.5)", fontWeight: 300, maxWidth: "660px", margin: "0 auto 8px" }}>
-              Our latest: a multi-million-pound UK security group that keeps bringing us back, film after film, to build and run their on-screen brand. Here's what those films did on organic reach alone.
+              Our latest: a multi-million-pound UK security group <em style={{ fontStyle: "normal", color: "#F5F0EB", fontWeight: 500 }}>we build and run the on-screen brand for</em>. Here's what those films did on organic reach alone.
             </p>
           </Reveal>
 
