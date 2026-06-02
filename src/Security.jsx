@@ -18,16 +18,6 @@ const PROOF = [
 const MUTED_ICON = <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2" strokeLinecap="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><line x1="23" y1="9" x2="17" y2="15"/><line x1="17" y1="9" x2="23" y2="15"/></svg>;
 const SOUND_ICON = <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2" strokeLinecap="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"/></svg>;
 
-function Stars() {
-  return (
-    <span style={{ display: "inline-flex", gap: "3px" }} aria-label="5 out of 5 stars">
-      {[0, 1, 2, 3, 4].map((i) => (
-        <svg key={i} width="15" height="15" viewBox="0 0 24 24" fill={GOLD} stroke="none"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
-      ))}
-    </span>
-  );
-}
-
 // Framed video: gold frame + poster + autoplay-muted loop + tap-to-unmute + view badge.
 // priority=true loads immediately (hero LCP); otherwise lazy via IntersectionObserver.
 function FramedVideo({ src, poster, views, priority = false, frameClass = "" }) {
@@ -61,7 +51,7 @@ function FramedVideo({ src, poster, views, priority = false, frameClass = "" }) 
             {views}
           </div>
         )}
-        <button aria-label="Toggle sound" onClick={toggle} style={{ position: "absolute", bottom: "12px", right: "12px", width: "34px", height: "34px", borderRadius: "50%", background: "rgba(0,0,0,0.55)", backdropFilter: "blur(8px)", border: "none", display: "flex", alignItems: "center", justifyContent: "center", zIndex: 3, cursor: "pointer" }}>
+        <button aria-label="Toggle sound" onClick={toggle} className="sec-sound-btn" style={{ position: "absolute", bottom: "12px", right: "12px", width: "34px", height: "34px", borderRadius: "50%", background: "rgba(0,0,0,0.55)", backdropFilter: "blur(8px)", border: "none", display: "flex", alignItems: "center", justifyContent: "center", zIndex: 3, cursor: "pointer" }}>
           {muted ? MUTED_ICON : SOUND_ICON}
         </button>
       </div>
@@ -84,7 +74,7 @@ function CallPopup({ onClose }) {
         <button aria-label="Close" onClick={onClose} style={{ position: "absolute", top: "14px", right: "14px", width: "32px", height: "32px", borderRadius: "50%", background: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.08)", color: "#F5F0EB", cursor: "pointer", fontSize: "16px", display: "flex", alignItems: "center", justifyContent: "center" }}>×</button>
         <div style={{ fontSize: "11px", letterSpacing: "2.5px", textTransform: "uppercase", color: GOLD, fontWeight: 500, marginBottom: "16px" }}>Before you go</div>
         <h3 style={{ fontFamily: "var(--fh)", fontSize: "23px", fontWeight: 600, lineHeight: 1.25, marginBottom: "12px", color: "#F5F0EB" }}>One 15-minute call could make you the name your market remembers.</h3>
-        <p style={{ fontSize: "14px", lineHeight: 1.65, color: "rgba(245,240,235,0.55)", fontWeight: 300, marginBottom: "26px" }}>I'll show you exactly what we built for Watchdog, and what the same would look like for your firm. No pressure, no pitch deck.</p>
+        <p style={{ fontSize: "14px", lineHeight: 1.65, color: "rgba(245,240,235,0.55)", fontWeight: 300, marginBottom: "26px" }}>I'll show you the work I've made that's pulled hundreds of thousands of organic views, and what the same would look like for your firm. No pressure, no pitch deck.</p>
         <a href={CALENDLY_URL} target="_blank" rel="noopener noreferrer" onClick={() => { markBooked(); onClose(); }} className="bp" style={{ width: "100%", justifyContent: "center", padding: "18px 36px" }}>Book the 15-minute call</a>
       </div>
     </div>
@@ -120,17 +110,18 @@ const SEC_STYLES = `
 .whoami{display:flex;gap:48px;align-items:center;flex-wrap:wrap;justify-content:center}
 .whoami-copy{flex:1 1 360px;max-width:500px}
 @media(max-width:768px){
-  .sec-hero{padding:54px 20px 66px;align-items:center}
-  .sec-hero-inner{flex-direction:column;gap:12px}
-  .sec-hero-copy{flex:0 0 auto;max-width:100%;text-align:center;display:flex;flex-direction:column;align-items:center;gap:6px}
+  .sec-hero{padding:50px 20px 58px;align-items:center}
+  .sec-hero-inner{flex-direction:column;gap:10px}
+  .sec-hero-copy{flex:0 0 auto;max-width:100%;text-align:center;display:flex;flex-direction:column;align-items:center;gap:5px}
   .sec-eyebrow{font-size:9px!important;letter-spacing:1.6px!important;white-space:nowrap}
-  .sec-hero h1{font-size:clamp(27px,6.8vw,44px)!important;margin-top:8px!important}
-  .sec-hero-sub{font-size:14px!important;line-height:1.5!important;margin-top:10px!important;max-width:420px!important}
-  .sec-hero-rating{margin-top:12px!important}
+  .sec-hero h1{font-size:clamp(26px,6.6vw,42px)!important;margin-top:6px!important}
+  .sec-hero-sub{font-size:13.5px!important;line-height:1.5!important;margin-top:9px!important;max-width:400px!important}
   .sec-hero-cta{margin-top:16px!important}
-  .sec-hero-frame{height:min(37svh,430px)}
-  .rating-row{justify-content:center}
+  .sec-hero-cta .bp{padding:14px 30px!important;font-size:11px!important}
+  .sec-hero-frame{height:min(46svh,470px)}
   .sec-hero-chip{display:none}
+  .view-badge{font-size:10.5px!important;padding:4px 8px!important;gap:5px!important;bottom:10px!important;left:10px!important}
+  .sec-sound-btn{width:30px!important;height:30px!important;bottom:10px!important;right:10px!important}
   .sec-cue{bottom:16px}
   .sec-sp{padding-top:48px!important;padding-bottom:48px!important}
   .whoami{text-align:center}
@@ -185,11 +176,7 @@ export default function Security() {
             <p className="sec-hero-sub" style={{ fontSize: "clamp(16px,1.9vw,21px)", lineHeight: 1.55, color: "rgba(245,240,235,0.68)", maxWidth: "540px", margin: "22px 0 0", fontWeight: 300, animation: "fadeUp 0.9s ease 0.4s both" }}>
               Cinematic content that makes your firm the obvious, trusted choice, so you compete on reputation, never on price.
             </p>
-            <div className="rating-row sec-hero-rating" style={{ marginTop: "24px", animation: "fadeUp 0.9s ease 0.5s both" }}>
-              <Stars />
-              <span className="rt">100% client satisfaction</span>
-            </div>
-            <div className="sec-hero-cta" style={{ marginTop: "28px", display: "flex", alignItems: "center", gap: "20px", flexWrap: "wrap", animation: "fadeUp 0.9s ease 0.6s both" }}>
+            <div className="sec-hero-cta" style={{ marginTop: "30px", display: "flex", alignItems: "center", gap: "20px", flexWrap: "wrap", animation: "fadeUp 0.9s ease 0.55s both" }}>
               <BookBtn big />
               <span className="sec-hero-chip" style={{ fontSize: "13px", letterSpacing: "0.5px", color: "rgba(245,240,235,0.45)", fontWeight: 300 }}>
                 300,000+ organic views · multi-million-pound security group
@@ -213,7 +200,7 @@ export default function Security() {
             <div className="sl">Latest case study · Watchdog</div>
             <h2 className="sh" style={{ marginBottom: "16px" }}>The work that made a security group impossible to ignore.</h2>
             <p style={{ textAlign: "center", fontSize: "15px", lineHeight: 1.7, color: "rgba(245,240,235,0.5)", fontWeight: 300, maxWidth: "660px", margin: "0 auto 8px" }}>
-              Our latest: a multi-million-pound UK security group <em style={{ fontStyle: "normal", color: "#F5F0EB", fontWeight: 500 }}>we build and run the on-screen brand for</em>. Here's what those films did on organic reach alone.
+              <span style={{ color: "#F5F0EB", fontWeight: 400 }}>Our latest: a multi-million-pound UK security group I build and run the on-screen brand for.</span> Here's what those films did on organic reach alone.
             </p>
           </Reveal>
 
@@ -305,7 +292,7 @@ export default function Security() {
             One 15-minute call.
           </h2>
           <p style={{ fontSize: "15px", color: "rgba(245,240,235,0.55)", fontWeight: 300, maxWidth: "500px", margin: "0 auto 18px", lineHeight: 1.7 }}>
-            I'll show you exactly what we built for Watchdog, and what the same would look like for your firm. I work with one firm per market, never your direct competitor. No pressure, no pitch deck.
+            I'll walk you through the work I've made that's pulled hundreds of thousands of organic views, and exactly what the same would look like for your firm. I work with one firm per market, never your direct competitor. No pressure, no pitch deck.
           </p>
           <p style={{ fontSize: "15px", color: "#F5F0EB", fontWeight: 400, margin: "0 auto 32px" }}>The only thing you're really risking is fifteen minutes.</p>
           <BookBtn big />
