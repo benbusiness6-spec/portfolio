@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef, useCallback } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 
-export const CALENDLY_URL = "https://calendly.com/ben-business/30min";
+export const CALENDLY_URL = "https://calendly.com/benlewisltd";
 export const LINKEDIN_URL = "https://www.linkedin.com/in/ben-lewis-466a3a310/";
 export const INSTAGRAM_URL = "https://www.instagram.com/benlewisstudios/";
 export const YOUTUBE_URL = "https://www.youtube.com/@benlewis7548";
