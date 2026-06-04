@@ -4,14 +4,14 @@ import { Reveal, CALENDLY_URL } from "./shared.jsx";
 const GOLD = "#C5A572";
 
 const HERO = {
-  src: "/assets/security/wd03-hero.mp4",
+  src: "/assets/security/wd03-hero-v2.mp4",
   poster: "/assets/security/wd03-hero-poster.webp",
   views: "100k+ views",
 };
 
 const PROOF = [
   { src: "/assets/security/wd-top-v2.mp4", poster: "/assets/security/wd-top-poster.webp", views: "160k views" },
-  { src: "/assets/security/wd03-hero.mp4", poster: "/assets/security/wd03-hero-poster.webp", views: "100k views" },
+  { src: "/assets/security/wd03-hero-v2.mp4", poster: "/assets/security/wd03-hero-poster.webp", views: "100k views" },
   { src: "/assets/security/wd-50k-v2.mp4", poster: "/assets/security/wd-50k-poster.webp", views: "60k views" },
 ];
 
