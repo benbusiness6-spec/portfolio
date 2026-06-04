@@ -1,5 +1,7 @@
 {
   "rewrites": [
+    { "source": "/security", "destination": "/security.html" },
+    { "source": "/security/", "destination": "/security.html" },
     { "source": "/((?!api/).*)", "destination": "/" }
   ],
   "headers": [
