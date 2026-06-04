@@ -216,7 +216,7 @@ export default function Security() {
               </div>
               <div style={{ textAlign: "center" }}>
                 <div className="stat-num">100k+</div>
-                <div className="stat-lbl">Average per cinematic ad</div>
+                <div className="stat-lbl">Average per ad</div>
               </div>
               <div style={{ textAlign: "center" }}>
                 <div className="stat-num">1,000s</div>
