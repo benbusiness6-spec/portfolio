@@ -277,7 +277,7 @@ export default function Security() {
               <div className="sl" style={{ textAlign: "left" }}>Who you'd work with</div>
               <h2 style={{ fontFamily: "var(--fh)", fontSize: "clamp(24px,3vw,34px)", fontWeight: 600, lineHeight: 1.2, marginBottom: "20px", color: "#F5F0EB" }}>I'm Ben Lewis.</h2>
               <div style={{ fontSize: "15px", lineHeight: 1.8, color: "rgba(245,240,235,0.6)", fontWeight: 300, display: "flex", flexDirection: "column", gap: "14px" }}>
-                <p>I make cinematic adverts for security firms, and I make every frame myself.</p>
+                <p>I make cinematic ads for security firms, and I make every frame myself.</p>
                 <p>No painfully slow agency back and forths with 6 week turnarounds. You work directly with the person who concepts, produces and delivers the work, which is exactly why it stays consistent and why it performs.</p>
                 <p>A proper introduction is on the way. For now, the work above speaks for itself.</p>
               </div>
