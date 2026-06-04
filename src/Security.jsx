@@ -10,9 +10,9 @@ const HERO = {
 };
 
 const PROOF = [
-  { src: "/assets/security/wd-top.mp4", poster: "/assets/security/wd-top-poster.webp", views: "160k views" },
+  { src: "/assets/security/wd-top-v2.mp4", poster: "/assets/security/wd-top-poster.webp", views: "160k views" },
   { src: "/assets/security/wd03-hero.mp4", poster: "/assets/security/wd03-hero-poster.webp", views: "100k views" },
-  { src: "/assets/security/wd-50k.mp4", poster: "/assets/security/wd-50k-poster.webp", views: "60k views" },
+  { src: "/assets/security/wd-50k-v2.mp4", poster: "/assets/security/wd-50k-poster.webp", views: "60k views" },
 ];
 
 const MUTED_ICON = <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2" strokeLinecap="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><line x1="23" y1="9" x2="17" y2="15"/><line x1="17" y1="9" x2="23" y2="15"/></svg>;
