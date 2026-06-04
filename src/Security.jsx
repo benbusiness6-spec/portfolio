@@ -40,7 +40,7 @@ function FramedVideo({ src, poster, views, priority = false, frameClass = "" }) 
   return (
     <div ref={wrapRef} className={`sec-frame ${frameClass}`} onClick={toggle} style={{ cursor: "pointer" }}>
       <div className="sec-frame-inner" style={{ height: "100%" }}>
-        {poster && <img src={poster} alt="Watchdog cinematic brand film" loading={priority ? "eager" : "lazy"} decoding="async" fetchPriority={priority ? "high" : "auto"}
+        {poster && <img src={poster} alt="Watchdog cinematic advert" loading={priority ? "eager" : "lazy"} decoding="async" fetchPriority={priority ? "high" : "auto"}
           style={{ position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover", opacity: loaded ? 0 : 1, transition: "opacity 0.5s ease" }} />}
         {shouldLoad && <video ref={vidRef} src={src} poster={poster} autoPlay muted loop playsInline preload={priority ? "auto" : "metadata"}
           onLoadedData={() => setLoaded(true)}
@@ -204,7 +204,7 @@ export default function Security() {
             <div className="sl">Latest case study · Watchdog</div>
             <h2 className="sh" style={{ marginBottom: "16px" }}>The work that made a security group impossible to ignore.</h2>
             <p style={{ textAlign: "center", fontSize: "15px", lineHeight: 1.7, color: "rgba(245,240,235,0.5)", fontWeight: 300, maxWidth: "660px", margin: "0 auto 8px" }}>
-              <span style={{ color: "#F5F0EB", fontWeight: 400 }}>Our latest: a multi-million-pound UK security group I build and run the on-screen brand for.</span> Here's what those films did on organic reach alone.
+              <span style={{ color: "#F5F0EB", fontWeight: 400 }}>Our latest: a multi-million-pound UK security group I make cinematic ads for.</span> Here's what those ads did on organic reach alone.
             </p>
           </Reveal>
 
@@ -216,7 +216,7 @@ export default function Security() {
               </div>
               <div style={{ textAlign: "center" }}>
                 <div className="stat-num">100k+</div>
-                <div className="stat-lbl">Average per film</div>
+                <div className="stat-lbl">Average per cinematic ad</div>
               </div>
               <div style={{ textAlign: "center" }}>
                 <div className="stat-num">1,000s</div>
@@ -279,7 +279,7 @@ export default function Security() {
               <div style={{ fontSize: "15px", lineHeight: 1.8, color: "rgba(245,240,235,0.6)", fontWeight: 300, display: "flex", flexDirection: "column", gap: "14px" }}>
                 <p>I make cinematic adverts for security firms, and I make every frame myself.</p>
                 <p>No painfully slow agency back and forths with 6 week turnarounds. You work directly with the person who concepts, produces and delivers the work, which is exactly why it stays consistent and why it performs.</p>
-                <p>A proper introduction film is on the way. For now, the work above speaks for itself.</p>
+                <p>A proper introduction is on the way. For now, the work above speaks for itself.</p>
               </div>
             </div>
           </div>
