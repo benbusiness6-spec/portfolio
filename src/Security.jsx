@@ -139,10 +139,10 @@ export default function Security() {
   const firedRef = useRef(false);
 
   useEffect(() => {
-    document.title = "Cinematic AI Content for Security Firms · Ben Lewis Studios";
+    document.title = "Cinematic AI Advertising for Security Firms · Ben Lewis Studios";
     const meta = document.querySelector('meta[name="description"]');
     const prev = meta?.getAttribute("content");
-    if (meta) meta.setAttribute("content", "Cinematic AI content that makes established security firms the name their market trusts first. 300,000+ organic views for a multi-million-pound security group. Book a 15-minute call.");
+    if (meta) meta.setAttribute("content", "Cinematic AI advertising that makes established security firms the name their market trusts first. 300,000+ organic views for a multi-million-pound security group. Book a 15-minute call.");
     return () => { if (meta && prev != null) meta.setAttribute("content", prev); };
   }, []);
 
@@ -178,7 +178,7 @@ export default function Security() {
               <span style={{ color: "rgba(245,240,235,0.55)", fontWeight: 600 }}>Now own the recognition.</span>
             </h1>
             <p className="sec-hero-sub" style={{ fontSize: "clamp(16px,1.9vw,21px)", lineHeight: 1.55, color: "rgba(245,240,235,0.68)", maxWidth: "540px", margin: "22px 0 0", fontWeight: 300, animation: "fadeUp 0.9s ease 0.4s both" }}>
-              Cinematic content that makes your firm the obvious, trusted choice, so you compete on reputation, never on price.
+              Cinematic advertising that makes your firm the obvious, trusted choice, so you compete on reputation, never on price.
             </p>
             <div className="sec-hero-cta" style={{ marginTop: "30px", display: "flex", alignItems: "center", gap: "20px", flexWrap: "wrap", animation: "fadeUp 0.9s ease 0.55s both" }}>
               <BookBtn big />
@@ -277,7 +277,7 @@ export default function Security() {
               <div className="sl" style={{ textAlign: "left" }}>Who you'd work with</div>
               <h2 style={{ fontFamily: "var(--fh)", fontSize: "clamp(24px,3vw,34px)", fontWeight: 600, lineHeight: 1.2, marginBottom: "20px", color: "#F5F0EB" }}>I'm Ben Lewis.</h2>
               <div style={{ fontSize: "15px", lineHeight: 1.8, color: "rgba(245,240,235,0.6)", fontWeight: 300, display: "flex", flexDirection: "column", gap: "14px" }}>
-                <p>I make cinematic content for security firms, and I make every frame myself.</p>
+                <p>I make cinematic adverts for security firms, and I make every frame myself.</p>
                 <p>No agency, no junior, no faceless content mill. You work directly with the person who concepts, produces and delivers the work, which is exactly why it stays consistent and why it performs.</p>
                 <p>A proper introduction film is on the way. For now, the work above speaks for itself.</p>
               </div>
