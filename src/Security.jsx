@@ -170,8 +170,8 @@ export default function Security() {
       <section className="sec-hero">
         <div className="sec-hero-inner">
           <div className="sec-hero-copy">
-            <div className="sec-eyebrow" style={{ fontFamily: "var(--fh)", fontSize: "11px", fontWeight: 500, letterSpacing: "4px", textTransform: "uppercase", color: "rgba(245,240,235,0.45)", animation: "fadeIn 0.8s ease 0.1s both" }}>
-              Cinematic AI content · for security firms
+            <div className="sec-eyebrow" style={{ fontFamily: "var(--fh)", fontSize: "11px", fontWeight: 700, letterSpacing: "4px", textTransform: "uppercase", color: GOLD, animation: "fadeIn 0.8s ease 0.1s both" }}>
+              Cinematic AI advertising · for security firms
             </div>
             <h1 style={{ fontFamily: "var(--fh)", fontSize: "clamp(34px,5.4vw,76px)", fontWeight: 700, lineHeight: 1.03, letterSpacing: "-1.5px", margin: "22px 0 0", animation: "fadeUp 0.9s ease 0.25s both" }}>
               You earned the reputation.{" "}
