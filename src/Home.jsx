@@ -103,7 +103,10 @@ export default function Home() {
           <h1 style={{ fontFamily: "var(--fh)", fontSize: "clamp(34px,6vw,68px)", fontWeight: 700, lineHeight: 1.08, letterSpacing: "-1px", animation: "fadeUp 0.9s ease 0.35s both" }}>
             1/10th <span style={{ color: "rgba(245,240,235,0.5)", fontWeight: 500 }}>the cost.</span> 10x <span style={{ color: "rgba(245,240,235,0.5)", fontWeight: 500 }}>the speed.</span> 100% <span style={{ color: "rgba(245,240,235,0.5)", fontWeight: 500 }}>of the quality.</span>
           </h1>
-          <p style={{ fontSize: "clamp(15px,1.8vw,18px)", lineHeight: 1.7, color: "#F5F0EB", maxWidth: "640px", margin: "28px auto 0", fontWeight: 600, animation: "fadeUp 0.9s ease 0.5s both" }}>
+          <p style={{ fontSize: "clamp(15px,1.85vw,19px)", lineHeight: 1.6, color: "rgba(245,240,235,0.72)", maxWidth: "620px", margin: "22px auto 0", fontWeight: 400, animation: "fadeUp 0.9s ease 0.5s both" }}>
+            Short brand films and 15-second video ads for DTC brands, ready to post organically or run as paid creative.
+          </p>
+          <p style={{ fontSize: "clamp(15px,1.8vw,18px)", lineHeight: 1.7, color: "#F5F0EB", maxWidth: "640px", margin: "18px auto 0", fontWeight: 600, animation: "fadeUp 0.9s ease 0.62s both" }}>
             I'll produce a spec ad for your brand in under 24 hours. Free. No strings. Yours to keep regardless.
           </p>
           <p style={{ fontSize: "13px", letterSpacing: "1px", color: "rgba(245,240,235,0.4)", marginTop: "20px", fontWeight: 300, animation: "fadeUp 0.9s ease 0.65s both" }}>
