@@ -101,14 +101,10 @@ export default function Home() {
         <div style={{ maxWidth: "920px", margin: "0 auto", width: "100%", textAlign: "center" }}>
           <div style={{ animation: "fadeIn 0.8s ease 0.2s both", fontFamily: "var(--fh)", fontSize: "11px", fontWeight: 500, letterSpacing: "4px", textTransform: "uppercase", color: "rgba(245,240,235,0.45)", marginBottom: "32px" }}>vs traditional production</div>
           <h1 style={{ fontFamily: "var(--fh)", fontSize: "clamp(34px,6vw,68px)", fontWeight: 700, lineHeight: 1.08, letterSpacing: "-1px", animation: "fadeUp 0.9s ease 0.35s both" }}>
-            Brand films and video ads,<br />
-            <span style={{ color: "rgba(245,240,235,0.5)", fontWeight: 500 }}>1/10th the cost. 10x the speed. 100% the quality.</span>
+            Brand films and video ads, <span style={{ color: "rgba(245,240,235,0.5)", fontWeight: 500 }}>1/10th the cost. 10x the speed. 100% the quality.</span>
           </h1>
           <p style={{ fontSize: "clamp(15px,1.8vw,18px)", lineHeight: 1.7, color: "#F5F0EB", maxWidth: "640px", margin: "28px auto 0", fontWeight: 600, animation: "fadeUp 0.9s ease 0.5s both" }}>
             I'll produce a spec ad for your brand in under 24 hours. Free. No strings. Yours to keep regardless.
-          </p>
-          <p style={{ fontSize: "13px", letterSpacing: "1px", color: "rgba(245,240,235,0.4)", marginTop: "20px", fontWeight: 300, animation: "fadeUp 0.9s ease 0.65s both" }}>
-            Video Ads | Editorial Photography | UGC Content
           </p>
         </div>
       </section>
