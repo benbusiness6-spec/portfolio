@@ -371,6 +371,7 @@ export function GlobalStyles() {
         .about-label{text-align:center!important}
         .campaigns-row{padding-top:24px!important;padding-bottom:16px!important;padding-left:calc((100vw - 280px) / 2)!important;padding-right:calc((100vw - 280px) / 2)!important}
         .campaigns-row .campaign-card{scroll-snap-align:center!important}
+        .mob-line{display:block}
       }
       .popup-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.75);backdrop-filter:blur(8px);z-index:1000;display:flex;align-items:center;justify-content:center;padding:24px;animation:fadeIn 0.3s ease}
       .popup-card{background:#0e0e0e;border:1px solid rgba(255,255,255,0.08);border-radius:12px;padding:40px 32px;max-width:460px;width:100%;position:relative;box-shadow:0 24px 80px rgba(0,0,0,0.6)}

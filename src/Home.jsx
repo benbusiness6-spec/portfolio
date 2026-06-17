@@ -10,8 +10,8 @@ const STATS = [
 
 const CAMPAIGNS = [
   { brand: "Watchdog", category: "DTC security", src: "/assets/posts/homepage-carousel/watchdog.mp4", poster: "/assets/posts/homepage-carousel/watchdog.webp", type: "video" },
-  { brand: "Craftd", category: "Spec Ad", src: "/assets/posts/homepage-carousel/crafted.mp4", poster: "/assets/posts/homepage-carousel/crafted.webp", type: "video" },
   { brand: "Karviva", category: "Functional beverage", src: "/assets/posts/homepage-carousel/karviva.mp4", poster: "/assets/posts/homepage-carousel/karviva.webp", type: "video" },
+  { brand: "Craftd", category: "Spec Ad", src: "/assets/posts/homepage-carousel/crafted.mp4", poster: "/assets/posts/homepage-carousel/crafted.webp", type: "video" },
   { brand: "OMEGA", category: "Spec Ad", src: "/assets/posts/homepage-carousel/omega.mp4", poster: "/assets/posts/homepage-carousel/omega.webp", type: "video" },
   { brand: "Neutonic", category: "Spec Ad", src: "/assets/posts/homepage-carousel/neutonic.mp4", poster: "/assets/posts/homepage-carousel/neutonic.webp", type: "video" },
   { brand: "Panther", category: "Spec Ad", src: "/assets/posts/homepage-carousel/panther.mp4", poster: "/assets/posts/homepage-carousel/panther.webp", type: "video" },
@@ -62,7 +62,7 @@ export default function Home() {
     const positionKarviva = () => {
       if (window.innerWidth > 768) return;
       const cards = el.querySelectorAll(".campaign-card");
-      centerCard(cards[2]);
+      centerCard(cards[1]);
     };
     positionKarviva();
     window.addEventListener("resize", positionKarviva);
@@ -104,7 +104,7 @@ export default function Home() {
             Brand films and video ads, <span style={{ color: "rgba(245,240,235,0.5)", fontWeight: 500 }}>1/10th the cost. 10x the speed. 100% the quality.</span>
           </h1>
           <p style={{ fontSize: "clamp(15px,1.8vw,18px)", lineHeight: 1.7, color: "#F5F0EB", maxWidth: "640px", margin: "28px auto 0", fontWeight: 600, animation: "fadeUp 0.9s ease 0.5s both" }}>
-            Get a free spec ad, custom-made for your brand. Delivered in under 24 hours. No strings, yours to keep.
+            Get a free spec ad, custom-made for your brand. Delivered in under 24 hours. <span className="mob-line">No strings, yours to keep.</span>
           </p>
         </div>
       </section>
