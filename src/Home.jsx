@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link } from "./router.jsx";
 import { Reveal, MediaSlot, LeadForm } from "./shared.jsx";
 
 const STATS = [
@@ -99,11 +99,11 @@ export default function Home() {
       {/* HERO */}
       <section className="hero-sec">
         <div style={{ maxWidth: "920px", margin: "0 auto", width: "100%", textAlign: "center" }}>
-          <div style={{ animation: "fadeIn 0.8s ease 0.2s both", fontFamily: "var(--fh)", fontSize: "11px", fontWeight: 500, letterSpacing: "4px", textTransform: "uppercase", color: "rgba(245,240,235,0.45)", marginBottom: "32px" }}>vs traditional production</div>
-          <h1 style={{ fontFamily: "var(--fh)", fontSize: "clamp(34px,6vw,68px)", fontWeight: 700, lineHeight: 1.08, letterSpacing: "-1px", animation: "fadeUp 0.9s ease 0.35s both" }}>
-            Brand films and video ads, <span style={{ color: "rgba(245,240,235,0.5)", fontWeight: 500 }}>1/10th the cost. 10x the speed. 100% the quality.</span>
+          <div style={{ fontFamily: "var(--fh)", fontSize: "11px", fontWeight: 500, letterSpacing: "4px", textTransform: "uppercase", color: "rgba(245,240,235,0.45)", marginBottom: "32px" }}>vs traditional production</div>
+          <h1 style={{ fontFamily: "var(--fh)", fontSize: "clamp(34px,6vw,68px)", fontWeight: 700, lineHeight: 1.08, letterSpacing: "-1px" }}>
+            Brand films and video ads, <span style={{ color: "rgba(245,240,235,0.5)", fontWeight: 500 }}>1/10th the cost. 10x the speed. 100% of the quality.</span>
           </h1>
-          <p style={{ fontSize: "clamp(15px,1.8vw,18px)", lineHeight: 1.7, color: "#F5F0EB", maxWidth: "640px", margin: "28px auto 0", fontWeight: 600, animation: "fadeUp 0.9s ease 0.5s both" }}>
+          <p style={{ fontSize: "clamp(15px,1.8vw,18px)", lineHeight: 1.7, color: "#F5F0EB", maxWidth: "640px", margin: "28px auto 0", fontWeight: 600 }}>
             Get a free spec ad, custom-made for your brand. Delivered in under 24 hours. <span className="mob-line">No strings, yours to keep.</span>
           </p>
         </div>

@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef, useCallback } from "react";
-import { Link, useLocation, useNavigate } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "./router.jsx";
 
 export const CALENDLY_URL = "https://calendly.com/benlewisltd";
 export const LINKEDIN_URL = "https://www.linkedin.com/in/ben-lewis-466a3a310/";
@@ -316,7 +316,7 @@ export function LeadForm({ fields, subjectPrefix = "Lead", buttonText = "Submit"
 
 export function GlobalStyles() {
   return (
-    <style>{`
+    <style dangerouslySetInnerHTML={{ __html: `
       *{margin:0;padding:0;box-sizing:border-box}html{scroll-behavior:smooth;-webkit-font-smoothing:antialiased}
       body{-webkit-overflow-scrolling:touch;background:#0A0A0A;color:#F5F0EB}
       ::selection{background:rgba(245,240,235,0.2);color:#fff}
@@ -385,7 +385,7 @@ export function GlobalStyles() {
         .mob-cta{padding-top:80px!important;padding-bottom:80px!important}
         .stats-bar{gap:28px;padding:36px 20px}
       }
-    `}</style>
+    ` }} />
   );
 }
 

@@ -40,7 +40,7 @@ function FramedVideo({ src, poster, views, priority = false, frameClass = "" }) 
   return (
     <div ref={wrapRef} className={`sec-frame ${frameClass}`} onClick={toggle} style={{ cursor: "pointer" }}>
       <div className="sec-frame-inner" style={{ height: "100%" }}>
-        {poster && <img src={poster} alt="Watchdog cinematic ad" loading={priority ? "eager" : "lazy"} decoding="async" fetchPriority={priority ? "high" : "auto"}
+        {poster && <img src={poster} alt="Watchdog cinematic ad" loading={priority ? "eager" : "lazy"} decoding="async" fetchpriority={priority ? "high" : "auto"}
           style={{ position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover", opacity: loaded ? 0 : 1, transition: "opacity 0.5s ease" }} />}
         {shouldLoad && <video ref={vidRef} src={src} poster={poster} autoPlay muted loop playsInline preload={priority ? "auto" : "metadata"}
           onLoadedData={() => setLoaded(true)}
@@ -163,7 +163,7 @@ export default function Security() {
 
   return (
     <>
-      <style>{SEC_STYLES}</style>
+      <style dangerouslySetInnerHTML={{ __html: SEC_STYLES }} />
       {popupOpen && <CallPopup onClose={() => setPopupOpen(false)} />}
 
       {/* HERO */}
