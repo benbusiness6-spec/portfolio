@@ -104,7 +104,7 @@ export default function Home() {
             Brand films and video ads, <span style={{ color: "rgba(245,240,235,0.5)", fontWeight: 500 }}>1/10th the cost. 10x the speed. 100% the quality.</span>
           </h1>
           <p style={{ fontSize: "clamp(15px,1.8vw,18px)", lineHeight: 1.7, color: "#F5F0EB", maxWidth: "640px", margin: "28px auto 0", fontWeight: 600, animation: "fadeUp 0.9s ease 0.5s both" }}>
-            I'll produce a spec ad for your brand in under 24 hours. Free. No strings. Yours to keep regardless.
+            Get a free spec ad, custom-made for your brand. Delivered in under 24 hours. No strings, yours to keep.
           </p>
         </div>
       </section>
