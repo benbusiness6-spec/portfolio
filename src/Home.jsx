@@ -13,9 +13,9 @@ const CAMPAIGNS = [
   { brand: "Craftd", category: "Spec Ad", src: "/assets/posts/homepage-carousel/crafted.mp4", poster: "/assets/posts/homepage-carousel/crafted.webp", type: "video" },
   { brand: "Karviva", category: "Functional beverage", src: "/assets/posts/homepage-carousel/karviva.mp4", poster: "/assets/posts/homepage-carousel/karviva.webp", type: "video" },
   { brand: "OMEGA", category: "Spec Ad", src: "/assets/posts/homepage-carousel/omega.mp4", poster: "/assets/posts/homepage-carousel/omega.webp", type: "video" },
+  { brand: "Neutonic", category: "Spec Ad", src: "/assets/posts/homepage-carousel/neutonic.mp4", poster: "/assets/posts/homepage-carousel/neutonic.webp", type: "video" },
   { brand: "Panther", category: "Spec Ad", src: "/assets/posts/homepage-carousel/panther.mp4", poster: "/assets/posts/homepage-carousel/panther.webp", type: "video" },
   { brand: "MuscleFier", category: "Sports nutrition", src: "/assets/posts/homepage-carousel/musclefier.mp4", poster: "/assets/posts/homepage-carousel/musclefier.webp", type: "video" },
-  { brand: "Beauty Editorial", category: "AI fashion campaign", src: "/assets/posts/homepage-carousel/beauty.mp4", poster: "/assets/posts/homepage-carousel/beauty.webp", type: "video" },
 ];
 
 const FORM_FIELDS = [
@@ -99,10 +99,9 @@ export default function Home() {
       {/* HERO */}
       <section className="hero-sec">
         <div style={{ maxWidth: "920px", margin: "0 auto", width: "100%", textAlign: "center" }}>
-          <div style={{ animation: "fadeIn 0.8s ease 0.2s both", fontFamily: "var(--fh)", fontSize: "11px", fontWeight: 500, letterSpacing: "4px", textTransform: "uppercase", color: "rgba(245,240,235,0.45)", marginBottom: "32px" }}>Ben Lewis Studios</div>
+          <div style={{ animation: "fadeIn 0.8s ease 0.2s both", fontFamily: "var(--fh)", fontSize: "11px", fontWeight: 500, letterSpacing: "4px", textTransform: "uppercase", color: "rgba(245,240,235,0.45)", marginBottom: "32px" }}>vs traditional production</div>
           <h1 style={{ fontFamily: "var(--fh)", fontSize: "clamp(34px,6vw,68px)", fontWeight: 700, lineHeight: 1.08, letterSpacing: "-1px", animation: "fadeUp 0.9s ease 0.35s both" }}>
-            Cut your production costs 60%, scale your output,<br />
-            <span style={{ color: "rgba(245,240,235,0.5)", fontWeight: 500 }}>and give your brand the stage it deserves.</span>
+            1/10th <span style={{ color: "rgba(245,240,235,0.5)", fontWeight: 500 }}>the cost.</span> 10x <span style={{ color: "rgba(245,240,235,0.5)", fontWeight: 500 }}>the speed.</span> 100% <span style={{ color: "rgba(245,240,235,0.5)", fontWeight: 500 }}>of the quality.</span>
           </h1>
           <p style={{ fontSize: "clamp(15px,1.8vw,18px)", lineHeight: 1.7, color: "#F5F0EB", maxWidth: "640px", margin: "28px auto 0", fontWeight: 600, animation: "fadeUp 0.9s ease 0.5s both" }}>
             I'll produce a spec ad for your brand in under 24 hours. Free. No strings. Yours to keep regardless.
