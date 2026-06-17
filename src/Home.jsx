@@ -9,12 +9,13 @@ const STATS = [
 ];
 
 const CAMPAIGNS = [
-  { brand: "Beauty Editorial", category: "AI fashion campaign", src: "/assets/posts/homepage-carousel/beauty.mp4", poster: "/assets/posts/homepage-carousel/beauty.webp", type: "video" },
   { brand: "Watchdog", category: "DTC security", src: "/assets/posts/homepage-carousel/watchdog.mp4", poster: "/assets/posts/homepage-carousel/watchdog.webp", type: "video" },
+  { brand: "Craftd", category: "Spec Ad", src: "/assets/posts/homepage-carousel/crafted.mp4", poster: "/assets/posts/homepage-carousel/crafted.webp", type: "video" },
   { brand: "Karviva", category: "Functional beverage", src: "/assets/posts/homepage-carousel/karviva.mp4", poster: "/assets/posts/homepage-carousel/karviva.webp", type: "video" },
-  { brand: "Undeniable", category: "Spec piece", src: "/assets/hero-2.mp4", poster: "/assets/posts/homepage-carousel/skincare.webp", type: "video" },
+  { brand: "OMEGA", category: "Spec Ad", src: "/assets/posts/homepage-carousel/omega.mp4", poster: "/assets/posts/homepage-carousel/omega.webp", type: "video" },
+  { brand: "Panther", category: "Spec Ad", src: "/assets/posts/homepage-carousel/panther.mp4", poster: "/assets/posts/homepage-carousel/panther.webp", type: "video" },
   { brand: "MuscleFier", category: "Sports nutrition", src: "/assets/posts/homepage-carousel/musclefier.mp4", poster: "/assets/posts/homepage-carousel/musclefier.webp", type: "video" },
-  { brand: "Panther", category: "Spec piece", src: "/assets/posts/homepage-carousel/panther.mp4", poster: "/assets/posts/homepage-carousel/panther.webp", type: "video" },
+  { brand: "Beauty Editorial", category: "AI fashion campaign", src: "/assets/posts/homepage-carousel/beauty.mp4", poster: "/assets/posts/homepage-carousel/beauty.webp", type: "video" },
 ];
 
 const FORM_FIELDS = [
@@ -100,10 +101,10 @@ export default function Home() {
         <div style={{ maxWidth: "920px", margin: "0 auto", width: "100%", textAlign: "center" }}>
           <div style={{ animation: "fadeIn 0.8s ease 0.2s both", fontFamily: "var(--fh)", fontSize: "11px", fontWeight: 500, letterSpacing: "4px", textTransform: "uppercase", color: "rgba(245,240,235,0.45)", marginBottom: "32px" }}>Ben Lewis Studios</div>
           <h1 style={{ fontFamily: "var(--fh)", fontSize: "clamp(34px,6vw,68px)", fontWeight: 700, lineHeight: 1.08, letterSpacing: "-1px", animation: "fadeUp 0.9s ease 0.35s both" }}>
-            See what your brand looks like with a<br />
-            <span style={{ color: "rgba(245,240,235,0.5)", fontWeight: 500 }}>7-figure content budget.</span>
+            Cut your production costs 60%, scale your output,<br />
+            <span style={{ color: "rgba(245,240,235,0.5)", fontWeight: 500 }}>and give your brand the stage it deserves.</span>
           </h1>
-          <p style={{ fontSize: "clamp(15px,1.8vw,18px)", lineHeight: 1.7, color: "rgba(245,240,235,0.65)", maxWidth: "640px", margin: "28px auto 0", fontWeight: 300, animation: "fadeUp 0.9s ease 0.5s both" }}>
+          <p style={{ fontSize: "clamp(15px,1.8vw,18px)", lineHeight: 1.7, color: "#F5F0EB", maxWidth: "640px", margin: "28px auto 0", fontWeight: 600, animation: "fadeUp 0.9s ease 0.5s both" }}>
             I'll produce a spec ad for your brand in under 24 hours. Free. No strings. Yours to keep regardless.
           </p>
           <p style={{ fontSize: "13px", letterSpacing: "1px", color: "rgba(245,240,235,0.4)", marginTop: "20px", fontWeight: 300, animation: "fadeUp 0.9s ease 0.65s both" }}>
@@ -143,7 +144,7 @@ export default function Home() {
       <section id="campaigns" style={{ padding: "40px 0 100px" }}>
         <Reveal>
           <div style={{ textAlign: "center", padding: "0 24px" }}>
-            <div className="sl">Campaigns we've produced</div>
+            <div className="sl">Portfolio</div>
           </div>
         </Reveal>
         <Reveal delay={0.1}>
