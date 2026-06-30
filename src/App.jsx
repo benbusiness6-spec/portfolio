@@ -2,6 +2,7 @@ import { useEffect } from "react";
 import { useLocation } from "./router.jsx";
 import { GlobalStyles, Nav, Footer } from "./shared.jsx";
 import Home from "./Home.jsx";
+import Work from "./Work.jsx";
 import Security from "./Security.jsx";
 import Privacy from "./Privacy.jsx";
 
@@ -16,6 +17,7 @@ function ScrollToTop() {
 export default function App() {
   const { pathname } = useLocation();
   const page =
+    pathname === "/work" ? <Work /> :
     pathname === "/security" ? <Security /> :
     pathname === "/privacy" ? <Privacy /> :
     <Home />;

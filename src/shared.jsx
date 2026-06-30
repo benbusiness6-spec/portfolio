@@ -414,6 +414,7 @@ export function Nav() {
       <nav style={{ position: "fixed", top: 0, left: 0, right: 0, zIndex: 100, padding: "18px 32px", display: "flex", justifyContent: "space-between", alignItems: "center", background: scrollY > 60 ? "rgba(10,10,10,0.92)" : "transparent", backdropFilter: scrollY > 60 ? "blur(20px)" : "none", borderBottom: scrollY > 60 ? "1px solid rgba(255,255,255,0.04)" : "none", transition: "all 0.4s ease" }}>
         <Link to="/" style={{ fontFamily: "var(--fh)", fontSize: "14px", fontWeight: 600, letterSpacing: "3px", textTransform: "uppercase", color: "#F5F0EB", cursor: "pointer", textDecoration: "none" }}>Ben Lewis Studios</Link>
         <div className="dk" style={{ display: "flex", gap: "28px", alignItems: "center" }}>
+          <Link to="/work" className={`nl${location.pathname === "/work" ? " active" : ""}`}>Work</Link>
           <a href={CALENDLY_URL} target="_blank" rel="noopener noreferrer" className="nl" style={{ color: "#F5F0EB" }}>Book a Call</a>
         </div>
         <button className="mb" onClick={() => setMenuOpen(!menuOpen)} style={{ background: "none", border: "none", cursor: "pointer", display: "flex", flexDirection: "column", gap: "5px", padding: "8px" }}>
@@ -421,6 +422,7 @@ export function Nav() {
         </button>
       </nav>
       {menuOpen && <div className="mm">
+        <Link to="/work" className="nl" style={{ fontSize: "16px" }} onClick={() => setMenuOpen(false)}>Work</Link>
         <a href={CALENDLY_URL} target="_blank" rel="noopener noreferrer" className="nl" style={{ fontSize: "16px" }} onClick={() => setMenuOpen(false)}>Book a Call</a>
       </div>}
     </>
@@ -431,7 +433,7 @@ export function Footer() {
   return (
     <footer style={{ padding: "28px 32px", borderTop: "1px solid rgba(255,255,255,0.04)", display: "flex", flexDirection: "column", alignItems: "center", gap: "14px", textAlign: "center" }}>
       <div style={{ fontSize: "11px", color: "rgba(245,240,235,0.35)", letterSpacing: "1px" }}>
-        Ben Lewis Studios · London, UK · <Link to="/privacy" style={{ color: "rgba(245,240,235,0.55)", textDecoration: "none", borderBottom: "1px solid rgba(245,240,235,0.2)" }}>Privacy</Link>
+        Ben Lewis Studios · London, UK · <Link to="/work" style={{ color: "rgba(245,240,235,0.55)", textDecoration: "none", borderBottom: "1px solid rgba(245,240,235,0.2)" }}>See the full portfolio</Link> · <Link to="/privacy" style={{ color: "rgba(245,240,235,0.55)", textDecoration: "none", borderBottom: "1px solid rgba(245,240,235,0.2)" }}>Privacy</Link>
       </div>
       <div style={{ display: "flex", gap: "24px", alignItems: "center" }}>
         <a href={LINKEDIN_URL} target="_blank" rel="noopener noreferrer" style={{ color: "rgba(245,240,235,0.25)", transition: "color 0.3s", display: "flex" }}>
