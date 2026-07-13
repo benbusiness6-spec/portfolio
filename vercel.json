@@ -4,6 +4,8 @@
     { "source": "/security/", "destination": "/security.html" },
     { "source": "/privacy", "destination": "/privacy.html" },
     { "source": "/privacy/", "destination": "/privacy.html" },
+    { "source": "/v2", "destination": "/v2.html" },
+    { "source": "/v2/", "destination": "/v2.html" },
     { "source": "/((?!api/).*)", "destination": "/" }
   ],
   "headers": [
