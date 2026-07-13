@@ -86,6 +86,9 @@
     .vol-toggle{position:absolute;bottom:12px;right:12px;width:38px;height:38px;border-radius:50%;border:1px solid var(--gold-dim);background:rgba(10,10,10,.72);backdrop-filter:blur(6px);color:var(--ink);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:15px;transition:border-color .2s}
     .vol-toggle:hover{border-color:var(--gold)}
     .hero-media-cap{margin-top:14px;text-align:center}
+    .work-vid{width:100%;object-fit:cover;border-radius:12px;border:1px solid var(--gold-dim);box-shadow:0 20px 60px rgba(0,0,0,.5);display:block}
+    .work-169{aspect-ratio:16/9}
+    .work-916{aspect-ratio:9/16;max-width:300px}
     .facestrip{padding-block:44px}
     .facestrip-flex{display:flex;align-items:center;gap:28px;flex-wrap:wrap}
     .face{width:84px;height:84px;border-radius:50%;object-fit:cover;border:1px solid var(--gold-dim)}
@@ -401,9 +404,7 @@
       <p class="lede rv">The film first, then the receipts. Watch it the way your customers would: at scroll speed, sound on.</p>
 
       <div class="film-card rv">
-        <div class="ph"><div class="ph-inner ph-169">
-          <p class="ph-note">[BEN: drop asset]<span>sqr-spec.mp4 sits in assets/video/ in this folder (or embed the showreel). Confirm SQR clearance before publishing.</span></p>
-        </div></div>
+        <video class="work-vid work-169" src="assets/video/sqr-spec-web.mp4" autoplay muted loop playsinline aria-label="SQR spec film"></video>
         <div class="film-meta">
           <h3>SQR <span class="serif">the film</span></h3>
           <p>Spec film · Security · Made cold, unasked</p>
@@ -413,9 +414,7 @@
       <div class="work-grid">
         <article class="case rv">
           <div class="case-media">
-            <div class="ph ph-916"><div class="ph-inner ph-916">
-              <p class="ph-note">[BEN: drop asset]<span>watchdog-160k.mp4 sits in assets/video/ in this folder</span></p>
-            </div></div>
+            <video class="work-vid work-916" src="assets/video/watchdog-70k.mp4" autoplay muted loop playsinline aria-label="Watchdog ad"></video>
           </div>
           <div>
             <p class="case-tag">Client · DTC security</p>
@@ -429,19 +428,6 @@
           </div>
         </article>
 
-        <article class="case rv">
-          <div class="case-media">
-            <div class="ph ph-916"><div class="ph-inner ph-916">
-              <p class="ph-note">[BEN: drop asset]<span>a MuscleFier UGC sample, vertical</span></p>
-            </div></div>
-          </div>
-          <div>
-            <p class="case-tag">Client · Sports nutrition</p>
-            <h3>MuscleFier</h3>
-            <p>A monthly AI-UGC engine for a supplement brand: batches of creator-style ads, each batch built off what the last one proved. Volume finds the winners, the data decides what scales, and nothing ships with the AI tells still showing.</p>
-            <p class="small" style="margin-top:14px">[BEN: add the ROAS case study here once the numbers are locked]</p>
-          </div>
-        </article>
       </div>
 
       <p class="spec-line rv"><b>Plus spec work made cold for brands I rate:</b> OMEGA · Craftd London · Neutonic · Panther. Nobody asked for those ads. That is the point of the free one.</p>
