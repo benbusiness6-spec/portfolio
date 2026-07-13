@@ -89,6 +89,11 @@
     .work-vid{width:100%;object-fit:cover;border-radius:12px;border:1px solid var(--gold-dim);box-shadow:0 20px 60px rgba(0,0,0,.5);display:block}
     .work-169{aspect-ratio:16/9}
     .work-916{aspect-ratio:9/16;max-width:300px}
+    .ugc-row{display:grid;grid-template-columns:repeat(4,1fr);gap:18px;margin-top:14px}
+    @media(max-width:820px){.ugc-row{grid-auto-flow:column;grid-template-columns:none;grid-auto-columns:minmax(190px,1fr);overflow-x:auto;scroll-snap-type:x mandatory;-webkit-overflow-scrolling:touch;padding-bottom:8px}.ugc-item{scroll-snap-align:start}}
+    .ugc-item video{width:100%;aspect-ratio:9/16;object-fit:cover;border-radius:12px;border:1px solid var(--gold-dim);box-shadow:0 16px 44px rgba(0,0,0,.5);display:block}
+    .ugc-cap{margin-top:12px;font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-45);font-weight:500}
+    .ugc-cap b{color:var(--ink);font-weight:600}
     .facestrip{padding-block:44px}
     .facestrip-flex{display:flex;align-items:center;gap:28px;flex-wrap:wrap}
     .face{width:84px;height:84px;border-radius:50%;object-fit:cover;border:1px solid var(--gold-dim)}
@@ -434,6 +439,21 @@
     </div>
   </section>
 
+
+  <!-- ============ UGC ROW ============ -->
+  <section id="ugc" class="hairline">
+    <div class="wrap">
+      <p class="label rv">AI-UGC &middot; creator content</p>
+      <h2 class="rv">Test more angles. <span class="serif">Find more winners.</span></h2>
+      <p class="lede rv">Creator-style ads produced at volume, so you can test what actually converts instead of betting a shoot on one idea. A few of the brands I have made UGC for.</p>
+      <div class="ugc-row rv">
+        <div class="ugc-item"><video src="assets/video/ugc-codage.mp4" autoplay muted loop playsinline aria-label="Codage UGC"></video><p class="ugc-cap"><b>Codage Paris</b> &middot; UGC</p></div>
+        <div class="ugc-item"><video src="assets/video/ugc-ritmo.mp4" autoplay muted loop playsinline aria-label="Ritmo UGC"></video><p class="ugc-cap"><b>Ritmo Energy</b> &middot; UGC</p></div>
+        <div class="ugc-item"><video src="assets/video/ugc-musclefier.mp4" autoplay muted loop playsinline aria-label="MuscleFier UGC"></video><p class="ugc-cap"><b>MuscleFier</b> &middot; UGC</p></div>
+        <div class="ugc-item"><video src="assets/video/ugc-karviva.mp4" autoplay muted loop playsinline aria-label="Karviva UGC"></video><p class="ugc-cap"><b>Karviva</b> &middot; UGC</p></div>
+      </div>
+    </div>
+  </section>
 
   <!-- ============ OFFERS ============ -->
   <section id="offers" class="hairline">
