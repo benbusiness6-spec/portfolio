@@ -16,6 +16,7 @@ export default defineConfig(({ isSsrBuild }) => ({
         security: resolve(__dirname, 'security.html'),
         privacy: resolve(__dirname, 'privacy.html'),
         v2: resolve(__dirname, 'v2.html'),
+        v3: resolve(__dirname, 'v3.html'),
       },
       output: {
         manualChunks: {
